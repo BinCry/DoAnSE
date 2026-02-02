@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+
+      - name: Test
+        run: mvn -q test
+
+      - name: Package
+        run: mvn -q package
+
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: airline-desktop-jar
+          path: target/*.jar
