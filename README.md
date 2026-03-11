@@ -1,6 +1,41 @@
 ﻿# Quản Lý Bán Vé Máy Bay (Sườn Dự Án)
 
-Sườn dự án hiện chỉ có cấu trúc thư mục, chưa có mã nguồn nghiệp vụ.
+### Kiến trúc tổng thể
+- Giao diện web: `Next.js` + `React` + `TypeScript`
+- Backend chính: `Java 21` + `Spring Boot`
+- Cơ sở dữ liệu: `Supabase PostgreSQL`
+- Hạ tầng phụ trợ: `Docker`, `Nginx`, `GitHub Actions`
+
+### Công nghệ phía giao diện
+- `Next.js App Router`: Xây dựng giao diện web và điều hướng trang.
+- `React`: Tổ chức giao diện theo thành phần.
+- `TypeScript`: Giúp kiểm soát kiểu dữ liệu rõ ràng hơn.
+- `Tailwind CSS`: Viết giao diện nhanh và đồng bộ.
+- `shadcn/ui`: Dùng các thành phần giao diện sẵn có để làm web nhanh hơn.
+
+### Công nghệ phía backend
+- `Java 21`: Ngôn ngữ backend chính của dự án.
+- `Spring Boot`: Tạo các API và tổ chức nghiệp vụ phía máy chủ.
+- `Spring Web`: Xử lý yêu cầu và phản hồi HTTP.
+- `Spring Security`: Quản lý xác thực và phân quyền khi cần.
+- `Spring Data JPA`: Làm việc với dữ liệu theo mô hình đối tượng.
+- `Bean Validation`: Kiểm tra dữ liệu đầu vào ở phía backend.
+
+### Dữ liệu và dịch vụ nền
+- `Supabase PostgreSQL`: Cơ sở dữ liệu chính của hệ thống.
+- `Flyway`: Quản lý lịch sử thay đổi cấu trúc dữ liệu.
+- `Supabase Storage`: Dùng khi cần lưu tệp như ảnh, vé điện tử hoặc tài liệu đính kèm.
+
+### Kiểm thử dự kiến
+- `Vitest`: Kiểm thử đơn vị cho phần giao diện nếu cần.
+- `Playwright`: Kiểm thử luồng sử dụng trên web.
+- `JUnit 5`: Kiểm thử cho backend Java.
+- `Mockito`: Giả lập phụ thuộc khi kiểm thử backend.
+
+### Nguyên tắc phân vai kỹ thuật
+- `apps/web` chỉ phụ trách giao diện, nhập liệu, hiển thị dữ liệu và gọi API.
+- `apps/api` là backend chính, chứa nghiệp vụ cốt lõi như đăng nhập, tìm chuyến bay, đặt vé, giữ chỗ, thanh toán và quản trị.
+- Không đặt nghiệp vụ chính ở cả `web` và `backend` cùng lúc để tránh trùng logic.
 
 ## Quy tắc làm việc với trợ lý lập trình AI
 1. Luôn làm theo thứ tự: hiểu bối cảnh -> lập kế hoạch -> xin/đợi xác nhận nếu tác vụ có rủi ro cao -> mới sửa mã.
