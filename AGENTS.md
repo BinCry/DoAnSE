@@ -26,7 +26,7 @@ Giữ thay đổi nhỏ, đúng phạm vi và an toàn cho dự án.
 1. Mọi commit bắt buộc theo đúng mẫu: `Type(scope):description`.
 2. `Type` phải thuộc danh sách cho phép bên dưới và dùng chữ thường.
 3. `scope` là phạm vi thay đổi chính, không được để trống.
-4. `description` bắt buộc viết bằng tiếng Việt, ngắn gọn, nêu đúng thay đổi chính.
+4. `description` bắt buộc viết bằng tiếng Việt có dấu, ngắn gọn, nêu đúng thay đổi chính.
 5. Không dùng thông điệp commit mơ hồ hoặc sai mẫu (ví dụ: `update`, `fix bug`, `abc`).
 6. Mỗi commit chỉ nên chứa một mục tiêu thay đổi chính để dễ truy vết.
 
@@ -44,7 +44,7 @@ Giữ thay đổi nhỏ, đúng phạm vi và an toàn cho dự án.
 ### Hướng dẫn viết thông điệp commit
 - Chỉ dùng một `Type` trong danh sách cho phép.
 - Luôn có `scope` rõ ràng theo phạm vi thay đổi chính (ví dụ: `api`, `ui`, `dat-ve`, `thanh-toan`).
-- Phần `description` phải là tiếng Việt, đi thẳng vào thay đổi chính, không mơ hồ.
+- Phần `description` phải là tiếng Việt có dấu, đi thẳng vào thay đổi chính, không mơ hồ.
 - Không chèn nhiều thay đổi không liên quan trong một commit.
 
 ### Ví dụ đúng
@@ -56,7 +56,7 @@ Giữ thay đổi nhỏ, đúng phạm vi và an toàn cho dự án.
 
 ### Quy định trước khi đẩy mã
 - AI agent và lập trình viên phải tự kiểm tra thông điệp commit đúng mẫu trước khi `git commit`.
-- Nếu sai mẫu hoặc không phải tiếng Việt ở phần `description`, phải sửa lại trước khi đẩy lên GitHub.
+- Nếu sai mẫu hoặc phần `description` không phải tiếng Việt có dấu, phải sửa lại trước khi đẩy lên GitHub.
 
 ## Quy tắc teamwork GitHub cho nhóm 4 (bắt buộc)
 Áp dụng cho toàn bộ thành viên trong nhóm.
@@ -71,7 +71,7 @@ Giữ thay đổi nhỏ, đúng phạm vi và an toàn cho dự án.
 ### Quy trình làm việc theo nhánh
 1. Luôn tạo nhánh mới từ `main`.
 2. Mỗi nhánh chỉ xử lý một mục tiêu chính.
-3. Mọi commit trong nhánh phải theo mẫu `Type(scope):description` và phần `description` bằng tiếng Việt.
+3. Mọi commit trong nhánh phải theo mẫu `Type(scope):description` và phần `description` bằng tiếng Việt có dấu.
 4. Đẩy nhánh lên sớm và mở yêu cầu hợp nhất (`pull request`) ngay khi có bản chạy được.
 5. Trước khi xin duyệt, phải cập nhật thay đổi mới nhất từ `main` và xử lý xung đột.
 
@@ -81,7 +81,7 @@ Giữ thay đổi nhỏ, đúng phạm vi và an toàn cho dự án.
 3. Bắt buộc qua toàn bộ kiểm tra tự động: biên dịch, kiểm thử, kiểm tra chuẩn mã.
 4. Bắt buộc xử lý hết toàn bộ trao đổi trước khi hợp nhất.
 5. Ưu tiên kiểu hợp nhất `squash and merge` để lịch sử thay đổi gọn và rõ.
-6. Tiêu đề `pull request` hoặc thông điệp hợp nhất phải theo mẫu `Type(scope):description`, phần `description` bằng tiếng Việt.
+6. Tiêu đề `pull request` hoặc thông điệp hợp nhất phải theo mẫu `Type(scope):description`, phần `description` bằng tiếng Việt có dấu.
 7. Sau khi hợp nhất phải xóa nhánh để tránh tồn đọng nhánh cũ.
 8. Riêng bạn (người có quyền hạn cao nhất) có quyền quyết định cuối cùng và được phép tự duyệt, tự hợp nhất khi cần.
 

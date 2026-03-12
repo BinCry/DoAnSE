@@ -37,7 +37,7 @@
 - `apps/api` là backend chính, chứa nghiệp vụ cốt lõi như đăng nhập, tìm chuyến bay, đặt vé, giữ chỗ, thanh toán và quản trị.
 - Không đặt nghiệp vụ chính ở cả `web` và `backend` cùng lúc để tránh trùng logic.
 
-## Quy tắc làm việc với trợ lý lập trình AI
+## Quy tắc làm việc với công cụ hỗ trợ lập trình
 1. Luôn làm theo thứ tự: hiểu bối cảnh -> lập kế hoạch -> xin/đợi xác nhận nếu tác vụ có rủi ro cao -> mới sửa mã.
 2. Chỉ sửa trong phạm vi tệp cần thiết hoặc các tệp phát sinh lỗi liên đới.
 3. Không tự ý đổi hợp đồng API, lược đồ dữ liệu, thư viện phụ thuộc, cấu hình môi trường, luồng xác thực, nghiệp vụ thanh toán, di trú dữ liệu hoặc CI/CD khi chưa được cho phép rõ ràng.
@@ -51,12 +51,12 @@
 11. Comment mã phải bằng tiếng Việt, ngắn gọn, trực quan và nêu rõ chỗ nào thay thế cái gì (nếu có).
 
 ## Quy ước commit GitHub (bắt buộc)
-Áp dụng cho cả AI agent và lập trình viên trong dự án.
+Áp dụng cho mọi thành viên tham gia dự án.
 
 1. Mọi commit bắt buộc theo đúng mẫu: `Type(scope):description`.
 2. `Type` phải thuộc danh sách cho phép bên dưới và dùng chữ thường.
 3. `scope` là phạm vi thay đổi chính, không được để trống.
-4. `description` bắt buộc viết bằng tiếng Việt, ngắn gọn, nêu đúng thay đổi chính.
+4. `description` bắt buộc viết bằng tiếng Việt có dấu, ngắn gọn, nêu đúng thay đổi chính.
 5. Không dùng thông điệp commit mơ hồ hoặc sai mẫu (ví dụ: `update`, `fix bug`, `abc`).
 6. Mỗi commit chỉ nên chứa một mục tiêu thay đổi chính để dễ truy vết.
 
@@ -74,7 +74,7 @@
 ### Hướng dẫn viết thông điệp commit
 - Chỉ dùng một `Type` trong danh sách cho phép.
 - Luôn có `scope` rõ ràng theo phạm vi thay đổi chính (ví dụ: `api`, `ui`, `dat-ve`, `thanh-toan`).
-- Phần `description` phải là tiếng Việt, đi thẳng vào thay đổi chính, không mơ hồ.
+- Phần `description` phải là tiếng Việt có dấu, đi thẳng vào thay đổi chính, không mơ hồ.
 - Không chèn nhiều thay đổi không liên quan trong một commit.
 
 ### Ví dụ đúng
@@ -85,8 +85,8 @@
 - `test(dat-ve):thêm kiểm thử đơn vị cho hàm tính tổng tiền`
 
 ### Quy định trước khi đẩy mã
-- AI agent và lập trình viên phải tự kiểm tra thông điệp commit đúng mẫu trước khi `git commit`.
-- Nếu sai mẫu hoặc không phải tiếng Việt ở phần `description`, phải sửa lại trước khi đẩy lên GitHub.
+- Mọi thành viên phải tự kiểm tra thông điệp commit đúng mẫu trước khi `git commit`.
+- Nếu sai mẫu hoặc phần `description` không phải tiếng Việt có dấu, phải sửa lại trước khi đẩy lên GitHub.
 
 ## Quy tắc teamwork GitHub cho nhóm 4 (bắt buộc)
 Áp dụng cho toàn bộ thành viên trong nhóm.
@@ -101,7 +101,7 @@
 ### Quy trình làm việc theo nhánh
 1. Luôn tạo nhánh mới từ `main`.
 2. Mỗi nhánh chỉ xử lý một mục tiêu chính.
-3. Mọi commit trong nhánh phải theo mẫu `Type(scope):description` và phần `description` bằng tiếng Việt.
+3. Mọi commit trong nhánh phải theo mẫu `Type(scope):description` và phần `description` bằng tiếng Việt có dấu.
 4. Đẩy nhánh lên sớm và mở yêu cầu hợp nhất (`pull request`) ngay khi có bản chạy được.
 5. Trước khi xin duyệt, phải cập nhật thay đổi mới nhất từ `main` và xử lý xung đột.
 
@@ -111,7 +111,7 @@
 3. Bắt buộc qua toàn bộ kiểm tra tự động: biên dịch, kiểm thử, kiểm tra chuẩn mã.
 4. Bắt buộc xử lý hết toàn bộ trao đổi trước khi hợp nhất.
 5. Ưu tiên kiểu hợp nhất `squash and merge` để lịch sử thay đổi gọn và rõ.
-6. Tiêu đề `pull request` hoặc thông điệp hợp nhất phải theo mẫu `Type(scope):description`, phần `description` bằng tiếng Việt.
+6. Tiêu đề `pull request` hoặc thông điệp hợp nhất phải theo mẫu `Type(scope):description`, phần `description` bằng tiếng Việt có dấu.
 7. Sau khi hợp nhất phải xóa nhánh để tránh tồn đọng nhánh cũ.
 8. Riêng bạn (người có quyền hạn cao nhất) có quyền quyết định cuối cùng và được phép tự duyệt, tự hợp nhất khi cần.
 
@@ -127,4 +127,3 @@
 - Mỗi `pull request` có 1 người duyệt chính và luân phiên theo tuần.
 - Thành viên khác không tự duyệt và tự hợp nhất mã của chính mình; riêng bạn được phép thực hiện khi cần.
 - Ưu tiên `pull request` nhỏ (khoảng dưới 300 dòng thay đổi) để duyệt nhanh và giảm sót lỗi.
-
