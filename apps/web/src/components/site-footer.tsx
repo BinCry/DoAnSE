@@ -8,13 +8,15 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <span className="brand-mark">
-            <Image
-              src="/logo-aurora.svg"
-              alt="Logo Aurora Air"
-              width={48}
-              height={48}
-            />
+          <span className="brand-mark footer-brand-mark">
+            <span className="footer-brand-mark-shell">
+              <Image
+                src="/logo-aurora.svg"
+                alt="Logo Aurora Air"
+                width={48}
+                height={48}
+              />
+            </span>
           </span>
           <div>
             <strong>Aurora Air</strong>

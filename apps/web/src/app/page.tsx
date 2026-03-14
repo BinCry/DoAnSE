@@ -53,6 +53,30 @@ const journeyDeck = [
   }
 ];
 
+const featuredDestinations = [
+  ...destinations.map((destination) => ({
+    ...destination,
+    displayCity:
+      destination.code === "SGN" ? "TP. Hồ Chí Minh" : destination.city
+  })),
+  {
+    code: "CXR",
+    city: "Nha Trang",
+    displayCity: "Nha Trang",
+    airport: "Cam Ranh",
+    priceFrom: 1490000,
+    highlights: ["Biển xanh trung tâm", "Combo nghỉ dưỡng", "Đưa đón sân bay thuận tiện"]
+  },
+  {
+    code: "HUI",
+    city: "Huế",
+    displayCity: "Huế",
+    airport: "Phú Bài",
+    priceFrom: 1290000,
+    highlights: ["Di sản cố đô", "Lịch trình cuối tuần", "Gợi ý tham quan nội thành"]
+  }
+];
+
 export default function HomePage() {
   return (
     <>
@@ -179,7 +203,7 @@ export default function HomePage() {
             description="Dải nội dung này kết hợp điểm đến, ưu đãi và mức giá khởi điểm để tạo cảm giác vừa truyền cảm hứng vừa sẵn sàng chuyển đổi."
           />
           <div className="destination-editorial-grid home-destination-grid">
-            {destinations.map((destination, index) => (
+            {featuredDestinations.map((destination, index) => (
               <article
                 key={destination.code}
                 className={`destination-card destination-card-rich home-destination-card destination-card-${index + 1}`}
@@ -187,7 +211,7 @@ export default function HomePage() {
                 <div className="destination-overlay home-destination-overlay">
                   <div className="destination-top home-destination-top">
                     <div>
-                      <strong>{destination.city}</strong>
+                      <strong>{destination.displayCity}</strong>
                       <p>{destination.airport}</p>
                     </div>
                     <span className="pill">Điểm đến nổi bật</span>
@@ -231,8 +255,8 @@ export default function HomePage() {
           <div>
             <SectionHeading
               eyebrow="Cẩm nang & hỗ trợ"
-              title="Phần râu ria quan trọng được nâng thành khối chính"
-              description="Giao diện nhìn chuyên nghiệp hơn khi trợ lý hỗ trợ, câu hỏi thường gặp, cẩm nang sân bay và nội dung điểm đến đều có đất diễn rõ."
+              title="Nội dung đồng hành và hỗ trợ được tổ chức như một lớp dịch vụ chuyên nghiệp"
+              description="Trợ lý hỗ trợ, cẩm nang sân bay, câu hỏi thường gặp và nội dung điểm đến được sắp theo đúng ngữ cảnh sử dụng để hành khách tìm đúng thông tin nhanh hơn trong suốt hành trình."
             />
             <div className="stack-list">
               {featuredArticles.map((article) => (
@@ -331,11 +355,21 @@ export default function HomePage() {
           text-wrap: balance;
         }
 
+        .section-dark .section-heading h2 {
+          color: rgba(255, 248, 239, 0.97);
+          text-shadow: 0 8px 24px rgba(7, 24, 41, 0.18);
+        }
+
         .section-heading p {
           max-width: 68ch;
           color: rgba(16, 45, 78, 0.76);
           font-size: 1.01rem;
           line-height: 1.72;
+        }
+
+        .section-dark .section-heading p {
+          color: rgba(247, 243, 234, 0.9);
+          max-width: 70ch;
         }
 
         .feature-card h3,
@@ -625,6 +659,7 @@ export default function HomePage() {
         }
 
         .home-destination-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
           gap: 22px;
         }
 
@@ -632,10 +667,30 @@ export default function HomePage() {
           position: relative;
           isolation: isolate;
           border-radius: 32px;
-          border: 1px solid rgba(255, 255, 255, 0.09);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           box-shadow:
-            0 24px 48px rgba(18, 61, 105, 0.11),
+            0 26px 52px rgba(18, 61, 105, 0.13),
             inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .home-destination-card.destination-card-1,
+        .home-destination-card.destination-card-4 {
+          grid-column: span 1;
+          min-height: 320px;
+        }
+
+        .home-destination-card.destination-card-5 {
+          background:
+            linear-gradient(160deg, rgba(12, 34, 61, 0.2), rgba(12, 34, 61, 0.76)),
+            url("/images/airport-terminal.jpg") center/cover,
+            linear-gradient(135deg, #4f7193, #173253);
+        }
+
+        .home-destination-card.destination-card-6 {
+          background:
+            linear-gradient(160deg, rgba(12, 34, 61, 0.18), rgba(12, 34, 61, 0.74)),
+            url("/images/danang-sunset.jpg") center/cover,
+            linear-gradient(135deg, #8a6947, #16395d);
         }
 
         .home-destination-card::before {
@@ -655,10 +710,10 @@ export default function HomePage() {
           inset: 0;
           background: linear-gradient(
             180deg,
-            rgba(7, 24, 41, 0.03) 14%,
-            rgba(7, 24, 41, 0.18) 40%,
-            rgba(7, 24, 41, 0.56) 72%,
-            rgba(7, 24, 41, 0.82) 100%
+            rgba(7, 24, 41, 0.04) 12%,
+            rgba(7, 24, 41, 0.24) 40%,
+            rgba(7, 24, 41, 0.64) 72%,
+            rgba(7, 24, 41, 0.88) 100%
           );
           pointer-events: none;
           z-index: 0;
@@ -670,39 +725,49 @@ export default function HomePage() {
           padding: 30px;
           background:
             radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
-            linear-gradient(180deg, rgba(8, 28, 48, 0) 18%, rgba(8, 28, 48, 0.2) 58%, rgba(8, 28, 48, 0.44) 100%);
+            linear-gradient(180deg, rgba(8, 28, 48, 0) 18%, rgba(8, 28, 48, 0.26) 58%, rgba(8, 28, 48, 0.52) 100%);
         }
 
         .home-destination-top {
           gap: 18px;
+          align-items: flex-start;
+        }
+
+        .home-destination-top > div {
+          min-width: 0;
         }
 
         .home-destination-top strong {
           display: block;
           margin-bottom: 6px;
-          color: rgba(255, 252, 246, 0.98);
+          color: rgba(255, 252, 246, 1);
           font-size: clamp(1.34rem, 1.7vw, 1.62rem);
           line-height: 1.08;
           letter-spacing: -0.03em;
-          text-shadow: 0 4px 18px rgba(7, 24, 41, 0.18);
+          white-space: nowrap;
+          text-shadow: 0 6px 20px rgba(7, 24, 41, 0.24);
         }
 
         .home-destination-top p {
           margin: 0;
-          color: rgba(247, 243, 234, 0.9);
+          color: rgba(250, 246, 239, 0.94);
           line-height: 1.55;
-          text-shadow: 0 3px 12px rgba(7, 24, 41, 0.14);
+          text-shadow: 0 4px 14px rgba(7, 24, 41, 0.2);
         }
 
         .home-destination-card .pill {
-          border: 1px solid rgba(255, 255, 255, 0.16);
+          flex-shrink: 0;
+          border: 1px solid rgba(255, 255, 255, 0.22);
           background: linear-gradient(
             135deg,
-            rgba(11, 38, 66, 0.42),
-            rgba(255, 255, 255, 0.12)
+            rgba(11, 38, 66, 0.54),
+            rgba(255, 255, 255, 0.14)
           );
-          color: rgba(255, 251, 244, 0.96);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+          color: rgba(255, 251, 244, 0.98);
+          white-space: nowrap;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 10px 22px rgba(7, 24, 41, 0.16);
           backdrop-filter: blur(8px);
         }
 
@@ -713,11 +778,11 @@ export default function HomePage() {
 
         .home-destination-bottom h3 {
           margin-bottom: 0;
-          color: #fff2cf;
+          color: #fff1c3;
           font-size: clamp(1.65rem, 2.8vw, 2.22rem);
           line-height: 1;
           letter-spacing: -0.04em;
-          text-shadow: 0 6px 22px rgba(7, 24, 41, 0.24);
+          text-shadow: 0 8px 24px rgba(7, 24, 41, 0.28);
         }
 
         .home-destination-list {
@@ -725,19 +790,21 @@ export default function HomePage() {
           gap: 10px;
           padding: 16px 18px;
           border-radius: 20px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           background: linear-gradient(
             180deg,
-            rgba(9, 31, 52, 0.14),
-            rgba(9, 31, 52, 0.36)
+            rgba(9, 31, 52, 0.18),
+            rgba(9, 31, 52, 0.44)
           );
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 16px 30px rgba(7, 24, 41, 0.14);
           backdrop-filter: blur(8px);
         }
 
         .home-destination-list li {
-          color: rgba(255, 248, 239, 0.94);
-          text-shadow: 0 2px 10px rgba(7, 24, 41, 0.14);
+          color: rgba(255, 248, 239, 0.98);
+          text-shadow: 0 3px 12px rgba(7, 24, 41, 0.18);
         }
 
         .home-destination-list li::before {
@@ -760,6 +827,10 @@ export default function HomePage() {
 
           .home-hero-copy h1 {
             max-width: 13.5ch;
+          }
+
+          .home-destination-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
           }
         }
 
@@ -815,6 +886,7 @@ export default function HomePage() {
           }
 
           .home-destination-grid {
+            grid-template-columns: 1fr;
             gap: 16px;
           }
 
