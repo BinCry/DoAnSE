@@ -17,10 +17,10 @@ export default function CheckInPage() {
         <div className="page-hero-card">
           <div>
             <span className="section-eyebrow">Làm thủ tục trực tuyến</span>
-            <h1 className="page-title">Trải nghiệm làm thủ tục được đẩy gần hơn với cảm giác ra sân bay thật.</h1>
+            <h1 className="page-title">Làm thủ tục trực tuyến nhanh gọn trước giờ khởi hành.</h1>
             <p className="page-hero-copy">
-              Làm thủ tục mở trước 24 giờ, khóa trước 60 phút và đồng bộ ghế, cửa ra
-              tàu, thẻ lên máy bay cùng trạng thái chuyến bay trong một màn hình liền mạch.
+              Làm thủ tục mở trước 24 giờ và đóng trước 60 phút. Hành khách có thể
+              chọn lại ghế, kiểm tra cửa ra tàu và tải thẻ lên máy bay điện tử ngay trên web.
             </p>
           </div>
           <div className="boarding-preview-card">
@@ -59,8 +59,8 @@ export default function CheckInPage() {
         <div className="section-gap" />
         <SectionHeading
           eyebrow="Bảng tình trạng chuyến bay"
-          title="Làm thủ tục và tình trạng chuyến bay nên nằm trên cùng một nhịp trải nghiệm"
-          description="Khách đang làm thủ tục rất cần thấy ngay thay đổi về giờ bay, cửa ra tàu và trạng thái lên máy bay."
+          title="Theo dõi thay đổi chuyến bay ngay trong lúc làm thủ tục"
+          description="Các cập nhật về giờ bay, cửa ra tàu và trạng thái lên máy bay được hiển thị rõ để hành khách chuẩn bị tốt hơn trước khi ra cửa khởi hành."
         />
         <div className="table-card">
           <div className="table-wrap">

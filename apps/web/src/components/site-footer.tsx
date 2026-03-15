@@ -6,7 +6,7 @@ import { footerColumns } from "@/lib/mock-data";
 const footerHighlights = [
   "Tổng đài hỗ trợ 1900 6868",
   "Tra cứu đặt chỗ và làm thủ tục mọi lúc",
-  "Thông báo chuyến bay và hỗ trợ sau bán trên cùng hệ thống"
+  "Thông báo chuyến bay và hỗ trợ sau bán luôn sẵn sàng"
 ];
 
 export function SiteFooter() {
@@ -27,8 +27,8 @@ export function SiteFooter() {
           <div>
             <strong>Aurora Air</strong>
             <p>
-              Hệ thống bán vé máy bay nội địa với khu công khai, tự phục vụ,
-              hỗ trợ khách hàng và điều hành nội bộ dùng chung một nền tảng.
+              Hãng hàng không nội địa với dịch vụ đặt vé, quản lý hành trình,
+              hỗ trợ hành khách và vận hành khai thác được kết nối liền mạch.
             </p>
           </div>
         </div>
@@ -56,12 +56,11 @@ export function SiteFooter() {
       </div>
       <div className="container footer-legal">
         <span>
-          © 2026 Aurora Air. Hỗ trợ thanh toán, đổi hoặc hoàn và nhật ký kiểm
-          soát trên cùng hệ thống.
+          © 2026 Aurora Air. Hỗ trợ thanh toán, đổi hoặc hoàn và theo dõi tình
+          trạng chuyến bay trên cùng một cổng dịch vụ.
         </span>
         <span>
-          Nền tảng phục vụ đặt vé, quản lý hành trình và vận hành hàng không
-          nội địa.
+          Phục vụ đặt vé, quản lý hành trình và khai thác các đường bay nội địa.
         </span>
       </div>
     </footer>

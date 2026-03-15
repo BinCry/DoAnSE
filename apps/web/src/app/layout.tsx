@@ -9,7 +9,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Aurora Air",
   description:
-    "Website bán vé máy bay nội địa với luồng đặt vé, tự phục vụ sau bán, hỗ trợ khách hàng và điều hành nội bộ."
+    "Website bán vé máy bay nội địa với tra cứu chuyến bay, quản lý đặt chỗ, làm thủ tục trực tuyến và hỗ trợ hành khách."
 };
 
 export default function RootLayout({

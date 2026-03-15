@@ -63,14 +63,13 @@ export const mainNavigation = [
   { label: "Hành trình", href: "/booking" },
   { label: "Tự phục vụ", href: "/manage-booking" },
   { label: "Ưu đãi & Cẩm nang", href: "/blog" },
-  { label: "Hỗ trợ", href: "/support" },
-  { label: "Điều hành nội bộ", href: "/backoffice" }
+  { label: "Hỗ trợ", href: "/support" }
 ];
 
 export const heroHighlights = [
   "Giữ chỗ 15 phút và khóa chống thanh toán trùng.",
   "Bán vé nội địa song ngữ với gói giá, dịch vụ bổ trợ và làm thủ tục trực tuyến.",
-  "Trung tâm điều hành dùng chung dữ liệu đặt chỗ, thanh toán và tình trạng chuyến bay."
+  "Cập nhật tình trạng chuyến bay, cửa ra tàu và thời gian làm thủ tục theo thời gian thực."
 ];
 
 export const quickServices: QuickService[] = [
@@ -115,7 +114,7 @@ export const promotions: PromotionCard[] = [
     tag: "Doanh nghiệp",
     title: "Bảng giá linh hoạt cho đoàn công tác",
     summary:
-      "Cho phép nhân viên bán vé tạo đặt chỗ hộ và giữ chỗ nhiều hành khách trong cùng một mã.",
+      "Hỗ trợ giữ giá, xuất hóa đơn và sắp xếp hành trình thuận tiện cho nhóm khách đi công tác.",
     cta: "Liên hệ bán vé"
   }
 ];
@@ -297,12 +296,12 @@ export const manageActions: ManageAction[] = [
   {
     title: "Hoàn/Hủy",
     description: "Tạo yêu cầu hoàn với nhật ký và thời hạn xử lý rõ ràng.",
-    rule: "Nhân viên chăm sóc khách hàng chỉ duyệt theo điều kiện, kế toán chốt hoàn tiền cuối cùng."
+    rule: "Hiển thị rõ mức phí, thời gian xử lý và hình thức hoàn tiền theo điều kiện của từng gói vé."
   },
   {
     title: "Mua thêm dịch vụ",
     description: "Hành lý, ghế, ưu tiên làm thủ tục và bảo hiểm bổ sung.",
-    rule: "Khóa mua khi quá hạn cắt do điều hành cấu hình."
+    rule: "Một số dịch vụ sẽ ngừng bán khi gần giờ khởi hành để đảm bảo khai thác chuyến bay."
   }
 ];
 
@@ -313,9 +312,9 @@ export const supportChannels: SupportItem[] = [
     channel: "1900 6868"
   },
   {
-    title: "Trợ lý hỗ trợ và tiếp quản người thật",
+    title: "Trợ lý hỗ trợ trực tuyến",
     description: "Tra cứu câu hỏi thường gặp, kiểm tra đặt chỗ và mở yêu cầu hỗ trợ ngay trong website.",
-    channel: "Khung nổi toàn trang"
+    channel: "Trò chuyện trên website"
   },
   {
     title: "Biểu mẫu hỗ trợ",
@@ -616,7 +615,7 @@ export const supportFaqs: FaqEntry[] = [
   {
     question: "Trợ lý hỗ trợ có xử lý hoàn vé luôn không?",
     answer:
-      "Trợ lý hỗ trợ thu thập thông tin, kiểm tra điều kiện cơ bản và chuyển ngay cho bộ phận chăm sóc khách hàng khi cần người thật xác nhận."
+      "Trợ lý hỗ trợ giúp tra cứu điều kiện cơ bản, hướng dẫn các bước cần thiết và kết nối nhanh tới chuyên viên hỗ trợ khi cần xác minh thêm."
   }
 ];
 
@@ -655,7 +654,7 @@ export const footerColumns = [
     links: ["Cẩm nang điểm đến", "Ưu đãi theo mùa", "Thông tin sân bay", "Bản tin email"]
   },
   {
-    title: "Nội bộ",
-    links: ["Bảng điều hành", "Điều hành chuyến bay", "Quản trị nội dung", "Nhật ký kiểm soát"]
+    title: "Thông tin hành trình",
+    links: ["Quy định làm thủ tục", "Thông tin sân bay", "Hỗ trợ hành khách đặc biệt", "Kênh liên hệ"]
   }
 ];

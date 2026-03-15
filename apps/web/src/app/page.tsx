@@ -5,52 +5,65 @@ import { FlightSearchPanel } from "@/components/flight-search-panel";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusChip } from "@/components/status-chip";
 import {
-  backofficeMetrics,
   destinations,
   featuredArticles,
   heroHighlights,
   promotions,
   quickServices,
-  roleRules,
   supportChannels
 } from "@/lib/mock-data";
-import { ROLE_LABELS } from "@/lib/access-control";
 import { formatCurrency } from "@/lib/format";
 
 const heroStats = [
-  { label: "Tỷ lệ lấp đầy trên tuyến trục", value: "92%", detail: "Dùng chung cho website và điều hành" },
+  { label: "Tỷ lệ lấp đầy trên tuyến trục", value: "92%", detail: "Cập nhật theo tình hình khai thác trong ngày" },
   { label: "Tốc độ xuất vé", value: "Dưới 60 giây", detail: "Sau khi phản hồi thanh toán thành công" },
-  { label: "Yêu cầu hỗ trợ đang mở", value: "18", detail: "Trợ lý hỗ trợ đẩy sang bộ phận chăm sóc khách hàng theo thời hạn xử lý" }
+  { label: "Yêu cầu hỗ trợ đang mở", value: "18", detail: "Ưu tiên phản hồi trong ngày đối với các tình huống cần hỗ trợ gấp" }
 ];
 
 const liveOperations = [
   {
     title: "Bán vé công khai",
-    note: "Khối tìm vé, lịch giá và tiện ích nhanh luôn nằm ở tầng đầu."
+    note: "Tìm chuyến bay, xem giá và chọn tiện ích ngay từ trang đầu."
   },
   {
     title: "Tự phục vụ sau bán",
-    note: "Đổi chuyến, hoàn hoặc hủy, mua thêm dịch vụ và làm thủ tục trực tuyến."
+    note: "Tra cứu đặt chỗ, đổi chuyến, mua thêm dịch vụ và làm thủ tục trực tuyến."
   },
   {
-    title: "Điều hành nội bộ",
-    note: "Bảng điều hành tài chính, vận hành, quản trị nội dung và nhật ký kiểm soát dùng cùng nguồn dữ liệu."
+    title: "Hỗ trợ trước giờ bay",
+    note: "Theo dõi tình trạng chuyến bay, cửa ra tàu và những lưu ý cần thiết trước khi khởi hành."
   }
 ];
 
 const journeyDeck = [
   {
     eyebrow: "Trải nghiệm hành khách",
-    title: "Website vừa bán vé vừa dẫn dắt hành trình của hành khách rõ ràng",
+    title: "Đặt vé, chuẩn bị hành trình và nhận hỗ trợ trong cùng một trải nghiệm xuyên suốt",
     summary:
-      "Các khối khuyến mãi, cẩm nang, thông tin sân bay và điểm đến không đứng rời rạc mà cùng kéo khách về hành động chính."
+      "Khuyến mãi, cẩm nang, thông tin sân bay và gợi ý điểm đến được sắp xếp theo đúng nhu cầu thực tế trước ngày bay."
   },
   {
-    eyebrow: "Điều hành nội bộ",
-    title: "Khu điều hành được trình bày rõ như một phần bắt buộc của hệ thống",
+    eyebrow: "Thông tin trước giờ bay",
+    title: "Chuẩn bị hành trình chủ động hơn với những thông tin cần xem ngay trước ngày khởi hành",
     summary:
-      "Người dùng nội bộ thấy ngay doanh thu, tỷ lệ lấp đầy, thời hạn xử lý hỗ trợ, chuyến bay chậm hoặc hủy và nội dung vận hành trong cùng một mạch."
+      "Làm thủ tục trực tuyến, tình trạng chuyến bay, lưu ý hành lý và kênh hỗ trợ được đặt gần nhau để hành khách tra cứu nhanh."
   }
+];
+
+const travelServiceMetrics = [
+  { label: "Mở làm thủ tục", value: "24 giờ", detail: "Trước giờ khởi hành với chặng nội địa" },
+  { label: "Đóng làm thủ tục", value: "60 phút", detail: "Áp dụng cho hành khách khởi hành từ sân bay nội địa" },
+  { label: "Giữ chỗ", value: "15 phút", detail: "Sau khi chọn chuyến bay và trước khi hoàn tất thanh toán" },
+  { label: "Tổng đài hỗ trợ", value: "1900 6868", detail: "Tiếp nhận đổi vé, hỗ trợ sau bán và yêu cầu khẩn" }
+];
+
+const travelerTopics = [
+  "Quy định hành lý xách tay",
+  "Điều kiện đổi hoặc hoàn vé",
+  "Giấy tờ cần mang theo",
+  "Hỗ trợ hành khách đặc biệt",
+  "Thông tin sân bay",
+  "Cập nhật cửa ra tàu"
 ];
 
 const featuredDestinations = [
@@ -94,8 +107,8 @@ export default function HomePage() {
               <Link href="/search" className="button button-primary home-hero-primary">
                 Đặt vé ngay
               </Link>
-              <Link href="/backoffice" className="button button-secondary home-hero-secondary">
-                Mở điều hành
+              <Link href="/manage-booking" className="button button-secondary home-hero-secondary">
+                Quản lý đặt chỗ
               </Link>
             </div>
             <div className="hero-stat-grid home-hero-stat-grid">
@@ -275,33 +288,33 @@ export default function HomePage() {
       <section className="section section-dark">
         <div className="container">
           <SectionHeading
-            eyebrow="Điều hành nội bộ"
-            title="Khu nội bộ được tổ chức như một phòng điều phối chuyến bay"
-            description="Các khối tài chính, hỗ trợ, phân quyền và vận hành cùng xuất hiện rõ ràng để hệ thống thống nhất từ đầu đến cuối."
+            eyebrow="Chuẩn bị trước giờ bay"
+            title="Những thông tin hành khách nên xem trước khi ra sân bay"
+            description="Từ thời gian làm thủ tục, quy định hành lý đến kênh hỗ trợ và tình trạng chuyến bay, mọi thông tin quan trọng đều được gom lại để tra cứu nhanh."
           />
           <div className="command-grid">
             <div className="command-metrics">
-              {backofficeMetrics.map((metric) => (
+              {travelServiceMetrics.map((metric) => (
                 <article key={metric.label} className="glass-card metric-card-dark">
                   <span>{metric.label}</span>
                   <strong>{metric.value}</strong>
-                  <p>{metric.trend}</p>
+                  <p>{metric.detail}</p>
                 </article>
               ))}
             </div>
             <div className="command-side">
               <article className="glass-card command-panel">
-                <h3>Bản đồ vai trò</h3>
+                <h3>Hành khách thường quan tâm</h3>
                 <div className="role-chip-cloud">
-                  {roleRules.slice(0, 6).map((rule) => (
-                    <span key={rule.role} className="role-chip">
-                      {ROLE_LABELS[rule.role]}
+                  {travelerTopics.map((topic) => (
+                    <span key={topic} className="role-chip">
+                      {topic}
                     </span>
                   ))}
                 </div>
                 <p>
-                  Quyền truy cập được chốt từ đầu nên UI không bị lẫn giữa khách
-                  hàng, nhân viên bán vé, bộ phận chăm sóc khách hàng và quản trị viên hệ thống.
+                  Những mục được tra cứu nhiều nhất trước ngày bay được đưa lên rõ ràng
+                  để hành khách không phải tìm qua nhiều lớp điều hướng.
                 </p>
               </article>
               <article className="glass-card command-panel">
