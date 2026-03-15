@@ -14,18 +14,19 @@ export default function BlogPage() {
         <div className="blog-hero">
           <div className="blog-hero-copy">
             <span className="section-eyebrow">Cẩm nang, hướng dẫn, khuyến mãi</span>
-            <h1 className="page-title">Khối nội dung được làm theo phong cách tạp chí thay vì danh sách thẻ.</h1>
+            <h1 className="page-title">Cẩm nang hành trình, điểm đến và ưu đãi theo mùa cho hành khách nội địa.</h1>
             <p className="page-hero-copy">
-              Đây là phần giúp website giống một hãng bay thật: có chiến dịch, bài
-              điểm đến, cẩm nang thủ tục, nội dung sân bay và lời kêu gọi hành động nối lại hành trình mua vé.
+              Từ gợi ý điểm đến, kinh nghiệm đi sân bay đến chương trình ưu đãi theo
+              mùa, nội dung được tổ chức để hỗ trợ hành khách lên kế hoạch và quay lại
+              bước đặt vé đúng lúc.
             </p>
           </div>
           <div className="blog-hero-panel">
             <span className="pill">Nội dung nổi bật</span>
-            <h3>Khuyến mãi đi cùng cẩm nang hành trình</h3>
+            <h3>Nội dung hỗ trợ quyết định đặt vé</h3>
             <p>
-              Nội dung không chỉ để đọc mà còn dẫn người dùng quay lại tuyến bay,
-              gói giá và hành trình phù hợp.
+              Các bài viết và chương trình ưu đãi được sắp cạnh nhau để hành khách
+              vừa tham khảo thông tin, vừa nhanh chóng quay lại lựa chọn hành trình phù hợp.
             </p>
           </div>
         </div>
@@ -48,8 +49,8 @@ export default function BlogPage() {
         <div className="section-gap" />
         <SectionHeading
           eyebrow="Chiến dịch thương mại"
-          title="Khuyến mãi và cẩm nang được gom về cùng một bề mặt biên tập"
-          description="Cách này giúp website có chiều sâu nội dung hơn, đồng thời dùng lại lời kêu gọi hành động và banner giữa nhiều khu vực."
+          title="Ưu đãi theo mùa và cẩm nang được đặt cạnh nhau để dễ theo dõi"
+          description="Hành khách có thể xem nhanh chương trình đang áp dụng, đọc thêm thông tin liên quan và quay lại hành trình đặt vé mà không bị đứt mạch."
         />
         <div className="card-grid card-grid-3">
           {promotions.map((promotion) => (

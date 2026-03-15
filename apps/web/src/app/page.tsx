@@ -84,11 +84,11 @@ export default function HomePage() {
         <div className="container hero-grid home-hero-grid">
           <div className="hero-copy hero-copy-rich home-hero-copy">
             <span className="section-eyebrow home-hero-eyebrow">Aurora Air</span>
-            <h1>Website bán vé máy bay nội địa với đầy đủ mua vé, tự phục vụ và điều hành.</h1>
+            <h1>Đặt vé nội địa linh hoạt, quản lý hành trình thuận tiện từ trước đến sau chuyến bay.</h1>
             <p>
-              Giao diện tập trung hoàn toàn vào đề tài bán vé máy bay: tìm chuyến
-              bay, giá vé, dịch vụ bổ trợ, làm thủ tục trực tuyến, quản lý đặt chỗ, hỗ trợ khách
-              hàng và khu vận hành nội bộ.
+              Tìm chuyến bay theo giờ phù hợp, chọn gói giá rõ quyền lợi, bổ sung
+              hành lý hoặc chỗ ngồi, làm thủ tục trực tuyến và nhận hỗ trợ nhanh trong
+              cùng một trải nghiệm thống nhất.
             </p>
             <div className="hero-actions home-hero-actions">
               <Link href="/search" className="button button-primary home-hero-primary">
@@ -165,8 +165,8 @@ export default function HomePage() {
             <div>
               <SectionHeading
                 eyebrow="Tiện ích nhanh"
-                title="Những chi tiết nhỏ nhưng có sức nặng chuyển đổi rất lớn"
-                description="Hành lý, làm thủ tục, trợ lý hỗ trợ, nâng hạng và quản lý đặt chỗ được đẩy lên đầu để khách không phải đào trong menu sâu."
+                title="Những tiện ích hành khách cần nhất được đưa lên ngay từ đầu hành trình"
+                description="Mua thêm hành lý, đổi chỗ ngồi, làm thủ tục trực tuyến và tra cứu đặt chỗ đều nằm ở lớp điều hướng đầu để thao tác nhanh trên cả máy tính lẫn điện thoại."
               />
               <div className="quick-grid">
                 {quickServices.map((service) => (
@@ -199,8 +199,8 @@ export default function HomePage() {
         <div className="container">
           <SectionHeading
             eyebrow="Điểm đến & chiến dịch"
-            title="Trang chủ giờ có cảm giác biên tập như website hãng bay thật"
-            description="Dải nội dung này kết hợp điểm đến, ưu đãi và mức giá khởi điểm để tạo cảm giác vừa truyền cảm hứng vừa sẵn sàng chuyển đổi."
+            title="Khám phá các đường bay nội địa nổi bật cho kỳ nghỉ, công tác và du lịch ngắn ngày"
+            description="Mỗi điểm đến đi kèm mức giá khởi điểm, sân bay khai thác và các gợi ý nổi bật để hành khách có thêm căn cứ trước khi chọn hành trình."
           />
           <div className="destination-editorial-grid home-destination-grid">
             {featuredDestinations.map((destination, index) => (
@@ -236,8 +236,8 @@ export default function HomePage() {
           <div>
           <SectionHeading
             eyebrow="Ưu đãi & nội dung"
-            title="Khuyến mãi, cẩm nang và hướng dẫn được dệt cùng một mạch"
-            description="Mỗi khối có vai trò rõ: khuyến mãi kéo chuyển đổi, cẩm nang cung cấp thông tin, còn hỗ trợ giảm ma sát trong quá trình đặt vé."
+            title="Ưu đãi theo mùa, cẩm nang hành trình và hướng dẫn trước chuyến bay"
+            description="Khuyến mãi hỗ trợ chốt đặt vé, trong khi cẩm nang và hướng dẫn giúp hành khách chuẩn bị tốt hơn trước khi đến sân bay."
           />
             <div className="card-grid card-grid-3">
               {promotions.map((promotion) => (
@@ -255,8 +255,8 @@ export default function HomePage() {
           <div>
             <SectionHeading
               eyebrow="Cẩm nang & hỗ trợ"
-              title="Nội dung đồng hành và hỗ trợ được tổ chức như một lớp dịch vụ chuyên nghiệp"
-              description="Trợ lý hỗ trợ, cẩm nang sân bay, câu hỏi thường gặp và nội dung điểm đến được sắp theo đúng ngữ cảnh sử dụng để hành khách tìm đúng thông tin nhanh hơn trong suốt hành trình."
+              title="Thông tin đồng hành rõ ràng ở từng chặng của chuyến đi"
+              description="Từ mẹo đi sân bay, quy định đổi vé đến cẩm nang điểm đến, mọi nội dung đều được sắp theo nhu cầu tra cứu thực tế để hành khách dễ tìm và dễ dùng."
             />
             <div className="stack-list">
               {featuredArticles.map((article) => (
