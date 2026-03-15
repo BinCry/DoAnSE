@@ -12,7 +12,7 @@ export default function FlightStatusPage() {
         />
         <div className="table-card">
           <div className="table-wrap">
-            <table>
+            <table data-mobile-stack="true">
               <thead>
                 <tr>
                   <th>Mã chuyến</th>
@@ -25,11 +25,11 @@ export default function FlightStatusPage() {
               <tbody>
                 {flightStatusBoard.map((item) => (
                   <tr key={item.code}>
-                    <td>{item.code}</td>
-                    <td>{item.route}</td>
-                    <td>{item.time}</td>
-                    <td>{item.gate}</td>
-                    <td>{item.status}</td>
+                    <td data-label="Mã chuyến">{item.code}</td>
+                    <td data-label="Hành trình">{item.route}</td>
+                    <td data-label="Giờ bay">{item.time}</td>
+                    <td data-label="Cửa ra tàu">{item.gate}</td>
+                    <td data-label="Trạng thái">{item.status}</td>
                   </tr>
                 ))}
               </tbody>
