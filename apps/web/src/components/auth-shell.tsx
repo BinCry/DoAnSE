@@ -69,7 +69,10 @@ export function AuthShell({
           <span className="section-eyebrow">{eyebrow}</span>
           <div className="auth-heading-row">
             <h1 className="page-title">{title}</h1>
-            <StatusChip tone="info" label={badge} />
+            <div className="auth-heading-badge">
+              <span>Khu vực truy cập</span>
+              <strong>{badge}</strong>
+            </div>
           </div>
           <p className="page-hero-copy auth-page-copy">{description}</p>
 

@@ -64,6 +64,12 @@ export function SiteHeader() {
               Đăng nhập
             </Link>
             <Link
+              href="/register"
+              className="button button-secondary nav-action-button"
+            >
+              Tạo tài khoản
+            </Link>
+            <Link
               href="/search"
               className="button button-primary nav-action-button"
             >
@@ -117,7 +123,7 @@ export function SiteHeader() {
                 Tạo tài khoản
               </Link>
               <Link href="/search" className="button button-primary">
-                Đặt vé ngay
+                Đặt vé
               </Link>
             </div>
           </div>
