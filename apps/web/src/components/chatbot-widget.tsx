@@ -4,9 +4,9 @@ import { useState } from "react";
 
 const quickPrompts = [
   "Tra cứu đặt chỗ",
-  "Đổi chuyến",
-  "Hành lý trả trước",
-  "Gặp chăm sóc khách hàng"
+  "Điều kiện đổi chuyến",
+  "Mua thêm hành lý",
+  "Gặp nhân viên hỗ trợ"
 ];
 
 export function ChatbotWidget() {
@@ -19,7 +19,7 @@ export function ChatbotWidget() {
           <div className="chatbot-header">
             <div>
               <strong>Trợ lý Aurora</strong>
-              <p>Câu hỏi thường gặp, tra cứu và mở yêu cầu hỗ trợ.</p>
+              <p>Hỗ trợ tra cứu nhanh, giải đáp FAQ và chuyển tiếp sang nhân viên khi cần.</p>
             </div>
             <button
               type="button"
@@ -32,8 +32,9 @@ export function ChatbotWidget() {
           </div>
           <div className="chatbot-body">
             <div className="chat-message chat-message-bot">
-              Xin chào. Tôi có thể hướng dẫn đặt vé, kiểm tra đặt chỗ hoặc chuyển
-              sang nhân viên chăm sóc khách hàng nếu bạn cần người thật.
+              Xin chào. Tôi có thể hỗ trợ bạn kiểm tra mã đặt chỗ, hướng dẫn đổi
+              chuyến, giải thích điều kiện vé hoặc kết nối sang bộ phận chăm sóc
+              khách hàng.
             </div>
             <div className="chat-prompt-grid">
               {quickPrompts.map((prompt) => (
@@ -43,12 +44,12 @@ export function ChatbotWidget() {
               ))}
             </div>
             <div className="chat-message chat-message-user">
-              Nếu giao dịch bị treo thì có bị thanh toán 2 lần không?
+              Nếu thanh toán bị treo thì có bị ghi nhận hai lần không?
             </div>
             <div className="chat-message chat-message-bot">
-              Hệ thống dùng khóa chống lặp giao dịch và đối soát phản hồi thanh toán
-              nên không nhân đôi giao dịch. Tôi có thể mở yêu cầu hỗ trợ nếu bạn
-              cần kiểm tra chi tiết.
+              Hệ thống dùng khóa chống trùng giao dịch và đối soát phản hồi
+              thanh toán trước khi xuất vé. Nếu bạn muốn, tôi có thể mở yêu cầu
+              hỗ trợ để kiểm tra chi tiết theo mã đặt chỗ.
             </div>
           </div>
         </div>
