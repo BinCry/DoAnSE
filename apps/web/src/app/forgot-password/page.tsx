@@ -34,7 +34,7 @@ const forgotSupportItems = [
   },
   {
     title: "Email hỗ trợ",
-    value: "support@auroraair.vn",
+    value: "support@vietnam-airlines.vn",
     note: "Gửi kèm mã đặt chỗ hoặc email đăng ký để được hướng dẫn nhanh hơn."
   }
 ];
@@ -159,7 +159,7 @@ export default function ForgotPasswordPage() {
               <span>Email đã đăng ký</span>
               <input
                 type="email"
-                placeholder="khachhang@auroraair.vn"
+                placeholder="khachhang@vietnam-airlines.vn"
                 autoComplete="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}

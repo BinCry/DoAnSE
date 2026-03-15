@@ -299,6 +299,7 @@ img {
 .brand-logo {
   display: block;
   width: min(100%, 360px);
+  line-height: 0;
 }
 
 .brand-logo img {
@@ -306,8 +307,8 @@ img {
   height: auto;
   object-fit: contain;
   display: block;
-  image-rendering: -webkit-optimize-contrast;
-  filter: saturate(1.06) contrast(1.08);
+  image-rendering: auto;
+  filter: none;
 }
 
 .nav-cluster {
@@ -1721,6 +1722,7 @@ thead th {
 .footer-brand-logo {
   display: block;
   width: min(100%, 360px);
+  line-height: 0;
 }
 
 .footer-brand-logo img {
@@ -1728,8 +1730,8 @@ thead th {
   height: auto;
   object-fit: contain;
   display: block;
-  image-rendering: -webkit-optimize-contrast;
-  filter: saturate(1.06) contrast(1.08);
+  image-rendering: auto;
+  filter: none;
 }
 
 .footer-highlight-list {

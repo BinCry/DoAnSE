@@ -18,7 +18,7 @@ export function ChatbotWidget() {
         <div className="chatbot-panel">
           <div className="chatbot-header">
             <div>
-              <strong>Trợ lý Aurora</strong>
+              <strong>Trợ lý Vietnam Airlines</strong>
               <p>Hỗ trợ tra cứu đặt chỗ, làm thủ tục trực tuyến và kết nối chuyên viên hỗ trợ khi cần.</p>
             </div>
             <button

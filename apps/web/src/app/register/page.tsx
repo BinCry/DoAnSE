@@ -77,7 +77,7 @@ export default function RegisterPage() {
       activeTab="register"
       eyebrow="Tạo tài khoản"
       title="Tạo tài khoản khách hàng để lưu hồ sơ, nhận ưu đãi và theo dõi hành trình thuận tiện hơn."
-      description="Tài khoản Aurora Air phù hợp với hành khách thường xuyên bay nội địa, cần lưu thông tin liên hệ, hồ sơ hành khách và các ưu đãi cá nhân. Bạn vẫn có thể xem website với vai trò khách nếu chưa muốn đăng ký ngay."
+      description="Tài khoản Vietnam Airlines phù hợp với hành khách thường xuyên bay nội địa, cần lưu thông tin liên hệ, hồ sơ hành khách và các ưu đãi cá nhân. Bạn vẫn có thể xem website với vai trò khách nếu chưa muốn đăng ký ngay."
       badge="Đăng ký mới"
       stats={registerStats}
       sideTitle="Tạo nền tảng cho những lần đặt vé tiếp theo"
@@ -133,7 +133,7 @@ export default function RegisterPage() {
               <span>Email đăng ký</span>
               <input
                 type="email"
-                placeholder="khachhang@auroraair.vn"
+                placeholder="khachhang@vietnam-airlines.vn"
                 autoComplete="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
