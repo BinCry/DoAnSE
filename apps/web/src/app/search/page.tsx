@@ -45,10 +45,10 @@ export default function SearchPage() {
         <div className="page-hero-card search-page-hero">
           <div>
             <span className="section-eyebrow">Tìm chuyến bay</span>
-            <h1 className="page-title">Màn hình tìm kiếm được làm lại theo hướng dễ chốt đơn hơn.</h1>
+            <h1 className="page-title">Chọn chuyến bay phù hợp theo giờ khởi hành, gói giá và ngân sách.</h1>
             <p className="page-hero-copy">
-              Thông tin giờ bay, gói giá, trạng thái và tồn ghế được nhóm lại theo
-              đúng cách khách ra quyết định, thay vì dàn đều thành các thẻ giống nhau.
+              So sánh nhanh giờ bay, thời lượng, số ghế còn lại và điều kiện gói giá
+              để chốt hành trình phù hợp ngay từ bước tìm kiếm.
             </p>
           </div>
           <div className="page-hero-stat-grid">
@@ -75,8 +75,8 @@ export default function SearchPage() {
               ))}
             </div>
             <div className="filter-note">
-              Giao diện này nên hỗ trợ lọc nhanh theo trải nghiệm thực tế chứ không
-              chỉ là danh sách checkbox dài.
+              Bộ lọc ưu tiên các tiêu chí hành khách thường dùng để rút ngắn thời
+              gian tìm chuyến bay trên những tuyến đông khách.
             </div>
           </aside>
 
@@ -141,8 +141,8 @@ export default function SearchPage() {
         <div className="section-gap" />
         <SectionHeading
           eyebrow="So sánh gói giá"
-          title="Khối gói giá vé được nâng lên thành bảng chốt quyết định"
-          description="Mỗi gói giá cần nói rõ hành lý, hoàn/đổi và quyền chọn ghế để giảm bước hỏi lại ở trang sau."
+          title="So sánh gói giá để chọn đúng nhu cầu của từng hành trình"
+          description="Mỗi gói vé làm rõ quyền lợi về hành lý, đổi hoặc hoàn và lựa chọn chỗ ngồi để hành khách đưa ra quyết định ngay tại bước tìm chuyến."
         />
         <div className="card-grid card-grid-3">
           {fareComparisons.map((fare) => (

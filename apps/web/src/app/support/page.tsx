@@ -17,11 +17,11 @@ export default function SupportPage() {
           <div className="page-hero-card support-hero-card">
             <div>
               <span className="section-eyebrow">Trung tâm hỗ trợ</span>
-              <h1 className="page-title">Hỗ trợ được tổ chức như một sản phẩm đa kênh, không chỉ là trang câu hỏi thường gặp.</h1>
+              <h1 className="page-title">Hỗ trợ hành khách xuyên suốt từ lúc đặt vé đến sau chuyến bay.</h1>
               <p className="page-hero-copy">
-                Trợ lý hỗ trợ, tổng đài, yêu cầu hỗ trợ, câu hỏi thường gặp và
-                thông tin sân bay cùng nằm trong một trải nghiệm có cấu trúc rõ
-                ràng cho khách và đội chăm sóc khách hàng.
+                Trợ lý trực tuyến, tổng đài, biểu mẫu hỗ trợ, câu hỏi thường gặp và
+                thông tin sân bay được gom về một nơi để hành khách dễ tra cứu và kết
+                nối nhanh với bộ phận chăm sóc khách hàng khi cần.
               </p>
             </div>
             <div className="support-stat-panel">
@@ -44,8 +44,8 @@ export default function SupportPage() {
             />
             <div className="support-media-overlay">
               <span className="pill">Hỗ trợ hành khách</span>
-              <h3>Khách cần gì trước giờ bay</h3>
-              <p>Câu hỏi thường gặp, thông tin sân bay, điều kiện đổi vé và đường lên bộ phận chăm sóc khách hàng đều rõ ràng.</p>
+              <h3>Chuẩn bị trước giờ bay dễ dàng hơn</h3>
+              <p>Thông tin sân bay, điều kiện giá vé và các kênh hỗ trợ được trình bày rõ để hành khách chủ động xử lý sớm.</p>
             </div>
           </div>
         </div>
@@ -66,8 +66,8 @@ export default function SupportPage() {
           <div>
             <SectionHeading
               eyebrow="Câu hỏi thường gặp"
-              title="Câu trả lời phổ biến phải đủ tốt để trợ lý hỗ trợ và khu quản trị nội dung dùng chung"
-              description="Khách tự giải quyết được càng nhiều thì trung tâm hỗ trợ càng nhẹ tải hơn."
+              title="Những câu hỏi hành khách thường gặp trước ngày bay"
+              description="Câu trả lời rõ ràng giúp hành khách tự xử lý nhanh hơn và giảm thời gian chờ hỗ trợ ở các tình huống quen thuộc."
             />
             <div className="stack-list">
               {supportFaqs.map((faq) => (
@@ -81,8 +81,8 @@ export default function SupportPage() {
           <div>
             <SectionHeading
               eyebrow="Thông tin sân bay"
-              title="Những chi tiết nhỏ nhưng rất sát nhu cầu thật"
-              description="Phần này giúp hành khách chuẩn bị tốt trước ngày bay và giảm phụ thuộc vào tổng đài."
+              title="Thông tin cần biết trước khi đến sân bay"
+              description="Các lưu ý về quầy làm thủ tục, cửa ra tàu và hỗ trợ đặc biệt giúp hành khách chuẩn bị tốt hơn cho ngày khởi hành."
             />
             <div className="stack-list">
               {airportCards.map((card) => (
