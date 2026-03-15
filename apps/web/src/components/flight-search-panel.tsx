@@ -24,8 +24,8 @@ export function FlightSearchPanel() {
     <section className="search-panel">
       <div className="search-panel-head">
         <div>
-          <span className="panel-kicker">Đặt vé thông minh</span>
-          <h2>Khóa giá nhanh cho hành trình nội địa</h2>
+          <span className="panel-kicker">Tìm chuyến bay</span>
+          <h2>Đặt vé nhanh cho hành trình nội địa</h2>
         </div>
         <div className="search-mini-metrics">
           <div>
@@ -51,14 +51,14 @@ export function FlightSearchPanel() {
         ))}
       </div>
       <div className="search-note">
-        Đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hỗ trợ tối
-        đa 3 chặng và 9 hành khách trong cùng một lượt đặt chỗ.
+        Bạn đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hỗ trợ
+        tối đa 3 chặng và 9 hành khách trong cùng một lượt đặt chỗ.
       </div>
       <div className="route-pair">
         <label className="field route-field">
           <span>Điểm đi</span>
           <input defaultValue="Thành phố Hồ Chí Minh" />
-          <small>Nhà ga số 1 · Tân Sơn Nhất</small>
+          <small>Nhà ga nội địa · Cảng hàng không Tân Sơn Nhất</small>
         </label>
         <button type="button" className="swap-button" aria-label="Đảo chiều">
           ⇄
@@ -66,7 +66,7 @@ export function FlightSearchPanel() {
         <label className="field route-field">
           <span>Điểm đến</span>
           <input defaultValue="Hà Nội" />
-          <small>Nhà ga số 1 · Nội Bài</small>
+          <small>Nhà ga nội địa · Cảng hàng không Nội Bài</small>
         </label>
       </div>
       <div className="field-grid">
@@ -128,21 +128,22 @@ export function FlightSearchPanel() {
       </div>
       {tripType === "multi_city" ? (
         <div className="multi-city-card">
-          <strong>Chặng bổ sung</strong>
+          <strong>Lộ trình gợi ý</strong>
           <p>
-            Chặng 2: Hà Nội đến Đà Nẵng | Chặng 3: Đà Nẵng đến Thành phố Hồ Chí Minh
+            Chặng 1: Thành phố Hồ Chí Minh đến Hà Nội · Chặng 2: Hà Nội đến Đà
+            Nẵng · Chặng 3: Đà Nẵng về Thành phố Hồ Chí Minh
           </p>
         </div>
       ) : null}
       <div className="search-assurance">
-        <span className="assurance-chip">Hoàn/đổi theo gói giá</span>
-        <span className="assurance-chip">Mã thanh toán ngân hàng, thẻ, ví điện tử</span>
-        <span className="assurance-chip">Email vé và hóa đơn tự động</span>
+        <span className="assurance-chip">Đổi hoặc hoàn theo điều kiện giá vé</span>
+        <span className="assurance-chip">Hỗ trợ thẻ, chuyển khoản và ví điện tử</span>
+        <span className="assurance-chip">Gửi vé điện tử và thông tin hành trình tự động</span>
       </div>
       <div className="search-footer">
         <div>
           <strong>{passengerSummary}</strong>
-          <p>Giữ chỗ 15 phút sau khi chọn chuyến phù hợp.</p>
+          <p>Giữ chỗ trong 15 phút sau khi bạn chọn được chuyến bay phù hợp.</p>
         </div>
         <button type="button" className="button button-primary">
           Tìm chuyến bay
