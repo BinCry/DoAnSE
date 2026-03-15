@@ -32,7 +32,7 @@ export default function CheckInPage() {
             />
             <div className="boarding-preview-overlay">
               <span className="pill">Thẻ lên máy bay</span>
-              <h3>AA215 · Ghế 12A</h3>
+              <h3>AU215 · Ghế 12A</h3>
               <p>Thành phố Hồ Chí Minh - Hà Nội · Cửa ra tàu D5 · Bản điện tử sẵn sàng tải</p>
             </div>
           </div>
