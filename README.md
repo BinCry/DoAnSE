@@ -36,6 +36,8 @@
 - Có thể triển khai ngay phần `apps/web` lên `Vercel` dù chưa có backend thật, vì giao diện hiện dùng dữ liệu mẫu trong `apps/web/src/lib/mock-data.ts`.
 - Khi import repo lên `Vercel`, hãy tạo một project riêng cho phần web và chọn `Root Directory` là `apps/web`.
 - `Vercel` sẽ tự nhận diện `Next.js`; tệp `apps/web/vercel.json` chỉ dùng để chốt rõ framework triển khai.
+- Nhánh `deploy` là nhánh triển khai tự động cho `Vercel`, được đồng bộ từ `main` qua `GitHub Actions` và không được xóa.
+- Trong `Vercel`, `Production Branch` phải đặt là `deploy` để giữ luồng triển khai ổn định với gói miễn phí.
 - Sau khi có backend thật, cần bổ sung biến môi trường và địa chỉ API tương ứng rồi triển khai lại.
 
 ## Lộ trình hoàn thiện hệ thống
@@ -136,6 +138,7 @@
 
 ### Mô hình nhánh
 - `main`: Nhánh ổn định, cấm đẩy trực tiếp.
+- `deploy`: Nhánh chỉ dùng để triển khai `Vercel`, được đồng bộ tự động từ `main`, không dùng để phát triển tính năng và không được xóa.
 - `feat/<pham-vi>-<mo-ta-ngan>`: Nhánh làm tính năng mới.
 - `fix/<pham-vi>-<mo-ta-ngan>`: Nhánh sửa lỗi.
 - `docs/<pham-vi>-<mo-ta-ngan>`, `test/<pham-vi>-<mo-ta-ngan>`, `refactor/<pham-vi>-<mo-ta-ngan>`, `chore/<pham-vi>-<mo-ta-ngan>`: Nhánh cho thay đổi kỹ thuật tương ứng.
@@ -147,6 +150,7 @@
 3. Mọi commit trong nhánh phải theo mẫu `Type(scope):description` và phần `description` bằng tiếng Việt có dấu.
 4. Đẩy nhánh lên sớm và mở yêu cầu hợp nhất (`pull request`) ngay khi có bản chạy được.
 5. Trước khi xin duyệt, phải cập nhật thay đổi mới nhất từ `main` và xử lý xung đột.
+6. Không thao tác thủ công trên `deploy` trừ trường hợp bảo trì đặc biệt; mọi cập nhật triển khai phải đi từ `main` qua workflow tự động.
 
 ### Quy tắc duyệt và hợp nhất mã
 1. Không hợp nhất trực tiếp vào `main`; chỉ hợp nhất qua `pull request`.
@@ -157,6 +161,7 @@
 6. Tiêu đề `pull request` hoặc thông điệp hợp nhất phải theo mẫu `Type(scope):description`, phần `description` bằng tiếng Việt có dấu.
 7. Sau khi hợp nhất phải xóa nhánh để tránh tồn đọng nhánh cũ.
 8. Riêng bạn (người có quyền hạn cao nhất) có quyền quyết định cuối cùng và được phép tự duyệt, tự hợp nhất khi cần.
+9. Không xóa nhánh `deploy` sau khi hợp nhất, vì đây là nhánh triển khai cố định cho `Vercel`.
 
 ### Thiết lập bảo vệ nhánh `main` trên GitHub
 - Bật yêu cầu mở `pull request` trước khi hợp nhất.
