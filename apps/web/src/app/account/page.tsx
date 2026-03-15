@@ -42,7 +42,7 @@ export default function AccountPage() {
               sizes="(max-width: 1180px) 100vw, 360px"
             />
             <div className="profile-media-overlay">
-              <span className="pill">Hội viên Aurora</span>
+              <span className="pill">Hội viên Vietnam Airlines</span>
               <h3>Hạng Vàng</h3>
               <p>Đồng bộ đặt chỗ, thông báo, điểm thưởng và quyền lợi theo tuyến.</p>
             </div>

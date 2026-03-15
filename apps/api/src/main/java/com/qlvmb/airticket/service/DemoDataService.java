@@ -164,7 +164,7 @@ public class DemoDataService {
             "Nếu callback thanh toán về trễ thì sao?",
             "Chatbot có thể chuyển tôi sang CSKH không?"
         ),
-        List.of("1900 6868", "support@auroraair.vn", "Chatbot widget")
+        List.of("1900 6868", "support@vietnam-airlines.vn", "Chatbot widget")
     );
   }
 

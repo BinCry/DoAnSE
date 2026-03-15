@@ -11,7 +11,7 @@ const commonUnsafeFragments = [
   "qwerty",
   "abc123",
   "matkhau",
-  "auroraair"
+  "vietnamairlines"
 ];
 
 function normalizeFragments(blockedFragments: string[]) {

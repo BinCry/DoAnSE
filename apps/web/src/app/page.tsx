@@ -96,7 +96,7 @@ export default function HomePage() {
       <section className="hero-section home-hero-section">
         <div className="container hero-grid home-hero-grid">
           <div className="hero-copy hero-copy-rich home-hero-copy">
-            <span className="section-eyebrow home-hero-eyebrow">Aurora Air</span>
+            <span className="section-eyebrow home-hero-eyebrow">Vietnam Airlines</span>
             <h1>Đặt vé nội địa linh hoạt, quản lý hành trình thuận tiện từ trước đến sau chuyến bay.</h1>
             <p>
               Tìm chuyến bay theo giờ phù hợp, chọn gói giá rõ quyền lợi, bổ sung

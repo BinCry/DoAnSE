@@ -7,9 +7,14 @@ import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Aurora Air",
+  title: "Vietnam Airlines",
   description:
-    "Website bán vé máy bay nội địa với tra cứu chuyến bay, quản lý đặt chỗ, làm thủ tục trực tuyến và hỗ trợ hành khách."
+    "Website bán vé máy bay nội địa với tra cứu chuyến bay, quản lý đặt chỗ, làm thủ tục trực tuyến và hỗ trợ hành khách.",
+  icons: {
+    icon: "/images/logo-vietnamairlines.png",
+    shortcut: "/images/logo-vietnamairlines.png",
+    apple: "/images/logo-vietnamairlines.png"
+  }
 };
 
 export default function RootLayout({

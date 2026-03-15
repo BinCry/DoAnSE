@@ -319,7 +319,7 @@ export const supportChannels: SupportItem[] = [
   {
     title: "Biểu mẫu hỗ trợ",
     description: "Gửi yêu cầu hóa đơn, hoàn vé hoặc cập nhật hành khách đặc biệt.",
-    channel: "support@auroraair.vn"
+    channel: "support@vietnam-airlines.vn"
   }
 ];
 

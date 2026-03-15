@@ -32,7 +32,7 @@ const supportItems = [
   },
   {
     title: "Email xác minh",
-    value: "support@auroraair.vn",
+    value: "support@vietnam-airlines.vn",
     note: "Phù hợp khi cần đối chiếu email đăng ký hoặc thông tin tài khoản."
   }
 ];
@@ -107,7 +107,7 @@ export default function LoginPage() {
               <span>Email đăng ký</span>
               <input
                 type="email"
-                placeholder="khachhang@auroraair.vn"
+                placeholder="khachhang@vietnam-airlines.vn"
                 autoComplete="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}

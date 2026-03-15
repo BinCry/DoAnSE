@@ -34,7 +34,7 @@ export default function ManageBookingPage() {
             </label>
             <label className="field">
               <span>Email / số điện thoại</span>
-              <input defaultValue="khachhang@auroraair.vn" />
+              <input defaultValue="khachhang@vietnam-airlines.vn" />
             </label>
             <button type="button" className="button button-primary">
               Tra cứu đặt chỗ
