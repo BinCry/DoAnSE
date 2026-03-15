@@ -28,10 +28,10 @@ export default function AccountPage() {
         <div className="page-hero-card">
           <div>
             <span className="section-eyebrow">Tài khoản khách hàng</span>
-            <h1 className="page-title">Không gian hội viên được nâng lên thành trung tâm sau bán thực thụ.</h1>
+            <h1 className="page-title">Theo dõi điểm thưởng, hành trình sắp bay và thông báo quan trọng tại một nơi.</h1>
             <p className="page-hero-copy">
-              Tại đây khách thấy điểm thưởng, hành khách thường dùng, chuyến sắp
-              bay, voucher và thông báo vận hành thay vì chỉ một trang hồ sơ tĩnh.
+              Tài khoản giúp hành khách xem lại điểm hội viên, voucher khả dụng,
+              hồ sơ thường dùng và những cập nhật mới nhất liên quan đến chuyến bay đã đặt.
             </p>
           </div>
           <div className="profile-media-card">
@@ -64,8 +64,8 @@ export default function AccountPage() {
           <div>
             <SectionHeading
               eyebrow="Hồ sơ & hành khách"
-              title="Danh sách hành khách thường dùng đã có cấu trúc rõ hơn"
-              description="Mỗi hồ sơ có giấy tờ, sở thích ghế và ghi chú vận hành để rút ngắn bước điền khi đặt vé."
+              title="Lưu sẵn hồ sơ hành khách để đặt vé nhanh hơn cho các chuyến tiếp theo"
+              description="Thông tin giấy tờ, tùy chọn chỗ ngồi và ghi chú cần thiết được lưu gọn gàng để giảm thao tác nhập lại."
             />
             <div className="stack-list">
               {travelers.map((traveler) => (
@@ -82,8 +82,8 @@ export default function AccountPage() {
           <div>
             <SectionHeading
               eyebrow="Trung tâm thông báo"
-              title="Thông báo sản phẩm được gom thành một dòng thời gian"
-              description="Khách tra lại được sự kiện thanh toán, mở làm thủ tục, chuyến bay chậm, hoàn tiền và yêu cầu hỗ trợ."
+              title="Mọi cập nhật quan trọng được gom về một dòng thời gian dễ theo dõi"
+              description="Hành khách có thể xem lại trạng thái thanh toán, mở làm thủ tục, thay đổi chuyến bay và phản hồi từ bộ phận hỗ trợ."
             />
             <div className="stack-list">
               {notifications.map((item) => (

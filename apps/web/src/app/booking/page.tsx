@@ -2,14 +2,20 @@ import { SectionHeading } from "@/components/section-heading";
 import { ancillaries, bookingSteps, fareComparisons } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/format";
 
+const bookingStepLabels = {
+  done: "Đã chọn",
+  current: "Đang nhập",
+  upcoming: "Sắp tới"
+} as const;
+
 export default function BookingPage() {
   return (
     <section className="section">
       <div className="container">
         <SectionHeading
           eyebrow="Đặt vé"
-          title="Một luồng đặt vé nhiều bước nhưng không gây quá tải"
-          description="Mỗi bước chỉ tập trung một quyết định chính: chọn chuyến, điền hành khách, thêm dịch vụ và thanh toán."
+          title="Đặt vé theo từng bước rõ ràng từ chọn chuyến đến thanh toán"
+          description="Chọn chuyến bay phù hợp, nhập thông tin hành khách, bổ sung dịch vụ cần thiết và hoàn tất thanh toán trong một luồng dễ theo dõi."
         />
         <div className="step-grid">
           {bookingSteps.map((step) => (
@@ -17,7 +23,7 @@ export default function BookingPage() {
               key={step.title}
               className={`surface-card step-card step-${step.status}`}
             >
-              <span className="pill">{step.status}</span>
+              <span className="pill">{bookingStepLabels[step.status]}</span>
               <h3>{step.title}</h3>
               <p>{step.description}</p>
             </article>
@@ -29,8 +35,8 @@ export default function BookingPage() {
           <div>
             <SectionHeading
               eyebrow="Dịch vụ bổ trợ"
-              title="Đề xuất mua thêm đúng lúc, đúng ngữ cảnh"
-              description="Không bán tràn lan. Hệ thống hiển thị dịch vụ dựa trên tuyến bay, gói vé và hạn cắt của từng dịch vụ."
+              title="Chọn thêm hành lý, chỗ ngồi và suất ăn theo đúng nhu cầu"
+              description="Các dịch vụ được sắp theo ngữ cảnh chuyến bay để hành khách dễ chọn những tiện ích thật sự cần trước giờ khởi hành."
             />
             <div className="card-grid">
               {ancillaries.map((item) => (
@@ -45,8 +51,8 @@ export default function BookingPage() {
           <div>
             <SectionHeading
               eyebrow="Tóm tắt thanh toán"
-              title="Cùng lúc hiển thị giá vé, add-on và điều kiện đổi/hoàn"
-              description="Khách nhìn một lần là hiểu tổng tiền và những gì được phép làm sau khi thanh toán."
+              title="Xem tổng tiền và quyền lợi vé trước khi xác nhận thanh toán"
+              description="Giá vé, dịch vụ bổ sung và điều kiện đổi hoặc hoàn được trình bày cùng nhau để hành khách nắm rõ trước khi trả tiền."
             />
             <div className="stack-list">
               {fareComparisons.map((fare) => (
@@ -59,8 +65,8 @@ export default function BookingPage() {
               <article className="surface-card accent-card">
                 <h3>Thanh toán an toàn</h3>
                 <p>
-                  Hỗ trợ mã thanh toán ngân hàng, thẻ, ví điện tử và khóa chống lặp giao dịch để
-                  tránh thanh toán lặp.
+                  Hỗ trợ mã thanh toán ngân hàng, thẻ và ví điện tử với cơ chế chống
+                  ghi nhận trùng để hạn chế rủi ro thanh toán lặp.
                 </p>
                 <strong>Giữ chỗ còn 15:00</strong>
               </article>
