@@ -58,10 +58,10 @@ export function SiteHeader() {
               <strong>1900 6868</strong>
             </div>
             <Link
-              href="/account"
+              href="/login"
               className="button button-secondary nav-action-button"
             >
-              Tài khoản
+              Đăng nhập
             </Link>
             <Link
               href="/search"
@@ -110,8 +110,11 @@ export function SiteHeader() {
                 <span>Trung tâm hỗ trợ</span>
                 <strong>1900 6868</strong>
               </div>
-              <Link href="/account" className="button button-secondary">
-                Tài khoản
+              <Link href="/login" className="button button-secondary">
+                Đăng nhập
+              </Link>
+              <Link href="/register" className="button button-secondary">
+                Tạo tài khoản
               </Link>
               <Link href="/search" className="button button-primary">
                 Đặt vé ngay
