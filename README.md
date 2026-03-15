@@ -32,6 +32,49 @@
 - `JUnit 5`: Kiểm thử cho backend Java.
 - `Mockito`: Giả lập phụ thuộc khi kiểm thử backend.
 
+## Triển khai Vercel
+- Có thể triển khai ngay phần `apps/web` lên `Vercel` dù chưa có backend thật, vì giao diện hiện dùng dữ liệu mẫu trong `apps/web/src/lib/mock-data.ts`.
+- Khi import repo lên `Vercel`, hãy tạo một project riêng cho phần web và chọn `Root Directory` là `apps/web`.
+- `Vercel` sẽ tự nhận diện `Next.js`; tệp `apps/web/vercel.json` chỉ dùng để chốt rõ framework triển khai.
+- Sau khi có backend thật, cần bổ sung biến môi trường và địa chỉ API tương ứng rồi triển khai lại.
+
+## Lộ trình hoàn thiện hệ thống
+
+### Ưu tiên triển khai
+- Giai đoạn đầu ưu tiên khu công khai và tự phục vụ để khách vãng lai vẫn xem web, tìm chuyến bay, tra cứu đặt chỗ và làm các thao tác cơ bản.
+- Giai đoạn sau mới mở rộng sâu cho các module backoffice như bán vé hộ, chăm sóc khách hàng, điều hành, tài chính, quản trị nội dung và quản trị hệ thống.
+- Mọi thay đổi phải đi theo nhịp nhỏ: đọc hiểu -> sửa đúng phạm vi -> kiểm tra -> commit riêng từng mục tiêu.
+
+### Ma trận vai trò
+| Vai trò | Phạm vi chính | Không được phép |
+| --- | --- | --- |
+| `guest` | Xem trang công khai, tìm chuyến bay, xem khuyến mãi, FAQ, tạo đặt chỗ không cần tài khoản, tra cứu bằng mã đặt chỗ có xác minh | Vào backoffice, xem dữ liệu tài khoản người khác |
+| `customer` | Đặt vé, thanh toán, quản lý đặt chỗ, đổi hoặc hủy theo điều kiện, làm thủ tục trực tuyến | Động vào dữ liệu và thao tác nội bộ |
+| `member` | Toàn bộ quyền của `customer` kèm điểm thưởng, voucher, ưu đãi theo hạng | Tự sửa điều kiện hội viên |
+| `ticket_agent` | Tạo đặt chỗ hộ, giữ chỗ, xuất lại vé, hỗ trợ khách doanh nghiệp | Duyệt hoàn tiền cuối, đổi cấu hình hệ thống |
+| `customer_support` | Xử lý yêu cầu hỗ trợ, tiếp nhận từ trợ lý hỗ trợ, bù dịch vụ, theo dõi SLA | Sửa lịch bay, sửa giá gốc |
+| `operations_staff` | Cập nhật trạng thái chuyến bay, tồn ghế, đóng hoặc mở bán chặng | Xem dữ liệu thanh toán nhạy cảm |
+| `finance_staff` | Đối soát, xác nhận hoàn tiền, kiểm tra hóa đơn, khóa sổ ngày | Sửa nội dung và lịch bay |
+| `content_editor` | Quản trị banner, cẩm nang, FAQ, khuyến mãi, nội dung song ngữ | Truy cập dữ liệu đặt chỗ và thanh toán |
+| `system_admin` | Phân quyền, nhật ký kiểm soát, cấu hình rule, mẫu thông báo | Xem dữ liệu thẻ thanh toán đầy đủ |
+
+### Luồng chính cần hoàn thiện
+- Luồng công khai: trang chủ -> tìm chuyến bay -> xem gói giá -> chọn chuyến -> tạo giữ chỗ -> thanh toán sandbox -> nhận vé và thông báo.
+- Luồng tự phục vụ: tra cứu đặt chỗ bằng mã đặt chỗ + email hoặc số điện thoại -> xác minh OTP -> đổi chuyến, hoàn hoặc hủy, mua thêm dịch vụ, làm thủ tục trực tuyến.
+- Luồng tài khoản: đăng ký -> đăng nhập -> làm mới phiên -> quên mật khẩu qua OTP email -> đặt lại mật khẩu theo chính sách an toàn.
+- Luồng backoffice: staff vào đúng module theo vai trò -> xử lý hàng chờ nghiệp vụ -> ghi nhật ký thao tác -> đồng bộ trạng thái ra khu công khai nếu có ảnh hưởng.
+
+### Danh sách màn hình theo mức ưu tiên
+- MVP công khai: `/`, `/search`, `/booking`, `/manage-booking`, `/check-in`, `/flight-status`, `/support`, `/blog`, `/account`, `login`, `register`, `forgot-password`, `reset-password`.
+- MVP dữ liệu và API: xác thực JWT, OTP email, danh mục sân bay và chuyến bay, giữ chỗ, thanh toán sandbox, thông báo, tra cứu booking cho guest và customer.
+- Nâng cao sau MVP: dashboard vai trò chi tiết, điều hành chuyến bay nâng cao, đối soát tài chính, CMS đầy đủ phiên bản và lịch đăng, báo cáo tổng hợp.
+
+### Nhịp chia task và commit
+- Mỗi giai đoạn chỉ xử lý một mục tiêu chính và có commit riêng.
+- Commit phải đúng mẫu `Type(scope):description` và dùng tiếng Việt có dấu.
+- Sau từng commit phải có kiểm tra phù hợp như `build web`, `test web`, `test api` hoặc kiểm tra giao diện ở các kích thước `320`, `360`, `390`, `412`, `768`, `1024`, `1280`.
+- Không dồn nhiều đầu việc không liên quan vào cùng một commit.
+
 ### Nguyên tắc phân vai kỹ thuật
 - `apps/web` chỉ phụ trách giao diện, nhập liệu, hiển thị dữ liệu và gọi API.
 - `apps/api` là backend chính, chứa nghiệp vụ cốt lõi như đăng nhập, tìm chuyến bay, đặt vé, giữ chỗ, thanh toán và quản trị.
