@@ -15,7 +15,7 @@ export default function ManageBookingPage() {
             </p>
           </div>
           <div className="booking-summary-card">
-            <span className="pill">Mã đặt chỗ A6C2P1</span>
+            <span className="pill">Mã đặt chỗ K7M4Q2</span>
             <h3>Thành phố Hồ Chí Minh - Hà Nội</h3>
             <p>20/03/2026 · 09:45 · Phổ thông linh hoạt</p>
             <div className="assurance-row">
@@ -30,11 +30,11 @@ export default function ManageBookingPage() {
           <div className="field-grid compact-grid">
             <label className="field">
               <span>Mã đặt chỗ</span>
-              <input defaultValue="A6C2P1" />
+              <input defaultValue="K7M4Q2" />
             </label>
             <label className="field">
               <span>Email / số điện thoại</span>
-              <input defaultValue="khachhang@aurora.vn" />
+              <input defaultValue="khachhang@auroraair.vn" />
             </label>
             <button type="button" className="button button-primary">
               Tra cứu đặt chỗ

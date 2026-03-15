@@ -179,7 +179,7 @@ export const featuredArticles: BlogPost[] = [
 
 export const flightResults: FlightResult[] = [
   {
-    code: "AA201",
+    code: "AU201",
     from: "Thành phố Hồ Chí Minh",
     to: "Hà Nội",
     departureTime: "06:10",
@@ -191,7 +191,7 @@ export const flightResults: FlightResult[] = [
     seatsLeft: 8
   },
   {
-    code: "AA215",
+    code: "AU215",
     from: "Thành phố Hồ Chí Minh",
     to: "Hà Nội",
     departureTime: "09:45",
@@ -203,7 +203,7 @@ export const flightResults: FlightResult[] = [
     seatsLeft: 5
   },
   {
-    code: "AA233",
+    code: "AU233",
     from: "Thành phố Hồ Chí Minh",
     to: "Hà Nội",
     departureTime: "18:20",
@@ -438,7 +438,7 @@ export const backofficeModuleDetails: Record<string, BackofficeModuleDetail> = {
       {
         title: "Hàng chờ đặt chỗ",
         items: [
-          "Mã A6C2P1 đang chờ thanh toán bằng mã ngân hàng trong 04:31.",
+          "Mã K7M4Q2 đang chờ thanh toán bằng mã ngân hàng trong 04:31.",
           "Đơn doanh nghiệp 8 khách cần tách hóa đơn theo phòng ban.",
           "1 lượt đặt chỗ đổi chặng cần xin chênh lệch giá trước khi xuất vé."
         ]
@@ -484,8 +484,8 @@ export const backofficeModuleDetails: Record<string, BackofficeModuleDetail> = {
       {
         title: "Tín hiệu vận hành",
         items: [
-          "AA215 cần chuyển trạng thái đang lên máy bay sang chậm nếu muộn hơn 20 phút.",
-          "AA233 chỉ còn 3 ghế thương gia, gợi ý khóa ưu đãi trên khu quản trị nội dung.",
+          "AU215 cần chuyển trạng thái đang lên máy bay sang chậm nếu muộn hơn 20 phút.",
+          "AU233 chỉ còn 3 ghế thương gia, gợi ý khóa ưu đãi trên khu quản trị nội dung.",
           "Tuyến Thành phố Hồ Chí Minh - Hà Nội đạt tỷ lệ lấp đầy 92% trong ba ngày liên tiếp."
         ]
       },
@@ -571,10 +571,10 @@ export const backofficeModuleDetails: Record<string, BackofficeModuleDetail> = {
 };
 
 export const flightStatusBoard = [
-  { code: "AA201", route: "Thành phố Hồ Chí Minh → Hà Nội", time: "06:10", gate: "D2", status: "Đúng giờ" },
-  { code: "AA215", route: "Thành phố Hồ Chí Minh → Hà Nội", time: "09:45", gate: "D5", status: "Đang lên máy bay" },
-  { code: "AA330", route: "Hà Nội → Đà Nẵng", time: "11:15", gate: "A3", status: "Trễ 25 phút" },
-  { code: "AA412", route: "Đà Nẵng → Phú Quốc", time: "14:05", gate: "B1", status: "Mở làm thủ tục" }
+  { code: "AU201", route: "Thành phố Hồ Chí Minh → Hà Nội", time: "06:10", gate: "D2", status: "Đúng giờ" },
+  { code: "AU215", route: "Thành phố Hồ Chí Minh → Hà Nội", time: "09:45", gate: "D5", status: "Đang lên máy bay" },
+  { code: "AU330", route: "Hà Nội → Đà Nẵng", time: "11:15", gate: "A3", status: "Trễ 25 phút" },
+  { code: "AU412", route: "Đà Nẵng → Phú Quốc", time: "14:05", gate: "B1", status: "Mở làm thủ tục" }
 ];
 
 export const accountHighlights = [
@@ -585,12 +585,12 @@ export const accountHighlights = [
 
 export const notifications: NotificationItem[] = [
   {
-    title: "AA215 mở làm thủ tục trực tuyến",
+    title: "AU215 mở làm thủ tục trực tuyến",
     time: "Hôm nay, 09:00",
     summary: "Khách có thể chọn lại ghế và tải thẻ lên máy bay ngay."
   },
   {
-    title: "Mã đặt chỗ A6C2P1 đã thanh toán",
+    title: "Mã đặt chỗ K7M4Q2 đã thanh toán",
     time: "Hôm qua, 18:24",
     summary: "Vé điện tử và hóa đơn đã gửi tới email đăng ký."
   },
@@ -629,13 +629,13 @@ export const auditEntries: AuditEntry[] = [
   {
     actor: "ops.khoa",
     action: "Đổi trạng thái chuyến bay",
-    target: "AA330 chuyển sang trạng thái chậm",
+    target: "AU330 chuyển sang trạng thái chậm",
     time: "11/03 08:41"
   },
   {
     actor: "finance.lan",
     action: "Xác nhận hoàn tiền",
-    target: "Mã đặt chỗ B9K2M8",
+    target: "Mã đặt chỗ N4T8R6",
     time: "11/03 08:08"
   }
 ];
