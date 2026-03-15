@@ -30,6 +30,8 @@
   --radius-lg: 26px;
   --radius-md: 18px;
   --radius-sm: 12px;
+  --font-sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --container: min(1200px, calc(100vw - 32px));
   --text-sm: 0.84rem;
   --text-base: 0.96rem;
