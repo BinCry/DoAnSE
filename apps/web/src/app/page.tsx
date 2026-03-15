@@ -53,28 +53,52 @@ const journeyDeck = [
   }
 ];
 
+const featuredDestinations = [
+  ...destinations.map((destination) => ({
+    ...destination,
+    displayCity:
+      destination.code === "SGN" ? "TP. Hồ Chí Minh" : destination.city
+  })),
+  {
+    code: "CXR",
+    city: "Nha Trang",
+    displayCity: "Nha Trang",
+    airport: "Cam Ranh",
+    priceFrom: 1490000,
+    highlights: ["Biển xanh trung tâm", "Combo nghỉ dưỡng", "Đưa đón sân bay thuận tiện"]
+  },
+  {
+    code: "HUI",
+    city: "Huế",
+    displayCity: "Huế",
+    airport: "Phú Bài",
+    priceFrom: 1290000,
+    highlights: ["Di sản cố đô", "Lịch trình cuối tuần", "Gợi ý tham quan nội thành"]
+  }
+];
+
 export default function HomePage() {
   return (
     <>
-      <section className="hero-section">
-        <div className="container hero-grid">
-          <div className="hero-copy hero-copy-rich">
-            <span className="section-eyebrow">Aurora Air</span>
+      <section className="hero-section home-hero-section">
+        <div className="container hero-grid home-hero-grid">
+          <div className="hero-copy hero-copy-rich home-hero-copy">
+            <span className="section-eyebrow home-hero-eyebrow">Aurora Air</span>
             <h1>Website bán vé máy bay nội địa với đầy đủ mua vé, tự phục vụ và điều hành.</h1>
             <p>
               Giao diện tập trung hoàn toàn vào đề tài bán vé máy bay: tìm chuyến
               bay, giá vé, dịch vụ bổ trợ, làm thủ tục trực tuyến, quản lý đặt chỗ, hỗ trợ khách
               hàng và khu vận hành nội bộ.
             </p>
-            <div className="hero-actions">
-              <Link href="/search" className="button button-primary">
+            <div className="hero-actions home-hero-actions">
+              <Link href="/search" className="button button-primary home-hero-primary">
                 Đặt vé ngay
               </Link>
-              <Link href="/backoffice" className="button button-secondary">
+              <Link href="/backoffice" className="button button-secondary home-hero-secondary">
                 Mở điều hành
               </Link>
             </div>
-            <div className="hero-stat-grid">
+            <div className="hero-stat-grid home-hero-stat-grid">
               {heroStats.map((item) => (
                 <article key={item.label} className="hero-stat-card">
                   <span>{item.label}</span>
@@ -83,7 +107,7 @@ export default function HomePage() {
                 </article>
               ))}
             </div>
-            <div className="hero-photo-ribbon">
+            <div className="hero-photo-ribbon home-hero-photo-ribbon">
               <div className="hero-photo-card hero-photo-card-large">
                 <Image
                   src="/images/airport-terminal.jpg"
@@ -102,9 +126,11 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="hero-panel-stack">
-            <FlightSearchPanel />
-            <div className="hero-glass-board">
+          <div className="hero-panel-stack home-hero-panel-stack">
+            <div className="home-hero-search-shell">
+              <FlightSearchPanel />
+            </div>
+            <div className="hero-glass-board home-hero-board">
               <div className="hero-glass-head">
                 <span className="pill">Vận hành trực tuyến</span>
                 <StatusChip tone="success" label="Ổn định" />
@@ -169,30 +195,30 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section section-soft">
+      <section className="section section-soft home-destination-section">
         <div className="container">
           <SectionHeading
             eyebrow="Điểm đến & chiến dịch"
             title="Trang chủ giờ có cảm giác biên tập như website hãng bay thật"
             description="Dải nội dung này kết hợp điểm đến, ưu đãi và mức giá khởi điểm để tạo cảm giác vừa truyền cảm hứng vừa sẵn sàng chuyển đổi."
           />
-          <div className="destination-editorial-grid">
-            {destinations.map((destination, index) => (
+          <div className="destination-editorial-grid home-destination-grid">
+            {featuredDestinations.map((destination, index) => (
               <article
                 key={destination.code}
-                className={`destination-card destination-card-rich destination-card-${index + 1}`}
+                className={`destination-card destination-card-rich home-destination-card destination-card-${index + 1}`}
               >
-                <div className="destination-overlay">
-                  <div className="destination-top">
+                <div className="destination-overlay home-destination-overlay">
+                  <div className="destination-top home-destination-top">
                     <div>
-                      <strong>{destination.city}</strong>
+                      <strong>{destination.displayCity}</strong>
                       <p>{destination.airport}</p>
                     </div>
                     <span className="pill">Điểm đến nổi bật</span>
                   </div>
-                  <div className="destination-bottom">
+                  <div className="destination-bottom home-destination-bottom">
                     <h3>{formatCurrency(destination.priceFrom)}</h3>
-                    <ul className="list-clean">
+                    <ul className="list-clean home-destination-list">
                       {destination.highlights.map((highlight) => (
                         <li key={highlight}>{highlight}</li>
                       ))}
@@ -229,8 +255,8 @@ export default function HomePage() {
           <div>
             <SectionHeading
               eyebrow="Cẩm nang & hỗ trợ"
-              title="Phần râu ria quan trọng được nâng thành khối chính"
-              description="Giao diện nhìn chuyên nghiệp hơn khi trợ lý hỗ trợ, câu hỏi thường gặp, cẩm nang sân bay và nội dung điểm đến đều có đất diễn rõ."
+              title="Nội dung đồng hành và hỗ trợ được tổ chức như một lớp dịch vụ chuyên nghiệp"
+              description="Trợ lý hỗ trợ, cẩm nang sân bay, câu hỏi thường gặp và nội dung điểm đến được sắp theo đúng ngữ cảnh sử dụng để hành khách tìm đúng thông tin nhanh hơn trong suốt hành trình."
             />
             <div className="stack-list">
               {featuredArticles.map((article) => (
@@ -293,6 +319,586 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <style>{`
+        .ops-strip {
+          margin-top: 18px;
+          padding-bottom: 34px;
+        }
+
+        .ops-strip-grid,
+        .editorial-grid,
+        .section-split,
+        .command-grid {
+          gap: 28px;
+        }
+
+        .quick-grid,
+        .card-grid,
+        .stack-list {
+          gap: 20px;
+        }
+
+        .section {
+          padding: 76px 0;
+        }
+
+        .section-heading {
+          max-width: 780px;
+          margin-bottom: 34px;
+        }
+
+        .section-heading h2 {
+          color: rgba(8, 33, 58, 0.96);
+          font-size: clamp(2.04rem, 3vw, 2.82rem);
+          line-height: 1.05;
+          letter-spacing: -0.034em;
+          text-wrap: balance;
+        }
+
+        .section-dark .section-heading h2 {
+          color: rgba(255, 248, 239, 0.97);
+          text-shadow: 0 8px 24px rgba(7, 24, 41, 0.18);
+        }
+
+        .section-heading p {
+          max-width: 68ch;
+          color: rgba(16, 45, 78, 0.76);
+          font-size: 1.01rem;
+          line-height: 1.72;
+        }
+
+        .section-dark .section-heading p {
+          color: rgba(247, 243, 234, 0.9);
+          max-width: 70ch;
+        }
+
+        .feature-card h3,
+        .spotlight-card h3,
+        .promo-card h3,
+        .article-card h3,
+        .command-panel h3 {
+          color: rgba(8, 33, 58, 0.95);
+          font-size: clamp(1.18rem, 1.45vw, 1.34rem);
+          line-height: 1.2;
+          letter-spacing: -0.024em;
+        }
+
+        .feature-card p,
+        .spotlight-card p,
+        .promo-card p,
+        .article-card p,
+        .ops-strip-card p,
+        .command-panel p {
+          color: rgba(16, 45, 78, 0.74);
+          font-size: 0.97rem;
+          line-height: 1.7;
+        }
+
+        .home-hero-section {
+          padding: 72px 0 46px;
+        }
+
+        .home-hero-section::before {
+          background:
+            radial-gradient(circle at 12% 22%, rgba(203, 225, 247, 0.38), transparent 22%),
+            radial-gradient(circle at 84% 12%, rgba(83, 148, 217, 0.18), transparent 18%),
+            linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 60%);
+        }
+
+        .home-hero-grid {
+          grid-template-columns: minmax(0, 1.16fr) minmax(390px, 0.84fr);
+          gap: 56px;
+          align-items: start;
+        }
+
+        .home-hero-copy {
+          display: grid;
+          align-content: start;
+          gap: 26px;
+          padding: 48px 0 18px;
+        }
+
+        .home-hero-eyebrow {
+          width: fit-content;
+          min-height: 36px;
+          margin-bottom: 0;
+          padding: 0 14px;
+          border-radius: 999px;
+          border: 1px solid rgba(18, 61, 105, 0.12);
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.98),
+            rgba(231, 243, 255, 0.92)
+          );
+          color: rgba(18, 69, 120, 0.9);
+          box-shadow: 0 12px 26px rgba(18, 61, 105, 0.06);
+        }
+
+        .home-hero-copy h1 {
+          max-width: 11.8ch;
+          color: rgba(8, 33, 58, 0.97);
+          font-size: clamp(3.2rem, 5.3vw, 4.92rem);
+          line-height: 1.02;
+          letter-spacing: -0.042em;
+          text-wrap: balance;
+        }
+
+        .home-hero-copy > p {
+          max-width: 64ch;
+          margin: 0;
+          color: rgba(16, 45, 78, 0.8);
+          font-size: clamp(1.02rem, 1.12vw, 1.1rem);
+          line-height: 1.76;
+        }
+
+        .home-hero-actions {
+          gap: 14px;
+          margin-top: 2px;
+        }
+
+        .home-hero-primary,
+        .home-hero-secondary {
+          min-height: 56px;
+          padding: 0 24px;
+          border-radius: 999px;
+        }
+
+        .home-hero-primary {
+          border: 1px solid rgba(255, 255, 255, 0.46);
+          background:
+            radial-gradient(circle at 24% 20%, rgba(255, 255, 255, 0.32), transparent 34%),
+            linear-gradient(135deg, #154f87 0%, #2471bd 52%, #4b9ee8 100%);
+          box-shadow:
+            0 18px 34px rgba(20, 78, 135, 0.24),
+            inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .home-hero-secondary {
+          color: rgba(12, 56, 100, 0.95);
+          border: 1px solid rgba(18, 61, 105, 0.14);
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.98),
+            rgba(236, 245, 255, 0.92)
+          );
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.88),
+            0 14px 30px rgba(18, 61, 105, 0.08);
+        }
+
+        .home-hero-stat-grid {
+          gap: 16px;
+          margin-top: 4px;
+        }
+
+        .home-hero-stat-grid .hero-stat-card {
+          padding: 20px 22px;
+          border-color: rgba(18, 61, 105, 0.1);
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.92),
+            rgba(243, 248, 253, 0.84)
+          );
+          box-shadow: 0 20px 40px rgba(18, 61, 105, 0.08);
+        }
+
+        .home-hero-stat-grid .hero-stat-card span,
+        .home-hero-stat-grid .hero-stat-card p {
+          color: rgba(16, 45, 78, 0.72);
+        }
+
+        .home-hero-photo-ribbon {
+          gap: 18px;
+          margin-top: 4px;
+        }
+
+        .home-hero-photo-ribbon .hero-photo-card {
+          border: 1px solid rgba(18, 61, 105, 0.08);
+          box-shadow: 0 24px 44px rgba(18, 61, 105, 0.12);
+        }
+
+        .home-hero-photo-ribbon .hero-photo-card::after {
+          background: linear-gradient(180deg, rgba(10, 27, 46, 0.04), rgba(10, 27, 46, 0.38));
+        }
+
+        .home-hero-panel-stack {
+          gap: 22px;
+          padding-top: 30px;
+        }
+
+        .home-hero-search-shell .search-panel {
+          padding: 30px;
+          border-radius: 30px;
+          border-color: rgba(18, 61, 105, 0.09);
+          background:
+            radial-gradient(circle at top right, rgba(168, 206, 241, 0.14), transparent 28%),
+            radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.9), transparent 28%),
+            linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(246, 250, 254, 0.97));
+          box-shadow: 0 20px 42px rgba(18, 61, 105, 0.08);
+        }
+
+        .home-hero-search-shell .search-panel-head {
+          gap: 20px;
+          margin-bottom: 18px;
+        }
+
+        .home-hero-search-shell .search-panel-head h2 {
+          color: rgba(10, 35, 60, 0.95);
+          font-size: 1.38rem;
+        }
+
+        .home-hero-search-shell .panel-kicker,
+        .home-hero-search-shell .search-note,
+        .home-hero-search-shell .field span,
+        .home-hero-search-shell .field small,
+        .home-hero-search-shell .search-footer p,
+        .home-hero-search-shell .search-mini-metrics span {
+          color: rgba(16, 45, 78, 0.72);
+        }
+
+        .home-hero-search-shell .search-mini-metrics div {
+          border: 1px solid rgba(18, 61, 105, 0.1);
+          background: linear-gradient(
+            135deg,
+            rgba(244, 249, 255, 0.94),
+            rgba(230, 240, 252, 0.82)
+          );
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
+        }
+
+        .home-hero-search-shell .toggle-group {
+          gap: 10px;
+          padding: 8px;
+          background: rgba(18, 61, 105, 0.07);
+        }
+
+        .home-hero-search-shell .field input,
+        .home-hero-search-shell .field select {
+          border-color: rgba(18, 61, 105, 0.14);
+          background: rgba(255, 255, 255, 0.9);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+
+        .home-hero-search-shell .route-field input {
+          color: rgba(10, 35, 60, 0.96);
+        }
+
+        .home-hero-search-shell .assurance-chip {
+          border: 1px solid rgba(18, 61, 105, 0.1);
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(236, 245, 255, 0.88)
+          );
+          color: rgba(12, 56, 100, 0.86);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
+        }
+
+        .home-hero-search-shell .search-footer {
+          margin-top: 24px;
+        }
+
+        .home-hero-search-shell .search-footer .button-primary {
+          min-height: 54px;
+          padding: 0 22px;
+          border: 1px solid rgba(255, 255, 255, 0.44);
+          background:
+            radial-gradient(circle at 24% 20%, rgba(255, 255, 255, 0.32), transparent 34%),
+            linear-gradient(135deg, #154f87 0%, #2471bd 52%, #4b9ee8 100%);
+          box-shadow:
+            0 18px 34px rgba(20, 78, 135, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.34);
+        }
+
+        .home-hero-board {
+          padding: 24px 24px 22px;
+          border-color: rgba(18, 61, 105, 0.1);
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.98),
+            rgba(243, 248, 253, 0.94)
+          );
+          box-shadow: 0 18px 38px rgba(18, 61, 105, 0.08);
+        }
+
+        .home-hero-board .hero-glass-head {
+          margin-bottom: 18px;
+        }
+
+        .home-hero-board .pill {
+          border: 1px solid rgba(18, 61, 105, 0.12);
+          background: linear-gradient(
+            135deg,
+            rgba(247, 251, 255, 0.96),
+            rgba(228, 239, 252, 0.88)
+          );
+          color: rgba(12, 56, 100, 0.88);
+        }
+
+        .home-hero-board .hero-highlight-row {
+          padding: 10px 0;
+        }
+
+        .home-hero-board .hero-highlight-row + .hero-highlight-row {
+          border-top: 1px solid rgba(18, 61, 105, 0.08);
+        }
+
+        .home-hero-board .hero-highlight-row p {
+          color: rgba(16, 45, 78, 0.8);
+        }
+
+        .home-hero-board .dot {
+          width: 10px;
+          height: 10px;
+          background: linear-gradient(135deg, #2471bd, #6cb4f0);
+          box-shadow: 0 0 0 4px rgba(36, 113, 189, 0.12);
+        }
+
+        .home-destination-section {
+          padding-top: 82px;
+        }
+
+        .home-destination-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 22px;
+        }
+
+        .home-destination-card {
+          position: relative;
+          isolation: isolate;
+          border-radius: 32px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          box-shadow:
+            0 26px 52px rgba(18, 61, 105, 0.13),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .home-destination-card.destination-card-1,
+        .home-destination-card.destination-card-4 {
+          grid-column: span 1;
+          min-height: 320px;
+        }
+
+        .home-destination-card.destination-card-5 {
+          background:
+            linear-gradient(160deg, rgba(12, 34, 61, 0.2), rgba(12, 34, 61, 0.76)),
+            url("/images/airport-terminal.jpg") center/cover,
+            linear-gradient(135deg, #4f7193, #173253);
+        }
+
+        .home-destination-card.destination-card-6 {
+          background:
+            linear-gradient(160deg, rgba(12, 34, 61, 0.18), rgba(12, 34, 61, 0.74)),
+            url("/images/danang-sunset.jpg") center/cover,
+            linear-gradient(135deg, #8a6947, #16395d);
+        }
+
+        .home-destination-card::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.14), transparent 28%),
+            radial-gradient(circle at 82% 0%, rgba(245, 209, 141, 0.12), transparent 24%);
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .home-destination-card::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            180deg,
+            rgba(7, 24, 41, 0.04) 12%,
+            rgba(7, 24, 41, 0.24) 40%,
+            rgba(7, 24, 41, 0.64) 72%,
+            rgba(7, 24, 41, 0.88) 100%
+          );
+          pointer-events: none;
+          z-index: 0;
+        }
+
+        .home-destination-overlay {
+          position: relative;
+          z-index: 1;
+          padding: 30px;
+          background:
+            radial-gradient(circle at top right, rgba(255, 255, 255, 0.16), transparent 24%),
+            linear-gradient(180deg, rgba(8, 28, 48, 0) 18%, rgba(8, 28, 48, 0.26) 58%, rgba(8, 28, 48, 0.52) 100%);
+        }
+
+        .home-destination-top {
+          gap: 18px;
+          align-items: flex-start;
+        }
+
+        .home-destination-top > div {
+          min-width: 0;
+        }
+
+        .home-destination-top strong {
+          display: block;
+          margin-bottom: 6px;
+          color: rgba(255, 252, 246, 1);
+          font-size: clamp(1.34rem, 1.7vw, 1.62rem);
+          line-height: 1.08;
+          letter-spacing: -0.03em;
+          white-space: nowrap;
+          text-shadow: 0 6px 20px rgba(7, 24, 41, 0.24);
+        }
+
+        .home-destination-top p {
+          margin: 0;
+          color: rgba(250, 246, 239, 0.94);
+          line-height: 1.55;
+          text-shadow: 0 4px 14px rgba(7, 24, 41, 0.2);
+        }
+
+        .home-destination-card .pill {
+          flex-shrink: 0;
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          background: linear-gradient(
+            135deg,
+            rgba(11, 38, 66, 0.54),
+            rgba(255, 255, 255, 0.14)
+          );
+          color: rgba(255, 251, 244, 0.98);
+          white-space: nowrap;
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 10px 22px rgba(7, 24, 41, 0.16);
+          backdrop-filter: blur(8px);
+        }
+
+        .home-destination-bottom {
+          display: grid;
+          gap: 16px;
+        }
+
+        .home-destination-bottom h3 {
+          margin-bottom: 0;
+          color: #fff1c3;
+          font-size: clamp(1.65rem, 2.8vw, 2.22rem);
+          line-height: 1;
+          letter-spacing: -0.04em;
+          text-shadow: 0 8px 24px rgba(7, 24, 41, 0.28);
+        }
+
+        .home-destination-list {
+          display: grid;
+          gap: 10px;
+          padding: 16px 18px;
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          background: linear-gradient(
+            180deg,
+            rgba(9, 31, 52, 0.18),
+            rgba(9, 31, 52, 0.44)
+          );
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.08),
+            0 16px 30px rgba(7, 24, 41, 0.14);
+          backdrop-filter: blur(8px);
+        }
+
+        .home-destination-list li {
+          color: rgba(255, 248, 239, 0.98);
+          text-shadow: 0 3px 12px rgba(7, 24, 41, 0.18);
+        }
+
+        .home-destination-list li::before {
+          box-shadow: 0 0 0 4px rgba(245, 209, 141, 0.08);
+        }
+
+        @media (max-width: 1180px) {
+          .home-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 34px;
+          }
+
+          .home-hero-copy {
+            padding-bottom: 0;
+          }
+
+          .home-hero-panel-stack {
+            padding-top: 0;
+          }
+
+          .home-hero-copy h1 {
+            max-width: 13.5ch;
+          }
+
+          .home-destination-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+
+        @media (max-width: 820px) {
+          .section {
+            padding: 64px 0;
+          }
+
+          .section-heading {
+            margin-bottom: 28px;
+          }
+
+          .home-hero-section {
+            padding: 40px 0 28px;
+          }
+
+          .home-hero-copy {
+            gap: 18px;
+            padding: 12px 0 4px;
+          }
+
+          .home-hero-copy h1 {
+            max-width: none;
+          }
+
+          .home-hero-actions {
+            margin-top: 0;
+          }
+
+          .home-hero-search-shell .search-panel {
+            padding: 24px;
+            border-radius: 24px;
+          }
+
+          .home-destination-overlay {
+            padding: 24px;
+          }
+        }
+
+        @media (max-width: 520px) {
+          .home-hero-eyebrow {
+            min-height: 34px;
+            padding: 0 12px;
+          }
+
+          .home-hero-primary,
+          .home-hero-secondary {
+            min-height: 52px;
+          }
+
+          .home-hero-stat-grid {
+            gap: 14px;
+          }
+
+          .home-destination-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+
+          .home-destination-card {
+            border-radius: 26px;
+          }
+
+          .home-destination-overlay {
+            padding: 20px;
+          }
+        }
+      `}</style>
     </>
   );
 }

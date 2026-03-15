@@ -1,7 +1,12 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@qlvmb/shared-types"]
+  outputFileTracingRoot: path.join(__dirname, "../.."),
+  transpilePackages: ["@qlvmb/shared-types"],
+  turbopack: {
+    root: path.join(__dirname, "../..")
+  }
 };
 
 export default nextConfig;
