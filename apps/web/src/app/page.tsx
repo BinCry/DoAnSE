@@ -878,6 +878,28 @@ export default function HomePage() {
             border-radius: 24px;
           }
 
+          .home-hero-search-shell .toggle-group {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            padding: 6px;
+            border-radius: 22px;
+            overflow: hidden;
+          }
+
+          .home-hero-search-shell .toggle {
+            min-height: 46px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            line-height: 1.3;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            text-wrap: balance;
+          }
+
+          .home-hero-search-shell .toggle:last-child {
+            grid-column: 1 / -1;
+          }
+
           .home-destination-overlay {
             padding: 24px;
           }
@@ -896,6 +918,14 @@ export default function HomePage() {
 
           .home-hero-stat-grid {
             gap: 14px;
+          }
+
+          .home-hero-search-shell .toggle-group {
+            grid-template-columns: 1fr;
+          }
+
+          .home-hero-search-shell .toggle:last-child {
+            grid-column: auto;
           }
 
           .home-destination-grid {
