@@ -22,7 +22,7 @@ const bodyFont = Manrope({
 export const metadata: Metadata = {
   title: "Aurora Air",
   description:
-    "Giao diện web bán vé máy bay nội địa với khu công khai, tự phục vụ và điều hành nội bộ."
+    "Website bán vé máy bay nội địa với luồng đặt vé, tự phục vụ sau bán, hỗ trợ khách hàng và điều hành nội bộ."
 };
 
 export default function RootLayout({
