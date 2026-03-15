@@ -1366,7 +1366,6 @@ img {
 }
 
 .filter-card {
-  top: 116px;
   display: grid;
   gap: 14px;
 }
@@ -1386,6 +1385,7 @@ img {
 
 .sticky-card {
   position: sticky;
+  top: 116px;
 }
 
 .result-card {
@@ -1593,6 +1593,10 @@ img {
 
 .table-wrap {
   overflow-x: auto;
+}
+
+.table-wrap table[data-mobile-stack="true"] {
+  min-width: 100%;
 }
 
 table {
@@ -1896,6 +1900,10 @@ th {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .sticky-card {
+    position: static;
+  }
+
   .page-hero-stat-grid,
   .hero-stat-grid,
   .ops-strip-grid,
@@ -2078,6 +2086,61 @@ th {
     width: 100%;
   }
 
+  .result-top,
+  .booking-summary-card .assurance-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .table-card {
+    padding: 18px;
+  }
+
+  .table-wrap table[data-mobile-stack="true"],
+  .table-wrap table[data-mobile-stack="true"] tbody,
+  .table-wrap table[data-mobile-stack="true"] tr,
+  .table-wrap table[data-mobile-stack="true"] td {
+    display: block;
+    width: 100%;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] thead {
+    display: none;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] tr {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(18, 61, 105, 0.04);
+  }
+
+  .table-wrap table[data-mobile-stack="true"] td {
+    padding: 0;
+    border: 0;
+    display: grid;
+    grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] td + td {
+    margin-top: 12px;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] td::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
   .toggle-group {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2182,6 +2245,10 @@ th {
     height: 42px;
   }
 
+  .table-card {
+    padding: 18px;
+  }
+
   .brand small {
     font-size: 0.76rem;
     line-height: 1.4;
@@ -2279,6 +2346,15 @@ th {
   .role-chip,
   .status-chip {
     font-size: 0.7rem;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] td {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .table-wrap table[data-mobile-stack="true"] td + td {
+    margin-top: 10px;
   }
 
   .footer-intro,
