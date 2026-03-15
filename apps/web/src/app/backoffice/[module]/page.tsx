@@ -32,12 +32,12 @@ export default async function BackofficeModulePage({
     <section className="section">
       <div className="container">
         <SectionHeading
-          eyebrow="Chi tiết phân khu nội bộ"
+          eyebrow="Phân hệ nội bộ"
           title={detail.title}
           description={detail.summary}
         />
         <div className="surface-card">
-          <strong>Vai trò được truy cập:</strong>{" "}
+          <strong>Nhóm được cấp quyền:</strong>{" "}
           {moduleConfig.roles.map((role) => ROLE_LABELS[role]).join(", ")}
         </div>
         <div className="section-gap" />
