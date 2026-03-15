@@ -179,7 +179,6 @@ export default function HomePage() {
               <SectionHeading
                 eyebrow="Tiện ích nhanh"
                 title="Những tiện ích hành khách cần nhất được đưa lên ngay từ đầu hành trình"
-                description="Mua thêm hành lý, đổi chỗ ngồi, làm thủ tục trực tuyến và tra cứu đặt chỗ đều nằm ở lớp điều hướng đầu để thao tác nhanh trên cả máy tính lẫn điện thoại."
               />
               <div className="quick-grid">
                 {quickServices.map((service) => (
@@ -361,7 +360,7 @@ export default function HomePage() {
         }
 
         .section-heading h2 {
-          color: rgba(8, 33, 58, 0.96);
+          color: rgba(6, 27, 48, 0.98);
           font-size: clamp(2.04rem, 3vw, 2.82rem);
           line-height: 1.05;
           letter-spacing: -0.034em;
@@ -375,7 +374,7 @@ export default function HomePage() {
 
         .section-heading p {
           max-width: 68ch;
-          color: rgba(16, 45, 78, 0.76);
+          color: rgba(14, 40, 69, 0.82);
           font-size: 1.01rem;
           line-height: 1.72;
         }
@@ -390,7 +389,7 @@ export default function HomePage() {
         .promo-card h3,
         .article-card h3,
         .command-panel h3 {
-          color: rgba(8, 33, 58, 0.95);
+          color: rgba(7, 29, 50, 0.97);
           font-size: clamp(1.18rem, 1.45vw, 1.34rem);
           line-height: 1.2;
           letter-spacing: -0.024em;
@@ -402,19 +401,29 @@ export default function HomePage() {
         .article-card p,
         .ops-strip-card p,
         .command-panel p {
-          color: rgba(16, 45, 78, 0.74);
+          color: rgba(14, 40, 69, 0.78);
           font-size: 0.97rem;
           line-height: 1.7;
         }
 
         .home-hero-section {
           padding: 72px 0 46px;
+          background:
+            radial-gradient(circle at 10% 0%, rgba(202, 164, 95, 0.18), transparent 26%),
+            radial-gradient(circle at 92% 4%, rgba(24, 92, 150, 0.16), transparent 24%),
+            linear-gradient(
+              180deg,
+              rgba(255, 249, 239, 0.98),
+              rgba(243, 247, 251, 0.98) 54%,
+              rgba(236, 243, 249, 0.94) 100%
+            );
+          box-shadow: inset 0 -1px 0 rgba(18, 61, 105, 0.08);
         }
 
         .home-hero-section::before {
           background:
-            radial-gradient(circle at 12% 22%, rgba(203, 225, 247, 0.38), transparent 22%),
-            radial-gradient(circle at 84% 12%, rgba(83, 148, 217, 0.18), transparent 18%),
+            radial-gradient(circle at 12% 22%, rgba(210, 176, 105, 0.22), transparent 22%),
+            radial-gradient(circle at 84% 12%, rgba(48, 117, 186, 0.22), transparent 18%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 60%);
         }
 
@@ -437,29 +446,31 @@ export default function HomePage() {
           margin-bottom: 0;
           padding: 0 14px;
           border-radius: 999px;
-          border: 1px solid rgba(18, 61, 105, 0.12);
+          border: 1px solid rgba(151, 116, 54, 0.18);
           background: linear-gradient(
             135deg,
-            rgba(255, 255, 255, 0.98),
-            rgba(231, 243, 255, 0.92)
+            rgba(255, 252, 246, 0.98),
+            rgba(248, 239, 220, 0.94) 55%,
+            rgba(232, 242, 252, 0.92)
           );
-          color: rgba(18, 69, 120, 0.9);
-          box-shadow: 0 12px 26px rgba(18, 61, 105, 0.06);
+          color: rgba(104, 75, 24, 0.92);
+          box-shadow: 0 14px 30px rgba(122, 92, 40, 0.1);
         }
 
         .home-hero-copy h1 {
-          max-width: 11.8ch;
-          color: rgba(8, 33, 58, 0.97);
+          max-width: 11.2ch;
+          color: rgba(6, 28, 49, 0.98);
           font-size: clamp(3.2rem, 5.3vw, 4.92rem);
           line-height: 1.02;
           letter-spacing: -0.042em;
           text-wrap: balance;
+          text-shadow: 0 10px 26px rgba(255, 255, 255, 0.42);
         }
 
         .home-hero-copy > p {
           max-width: 64ch;
           margin: 0;
-          color: rgba(16, 45, 78, 0.8);
+          color: rgba(13, 42, 72, 0.86);
           font-size: clamp(1.02rem, 1.12vw, 1.1rem);
           line-height: 1.76;
         }
@@ -477,26 +488,28 @@ export default function HomePage() {
         }
 
         .home-hero-primary {
-          border: 1px solid rgba(255, 255, 255, 0.46);
+          border: 1px solid rgba(255, 255, 255, 0.42);
           background:
-            radial-gradient(circle at 24% 20%, rgba(255, 255, 255, 0.32), transparent 34%),
-            linear-gradient(135deg, #154f87 0%, #2471bd 52%, #4b9ee8 100%);
+            radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.34), transparent 32%),
+            linear-gradient(135deg, #0f385d 0%, #1b5b90 54%, #2e7cb8 100%);
           box-shadow:
-            0 18px 34px rgba(20, 78, 135, 0.24),
+            0 22px 38px rgba(11, 57, 96, 0.24),
+            0 0 0 1px rgba(225, 195, 129, 0.12),
             inset 0 1px 0 rgba(255, 255, 255, 0.34);
         }
 
         .home-hero-secondary {
-          color: rgba(12, 56, 100, 0.95);
-          border: 1px solid rgba(18, 61, 105, 0.14);
+          color: rgba(10, 46, 80, 0.96);
+          border: 1px solid rgba(151, 116, 54, 0.16);
           background: linear-gradient(
             135deg,
             rgba(255, 255, 255, 0.98),
-            rgba(236, 245, 255, 0.92)
+            rgba(252, 245, 232, 0.96) 45%,
+            rgba(235, 243, 252, 0.94)
           );
           box-shadow:
             inset 0 1px 0 rgba(255, 255, 255, 0.88),
-            0 14px 30px rgba(18, 61, 105, 0.08);
+            0 16px 30px rgba(18, 61, 105, 0.1);
         }
 
         .home-hero-stat-grid {
@@ -506,18 +519,23 @@ export default function HomePage() {
 
         .home-hero-stat-grid .hero-stat-card {
           padding: 20px 22px;
-          border-color: rgba(18, 61, 105, 0.1);
+          border-color: rgba(18, 61, 105, 0.12);
           background: linear-gradient(
             180deg,
-            rgba(255, 255, 255, 0.92),
-            rgba(243, 248, 253, 0.84)
+            rgba(255, 255, 255, 0.96),
+            rgba(250, 245, 236, 0.9) 44%,
+            rgba(241, 247, 253, 0.9) 100%
           );
-          box-shadow: 0 20px 40px rgba(18, 61, 105, 0.08);
+          box-shadow: 0 22px 42px rgba(18, 61, 105, 0.1);
+        }
+
+        .home-hero-stat-grid .hero-stat-card strong {
+          color: rgba(12, 49, 84, 0.98);
         }
 
         .home-hero-stat-grid .hero-stat-card span,
         .home-hero-stat-grid .hero-stat-card p {
-          color: rgba(16, 45, 78, 0.72);
+          color: rgba(16, 45, 78, 0.78);
         }
 
         .home-hero-photo-ribbon {
@@ -542,12 +560,17 @@ export default function HomePage() {
         .home-hero-search-shell .search-panel {
           padding: 30px;
           border-radius: 30px;
-          border-color: rgba(18, 61, 105, 0.09);
+          border-color: rgba(18, 61, 105, 0.11);
           background:
-            radial-gradient(circle at top right, rgba(168, 206, 241, 0.14), transparent 28%),
-            radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.9), transparent 28%),
-            linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(246, 250, 254, 0.97));
-          box-shadow: 0 20px 42px rgba(18, 61, 105, 0.08);
+            radial-gradient(circle at top right, rgba(205, 173, 104, 0.16), transparent 30%),
+            radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.94), transparent 28%),
+            linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 1),
+              rgba(250, 245, 237, 0.96) 46%,
+              rgba(243, 248, 253, 0.96)
+            );
+          box-shadow: 0 22px 46px rgba(18, 61, 105, 0.12);
         }
 
         .home-hero-search-shell .search-panel-head {
@@ -573,8 +596,8 @@ export default function HomePage() {
           border: 1px solid rgba(18, 61, 105, 0.1);
           background: linear-gradient(
             135deg,
-            rgba(244, 249, 255, 0.94),
-            rgba(230, 240, 252, 0.82)
+            rgba(255, 250, 242, 0.96),
+            rgba(240, 247, 254, 0.88)
           );
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
         }
@@ -625,13 +648,14 @@ export default function HomePage() {
 
         .home-hero-board {
           padding: 24px 24px 22px;
-          border-color: rgba(18, 61, 105, 0.1);
+          border-color: rgba(18, 61, 105, 0.18);
           background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.98),
-            rgba(243, 248, 253, 0.94)
+            160deg,
+            rgba(8, 29, 49, 0.98),
+            rgba(15, 50, 82, 0.96) 56%,
+            rgba(28, 84, 130, 0.92) 100%
           );
-          box-shadow: 0 18px 38px rgba(18, 61, 105, 0.08);
+          box-shadow: 0 22px 46px rgba(8, 29, 49, 0.24);
         }
 
         .home-hero-board .hero-glass-head {
@@ -639,13 +663,13 @@ export default function HomePage() {
         }
 
         .home-hero-board .pill {
-          border: 1px solid rgba(18, 61, 105, 0.12);
+          border: 1px solid rgba(225, 195, 129, 0.24);
           background: linear-gradient(
             135deg,
-            rgba(247, 251, 255, 0.96),
-            rgba(228, 239, 252, 0.88)
+            rgba(255, 255, 255, 0.08),
+            rgba(225, 195, 129, 0.18)
           );
-          color: rgba(12, 56, 100, 0.88);
+          color: rgba(248, 226, 183, 0.98);
         }
 
         .home-hero-board .hero-highlight-row {
@@ -653,22 +677,43 @@ export default function HomePage() {
         }
 
         .home-hero-board .hero-highlight-row + .hero-highlight-row {
-          border-top: 1px solid rgba(18, 61, 105, 0.08);
+          border-top: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .home-hero-board .hero-highlight-row p {
-          color: rgba(16, 45, 78, 0.8);
+          color: rgba(247, 243, 234, 0.92);
         }
 
         .home-hero-board .dot {
           width: 10px;
           height: 10px;
-          background: linear-gradient(135deg, #2471bd, #6cb4f0);
-          box-shadow: 0 0 0 4px rgba(36, 113, 189, 0.12);
+          background: linear-gradient(135deg, #d8b36b, #f0d89e);
+          box-shadow: 0 0 0 4px rgba(216, 179, 107, 0.18);
         }
 
         .home-destination-section {
           padding-top: 82px;
+          background:
+            radial-gradient(circle at 8% 14%, rgba(202, 164, 95, 0.14), transparent 22%),
+            radial-gradient(circle at 92% 18%, rgba(24, 92, 150, 0.1), transparent 20%),
+            linear-gradient(180deg, rgba(252, 248, 241, 0.92), rgba(240, 246, 251, 0.9));
+        }
+
+        .ops-strip-card,
+        .spotlight-card,
+        .feature-card-rich,
+        .promo-card,
+        .article-card {
+          border-color: rgba(18, 61, 105, 0.1);
+          background:
+            linear-gradient(
+              180deg,
+              rgba(255, 255, 255, 0.96),
+              rgba(251, 245, 236, 0.9) 42%,
+              rgba(242, 247, 252, 0.92) 100%
+            ),
+            radial-gradient(circle at top right, rgba(202, 164, 95, 0.12), transparent 28%);
+          box-shadow: 0 20px 40px rgba(18, 61, 105, 0.08);
         }
 
         .home-destination-grid {
@@ -867,6 +912,8 @@ export default function HomePage() {
 
           .home-hero-copy h1 {
             max-width: none;
+            font-size: clamp(2.2rem, 6.1vw, 2.86rem);
+            line-height: 1.05;
           }
 
           .home-hero-actions {
@@ -906,6 +953,17 @@ export default function HomePage() {
         }
 
         @media (max-width: 520px) {
+          .home-hero-copy h1 {
+            font-size: clamp(1.72rem, 7vw, 1.98rem);
+            line-height: 1.08;
+            letter-spacing: -0.028em;
+          }
+
+          .home-hero-copy > p {
+            font-size: 0.94rem;
+            line-height: 1.68;
+          }
+
           .home-hero-eyebrow {
             min-height: 34px;
             padding: 0 12px;

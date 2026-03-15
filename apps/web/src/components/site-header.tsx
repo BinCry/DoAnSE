@@ -37,19 +37,16 @@ export function SiteHeader() {
       <div className="container nav-row">
         <div className="nav-row-primary">
           <Link href="/" className="brand">
-            <span className="brand-mark">
+            <span className="brand-logo">
               <Image
-                src="/logo-aurora.svg"
-                alt="Logo Aurora Air"
-                width={48}
-                height={48}
+                src="/images/logo-vietnamairlines.png"
+                alt="Logo Vietnam Airlines"
+                width={1086}
+                height={159}
+                sizes="(max-width: 640px) 248px, 360px"
+                unoptimized
+                priority
               />
-            </span>
-            <span>
-              <strong>Aurora Air</strong>
-              <small>
-                Đặt vé nội địa, theo dõi hành trình và nhận hỗ trợ trước giờ bay
-              </small>
             </span>
           </Link>
           <div className="nav-row-actions">
