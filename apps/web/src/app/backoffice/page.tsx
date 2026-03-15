@@ -10,9 +10,9 @@ import {
 import { ROLE_LABELS } from "@/lib/access-control";
 
 const deskHighlights = [
-  "Một nguồn dữ liệu chung cho đặt chỗ, thanh toán và tình trạng chuyến bay.",
-  "Phân quyền bám theo nghiệp vụ thật thay vì gom tất cả vào quản trị viên hệ thống.",
-  "Nhật ký kiểm soát hiện diện như lớp cốt lõi của hoàn tiền, chuyến bay chậm và cấu hình."
+  "Theo dõi đặt chỗ, thanh toán và trạng thái chuyến bay từ cùng một nguồn dữ liệu.",
+  "Tách rõ phạm vi thao tác cho bán vé, chăm sóc khách hàng, khai thác và tài chính.",
+  "Ghi nhận thay đổi nhạy cảm để hỗ trợ đối soát, hoàn tiền và xử lý sự cố."
 ];
 
 export default function BackofficePage() {
@@ -22,10 +22,10 @@ export default function BackofficePage() {
         <div className="page-hero-card page-hero-card-dark">
           <div>
             <span className="section-eyebrow">Điều hành nội bộ</span>
-            <h1 className="page-title">Khu điều hành rõ vai trò, rõ luồng xử lý và bám sát nghiệp vụ hàng không.</h1>
+            <h1 className="page-title">Trung tâm điều phối dành cho bán vé, hỗ trợ hành khách và khai thác chuyến bay.</h1>
             <p className="page-hero-copy">
-              Màn hình nội bộ được trình bày như phòng điều phối thực sự với
-              các khối cảnh báo, phân khu theo nghiệp vụ và nhật ký kiểm soát đi kèm.
+              Nhân sự vận hành có thể theo dõi chỉ số trong ngày, mở từng phân hệ
+              theo nhiệm vụ và kiểm tra lại lịch sử thao tác ở cùng một nơi.
             </p>
           </div>
           <div className="page-hero-stat-grid">
@@ -52,8 +52,8 @@ export default function BackofficePage() {
         <div className="section-gap" />
         <SectionHeading
           eyebrow="Phân khu điều phối"
-          title="Mỗi nhóm nội bộ có một bề mặt làm việc riêng"
-          description="Bố cục phân khu được làm rõ hơn để khi nhìn vào là phân biệt ngay bán vé, chăm sóc khách hàng, vận hành, tài chính, quản trị nội dung và quản trị hệ thống."
+          title="Mỗi nhóm nghiệp vụ có một phân hệ làm việc riêng"
+          description="Bán vé, chăm sóc khách hàng, khai thác, tài chính, nội dung và quản trị hệ thống được tách thành các khu vực rõ chức năng để xử lý nhanh hơn trong ca trực."
         />
         <div className="module-grid">
           {backofficeModules.map((module) => (
@@ -81,8 +81,8 @@ export default function BackofficePage() {
           <div>
             <SectionHeading
               eyebrow="Quy tắc phân quyền"
-              title="Vai trò nào thấy việc nấy"
-              description="Màn hình quản trị nhìn chặt hơn khi quyền được diễn giải trực tiếp ngay trong giao diện thay vì chỉ nằm ở tài liệu."
+              title="Mỗi vai trò chỉ truy cập đúng nghiệp vụ được giao"
+              description="Bảng phân quyền giúp kiểm tra nhanh phạm vi thao tác của từng nhóm trước khi xử lý hoàn tiền, đổi lịch bay hoặc cấu hình hệ thống."
             />
             <div className="table-card">
               <div className="table-wrap">
@@ -110,8 +110,8 @@ export default function BackofficePage() {
           <div>
             <SectionHeading
               eyebrow="Nhật ký kiểm soát"
-              title="Những thay đổi nhạy cảm được đặt ở tuyến nhìn thấy"
-              description="Cách trình bày này giúp việc hoàn tiền, đổi lịch bay và phân quyền luôn có bối cảnh kiểm soát rõ ràng."
+              title="Theo dõi những thay đổi nhạy cảm theo thời gian gần thực"
+              description="Mọi cập nhật quan trọng như điều kiện hoàn vé, thay đổi trạng thái chuyến bay hay xác nhận hoàn tiền đều được lưu lại để kiểm tra nhanh."
             />
             <div className="stack-list">
               {auditEntries.map((entry) => (
