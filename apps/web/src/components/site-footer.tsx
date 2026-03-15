@@ -14,18 +14,17 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-intro">
         <div className="footer-brand">
-          <span className="brand-mark footer-brand-mark">
-            <span className="footer-brand-mark-shell">
-              <Image
-                src="/logo-aurora.svg"
-                alt="Logo Aurora Air"
-                width={48}
-                height={48}
-              />
-            </span>
+          <span className="footer-brand-logo">
+            <Image
+              src="/images/logo-vietnamairlines.png"
+              alt="Logo Vietnam Airlines"
+              width={1086}
+              height={159}
+              sizes="(max-width: 640px) 260px, 360px"
+              unoptimized
+            />
           </span>
           <div>
-            <strong>Aurora Air</strong>
             <p>
               Hãng hàng không nội địa với dịch vụ đặt vé, quản lý hành trình,
               hỗ trợ hành khách và vận hành khai thác được kết nối liền mạch.
@@ -56,7 +55,7 @@ export function SiteFooter() {
       </div>
       <div className="container footer-legal">
         <span>
-          © 2026 Aurora Air. Hỗ trợ thanh toán, đổi hoặc hoàn và theo dõi tình
+          © 2026 Vietnam Airlines. Hỗ trợ thanh toán, đổi hoặc hoàn và theo dõi tình
           trạng chuyến bay trên cùng một cổng dịch vụ.
         </span>
         <span>

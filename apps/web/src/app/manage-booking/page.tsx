@@ -15,7 +15,7 @@ export default function ManageBookingPage() {
             </p>
           </div>
           <div className="booking-summary-card">
-            <span className="pill">Mã đặt chỗ K7M4Q2</span>
+            <span className="pill booking-reference-pill">Mã đặt chỗ K7M4Q2</span>
             <h3>Thành phố Hồ Chí Minh - Hà Nội</h3>
             <p>20/03/2026 · 09:45 · Phổ thông linh hoạt</p>
             <div className="assurance-row">
