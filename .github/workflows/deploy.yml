@@ -1,0 +1,32 @@
+name: Tự động đồng bộ nhánh deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Lấy mã nguồn
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Đồng bộ main sang deploy
+        run: |
+          git config --global user.name "deploy-bot"
+          git config --global user.email "deploy@bot.com"
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/deploy; then
+            git checkout -B deploy origin/deploy
+          else
+            git checkout -b deploy
+          fi
+          git merge origin/main --no-edit
+          git push origin deploy
