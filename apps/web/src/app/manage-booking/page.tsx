@@ -8,10 +8,10 @@ export default function ManageBookingPage() {
         <div className="page-hero-card">
           <div>
             <span className="section-eyebrow">Quản lý đặt chỗ</span>
-            <h1 className="page-title">Khu tự phục vụ được làm như một trung tâm điều khiển đặt chỗ.</h1>
+            <h1 className="page-title">Tra cứu đặt chỗ, đổi chuyến và bổ sung dịch vụ trong vài bước rõ ràng.</h1>
             <p className="page-hero-copy">
-              Khách có thể tra cứu, đổi chuyến, hoàn/hủy, mua thêm dịch vụ và xem
-              mọi cập nhật vận hành ngay trong cùng một không gian.
+              Hành khách có thể xem lại hành trình, đổi hoặc hủy vé theo điều kiện,
+              mua thêm hành lý, chọn chỗ ngồi và theo dõi các cập nhật liên quan đến chuyến bay.
             </p>
           </div>
           <div className="booking-summary-card">
@@ -74,8 +74,8 @@ export default function ManageBookingPage() {
           <div>
             <SectionHeading
               eyebrow="Giải thích điều kiện"
-              title="Khu tự phục vụ luôn đi kèm giải thích điều kiện đổi và hoàn"
-              description="Càng minh bạch điều kiện thì càng giảm va chạm với bộ phận chăm sóc khách hàng."
+              title="Điều kiện đổi và hoàn được giải thích rõ trước khi xác nhận"
+              description="Thông tin minh bạch giúp hành khách đưa ra quyết định nhanh hơn và hạn chế phát sinh khiếu nại sau bán."
             />
             <div className="stack-list">
               {supportFaqs.map((faq) => (

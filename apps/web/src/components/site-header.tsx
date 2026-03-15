@@ -22,7 +22,7 @@ export function SiteHeader() {
           <div className="topbar-badges">
             <span className="pill">Tiếng Việt</span>
             <span className="pill">
-              Đặt vé nội địa, tự phục vụ và điều hành trên một hệ thống
+              Đặt vé nội địa, quản lý hành trình và làm thủ tục trực tuyến thuận tiện
             </span>
           </div>
           <nav className="utility-nav" aria-label="Tiện ích nhanh">
@@ -48,7 +48,7 @@ export function SiteHeader() {
             <span>
               <strong>Aurora Air</strong>
               <small>
-                Hệ thống bán vé, tự phục vụ và điều hành hàng không nội địa
+                Đặt vé nội địa, theo dõi hành trình và nhận hỗ trợ trước giờ bay
               </small>
             </span>
           </Link>

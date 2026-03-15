@@ -7,8 +7,8 @@ export default function FlightStatusPage() {
       <div className="container">
         <SectionHeading
           eyebrow="Tình trạng chuyến bay"
-          title="Trang công khai cho khách và trang điều hành phải cùng nhìn một trạng thái"
-          description="Nếu chuyến bay chậm hoặc đổi cửa, thay đổi đó cần được phản ánh đồng thời ở website, khu quản lý đặt chỗ, khu làm thủ tục và email."
+          title="Theo dõi giờ bay, cửa ra tàu và trạng thái mới nhất của chuyến bay"
+          description="Hành khách có thể kiểm tra nhanh thời gian khởi hành, cửa ra tàu và các thay đổi quan trọng trước khi di chuyển ra sân bay."
         />
         <div className="table-card">
           <div className="table-wrap">
@@ -41,15 +41,15 @@ export default function FlightStatusPage() {
           <article className="surface-card">
             <h3>Chuyến bay chậm</h3>
             <p>
-              Điều hành cập nhật một lần, hệ thống phát thông báo tới lượt đặt chỗ bị
-              ảnh hưởng và bảng điều hành nội bộ.
+              Hành khách nhận thông tin chậm chuyến kịp thời để chủ động sắp xếp
+              lịch trình và theo dõi các hướng dẫn tiếp theo.
             </p>
           </article>
           <article className="surface-card">
             <h3>Đổi cửa ra tàu</h3>
             <p>
-              Cập nhật nhanh trên trang làm thủ tục, màn hình sân bay và lịch sử
-              thông báo trong tài khoản khách hàng.
+              Mọi thay đổi về cửa ra tàu được cập nhật nhanh để hành khách dễ theo
+              dõi trong lúc làm thủ tục hoặc chờ lên máy bay.
             </p>
           </article>
           <article className="surface-card">
