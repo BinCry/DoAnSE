@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 const quickPrompts = [
-  "Tra cứu đặt chỗ",
-  "Điều kiện đổi chuyến",
+  "Tra cứu bằng mã đặt chỗ",
+  "Làm thủ tục 24h - 60 phút",
   "Mua thêm hành lý",
-  "Gặp nhân viên hỗ trợ"
+  "Đổi hoặc hoàn vé"
 ];
 
 export function ChatbotWidget() {
@@ -19,7 +19,7 @@ export function ChatbotWidget() {
           <div className="chatbot-header">
             <div>
               <strong>Trợ lý Aurora</strong>
-              <p>Hỗ trợ tra cứu nhanh, giải đáp FAQ và chuyển tiếp sang nhân viên khi cần.</p>
+              <p>Hỗ trợ tra cứu đặt chỗ, làm thủ tục trực tuyến và kết nối chuyên viên hỗ trợ khi cần.</p>
             </div>
             <button
               type="button"
@@ -32,9 +32,9 @@ export function ChatbotWidget() {
           </div>
           <div className="chatbot-body">
             <div className="chat-message chat-message-bot">
-              Xin chào. Tôi có thể hỗ trợ bạn kiểm tra mã đặt chỗ, hướng dẫn đổi
-              chuyến, giải thích điều kiện vé hoặc kết nối sang bộ phận chăm sóc
-              khách hàng.
+              Xin chào. Tôi có thể hỗ trợ bạn tra cứu hành trình bằng mã đặt chỗ,
+              kiểm tra thời gian làm thủ tục trực tuyến, hướng dẫn mua thêm hành lý
+              hoặc kết nối tới chuyên viên hỗ trợ.
             </div>
             <div className="chat-prompt-grid">
               {quickPrompts.map((prompt) => (
@@ -44,12 +44,13 @@ export function ChatbotWidget() {
               ))}
             </div>
             <div className="chat-message chat-message-user">
-              Nếu thanh toán bị treo thì có bị ghi nhận hai lần không?
+              Tôi muốn làm thủ tục online thì cần chuẩn bị gì?
             </div>
             <div className="chat-message chat-message-bot">
-              Hệ thống dùng khóa chống trùng giao dịch và đối soát phản hồi
-              thanh toán trước khi xuất vé. Nếu bạn muốn, tôi có thể mở yêu cầu
-              hỗ trợ để kiểm tra chi tiết theo mã đặt chỗ.
+              Bạn chỉ cần mã đặt chỗ và họ hành khách như trên vé. Làm thủ tục
+              trực tuyến hiện mở từ 24 giờ và đóng trước 60 phút so với giờ khởi
+              hành. Nếu có hành lý ký gửi hoặc cần hỗ trợ đặc biệt, bạn vẫn nên
+              đến quầy làm thủ tục sớm để được hỗ trợ thêm.
             </div>
           </div>
         </div>
@@ -59,7 +60,7 @@ export function ChatbotWidget() {
         className="chatbot-button"
         onClick={() => setIsOpen((value) => !value)}
       >
-        Trợ lý hỗ trợ
+        Hỗ trợ nhanh
       </button>
     </div>
   );
