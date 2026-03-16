@@ -1,5 +1,6 @@
+import { getTravelArticles } from "@/lib/newsdata";
 import { SectionHeading } from "@/components/section-heading";
-import { featuredArticles, promotions } from "@/lib/mock-data";
+import { promotions } from "@/lib/mock-data";
 
 const cmsRules = [
   "Banner, cẩm nang, câu hỏi thường gặp và trang pháp lý đều có trạng thái nháp, duyệt, đăng, lưu lịch sử phiên bản.",
@@ -7,7 +8,11 @@ const cmsRules = [
   "Trợ lý hỗ trợ chỉ đọc tri thức từ mục câu hỏi thường gặp đã phát hành."
 ];
 
-export default function BlogPage() {
+export const revalidate = 604800;
+
+export default async function BlogPage() {
+  const travelArticles = await getTravelArticles(9, true);
+
   return (
     <section className="section">
       <div className="container">
@@ -32,17 +37,30 @@ export default function BlogPage() {
         </div>
 
         <div className="section-gap" />
-        <div className="blog-mosaic">
-          {featuredArticles.map((article, index) => (
-            <article
-              key={article.slug}
-              className={`surface-card blog-feature-card blog-feature-card-${index + 1}`}
+        <SectionHeading
+          eyebrow="Tin du lịch mới"
+          title="Danh sách bài báo du lịch đang được cập nhật từ nguồn tin tiếng Việt"
+          description="Trang này gom nhiều bài báo du lịch để bạn theo dõi nhanh các điểm đến, trải nghiệm nghỉ dưỡng và xu hướng đi lại mới."
+        />
+        <div className="card-grid card-grid-3 travel-news-grid">
+          {travelArticles.map((article) => (
+            <a
+              key={article.href}
+              href={article.href}
+              className="surface-card article-card travel-news-card"
+              rel={article.external ? "noreferrer" : undefined}
+              target={article.external ? "_blank" : undefined}
             >
-              <span className="pill">{article.category}</span>
-              <h3>{article.title}</h3>
-              <p>{article.summary}</p>
-              <small>{article.readTime}</small>
-            </article>
+              <div className="travel-news-card-media">
+                <img src={article.image} alt={article.title} loading="lazy" />
+              </div>
+              <div className="travel-news-card-copy">
+                <span className="pill">{article.source}</span>
+                <h3>{article.title}</h3>
+                <p>{article.summary}</p>
+                <small>{article.readTime}</small>
+              </div>
+            </a>
           ))}
         </div>
 
@@ -71,6 +89,59 @@ export default function BlogPage() {
             ))}
           </ul>
         </div>
+
+        <style>{`
+          .travel-news-grid {
+            gap: 22px;
+          }
+
+          .travel-news-card {
+            gap: 0;
+            padding: 0;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+          }
+
+          .travel-news-card-media {
+            aspect-ratio: 1.56;
+            overflow: hidden;
+            background: linear-gradient(180deg, rgba(232, 240, 248, 0.9), rgba(246, 249, 252, 0.98));
+          }
+
+          .travel-news-card-media img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            transition: transform 220ms ease;
+          }
+
+          .travel-news-card:hover .travel-news-card-media img {
+            transform: scale(1.03);
+          }
+
+          .travel-news-card-copy {
+            display: grid;
+            gap: 12px;
+            padding: 20px 20px 22px;
+          }
+
+          .travel-news-card-copy h3 {
+            margin: 0;
+            line-height: 1.24;
+          }
+
+          .travel-news-card-copy p {
+            margin: 0;
+            color: rgba(14, 40, 69, 0.78);
+            line-height: 1.68;
+          }
+
+          .travel-news-card-copy small {
+            color: var(--muted);
+          }
+        `}</style>
       </div>
     </section>
   );

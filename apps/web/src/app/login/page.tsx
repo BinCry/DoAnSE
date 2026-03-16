@@ -65,7 +65,6 @@ export default function LoginPage() {
       eyebrow="Tài khoản hành khách"
       title="Đăng nhập để theo dõi hành trình, điểm thưởng và các cập nhật dành riêng cho bạn."
       description="Khách hàng có tài khoản có thể xem lại đặt chỗ, lưu hồ sơ hành khách, nhận thông báo trước giờ bay và quản lý tiện ích sau khi mua vé. Nếu chưa có tài khoản, bạn vẫn có thể tiếp tục xem website và đặt vé với vai trò khách."
-      badge="Tài khoản khách hàng"
       stats={loginStats}
       sideTitle="Một tài khoản cho toàn bộ hành trình"
       sideDescription="Thông tin đặt chỗ, quyền lợi hội viên và thông báo thay đổi chuyến bay được gom về cùng một luồng theo dõi để hành khách thao tác nhanh hơn sau khi đăng nhập."
