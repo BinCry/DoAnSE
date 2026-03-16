@@ -535,9 +535,9 @@ export default function HomePage() {
         }
 
         .home-hero-copy h1 {
-          max-width: 14ch;
+          max-width: 32ch;
           color: rgba(6, 28, 49, 0.98);
-          font-size: clamp(2.95rem, 4.9vw, 4.5rem);
+          font-size: clamp(2.0rem, 4.0vw, 3.6rem);
           line-height: 1.04;
           letter-spacing: -0.042em;
           text-wrap: balance;
