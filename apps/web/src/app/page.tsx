@@ -535,10 +535,10 @@ export default function HomePage() {
         }
 
         .home-hero-copy h1 {
-          max-width: 11.2ch;
+          max-width: 14ch;
           color: rgba(6, 28, 49, 0.98);
-          font-size: clamp(3.2rem, 5.3vw, 4.92rem);
-          line-height: 1.02;
+          font-size: clamp(2.95rem, 4.9vw, 4.5rem);
+          line-height: 1.04;
           letter-spacing: -0.042em;
           text-wrap: balance;
           text-shadow: 0 10px 26px rgba(255, 255, 255, 0.42);
@@ -961,7 +961,7 @@ export default function HomePage() {
           }
 
           .home-hero-copy h1 {
-            max-width: 13.5ch;
+            max-width: 14.8ch;
           }
 
           .home-destination-grid {
