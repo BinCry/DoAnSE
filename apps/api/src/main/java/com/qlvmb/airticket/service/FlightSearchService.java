@@ -1,0 +1,198 @@
+package com.qlvmb.airticket.service;
+
+import com.qlvmb.airticket.domain.dto.FlightSearchResponse;
+import com.qlvmb.airticket.domain.entity.FlightEntity;
+import com.qlvmb.airticket.domain.entity.FlightFareInventoryEntity;
+import com.qlvmb.airticket.domain.mapper.FlightSearchMapper;
+import com.qlvmb.airticket.exception.BadRequestException;
+import com.qlvmb.airticket.repository.FlightRepository;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Objects;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+public class FlightSearchService {
+
+  private static final ZoneId ZONE_ID = ZoneId.of("Asia/Ho_Chi_Minh");
+  private static final List<String> SEARCH_FILTERS = List.of(
+      "Gio bay",
+      "Goi gia",
+      "Ngan sach",
+      "Con ghe"
+  );
+
+  private final FlightRepository flightRepository;
+  private final ProductCatalogService productCatalogService;
+  private final FlightSearchMapper flightSearchMapper;
+
+  public FlightSearchService(
+      FlightRepository flightRepository,
+      ProductCatalogService productCatalogService,
+      FlightSearchMapper flightSearchMapper
+  ) {
+    this.flightRepository = flightRepository;
+    this.productCatalogService = productCatalogService;
+    this.flightSearchMapper = flightSearchMapper;
+  }
+
+  @Transactional(readOnly = true)
+  public FlightSearchResponse searchFlights(
+      String from,
+      String to,
+      LocalDate departureDate,
+      LocalDate returnDate,
+      String tripType,
+      String fareFamily,
+      int adultCount,
+      int childCount,
+      int infantCount
+  ) {
+    String normalizedFrom = normalizeAirportCode(from);
+    String normalizedTo = normalizeAirportCode(to);
+    String normalizedTripType = normalizeTripType(tripType);
+    String normalizedFareFamily = normalizeFareFamily(fareFamily);
+
+    validateRequest(
+        normalizedFrom,
+        normalizedTo,
+        departureDate,
+        returnDate,
+        normalizedTripType,
+        normalizedFareFamily,
+        adultCount,
+        childCount,
+        infantCount
+    );
+
+    List<FlightSearchResponse.FlightCard> outboundFlights =
+        searchDirection(normalizedFrom, normalizedTo, departureDate, normalizedFareFamily);
+
+    List<FlightSearchResponse.FlightCard> returnFlights = "round_trip".equals(normalizedTripType)
+        ? searchDirection(normalizedTo, normalizedFrom, returnDate, normalizedFareFamily)
+        : List.of();
+
+    FlightSearchResponse.SearchCriteria criteria = flightSearchMapper.toCriteria(
+        normalizedFrom,
+        normalizedTo,
+        departureDate.toString(),
+        returnDate == null ? null : returnDate.toString(),
+        normalizedTripType,
+        normalizedFareFamily,
+        adultCount,
+        childCount,
+        infantCount
+    );
+
+    return new FlightSearchResponse(
+        normalizedTripType,
+        normalizedFrom,
+        normalizedTo,
+        SEARCH_FILTERS,
+        outboundFlights,
+        productCatalogService.buildFareCards(concatFlights(outboundFlights, returnFlights)),
+        criteria,
+        outboundFlights,
+        returnFlights
+    );
+  }
+
+  private List<FlightSearchResponse.FlightCard> concatFlights(
+      List<FlightSearchResponse.FlightCard> outboundFlights,
+      List<FlightSearchResponse.FlightCard> returnFlights
+  ) {
+    return java.util.stream.Stream.concat(outboundFlights.stream(), returnFlights.stream()).toList();
+  }
+
+  private List<FlightSearchResponse.FlightCard> searchDirection(
+      String from,
+      String to,
+      LocalDate date,
+      String fareFamily
+  ) {
+    OffsetDateTime start = date.atStartOfDay(ZONE_ID).toOffsetDateTime();
+    OffsetDateTime end = date.plusDays(1).atStartOfDay(ZONE_ID).toOffsetDateTime();
+    List<FlightEntity> flights = flightRepository.searchRoute(from, to, start, end);
+    List<FlightFareInventoryEntity> inventories = flights.stream()
+        .flatMap(flight -> flight.getFareInventories().stream())
+        .filter(inventory -> fareFamily == null || Objects.equals(inventory.getFareFamily(), fareFamily))
+        .toList();
+
+    if (inventories.isEmpty()) {
+      return List.of();
+    }
+
+    return inventories.stream()
+        .map(inventory -> flightSearchMapper.toFlightCard(inventory, inventory.getTotalSeats()))
+        .filter(card -> card.seatsLeft() > 0)
+        .toList();
+  }
+
+  private void validateRequest(
+      String from,
+      String to,
+      LocalDate departureDate,
+      LocalDate returnDate,
+      String tripType,
+      String fareFamily,
+      int adultCount,
+      int childCount,
+      int infantCount
+  ) {
+    if (departureDate == null) {
+      throw new BadRequestException("Ngay di khong duoc de trong.");
+    }
+    if (Objects.equals(from, to)) {
+      throw new BadRequestException("San bay di va den khong duoc trung nhau.");
+    }
+    if ("round_trip".equals(tripType) && returnDate == null) {
+      throw new BadRequestException("Hanh trinh khu hoi can co ngay ve.");
+    }
+    if (returnDate != null && returnDate.isBefore(departureDate)) {
+      throw new BadRequestException("Ngay ve khong duoc truoc ngay di.");
+    }
+    if (adultCount < 1) {
+      throw new BadRequestException("Phai co it nhat 1 nguoi lon.");
+    }
+    if (adultCount + childCount + infantCount > 9) {
+      throw new BadRequestException("Tong so hanh khach vuot qua gioi han 9 nguoi.");
+    }
+    if (infantCount > adultCount) {
+      throw new BadRequestException("So luong em be khong duoc vuot so nguoi lon.");
+    }
+    if (fareFamily != null) {
+      productCatalogService.requireFareMeta(fareFamily);
+    }
+  }
+
+  private String normalizeAirportCode(String airportCode) {
+    if (airportCode == null || airportCode.isBlank()) {
+      throw new BadRequestException("Ma san bay khong duoc de trong.");
+    }
+    return airportCode.trim().toUpperCase();
+  }
+
+  private String normalizeTripType(String tripType) {
+    if (tripType == null || tripType.isBlank()) {
+      return "round_trip";
+    }
+    String normalizedTripType = tripType.trim().toLowerCase();
+    if ("multi_city".equals(normalizedTripType)) {
+      throw new BadRequestException("Slice hien tai chua ho tro hanh trinh nhieu chang.");
+    }
+    if (!List.of("one_way", "round_trip").contains(normalizedTripType)) {
+      throw new BadRequestException("Loai hanh trinh khong hop le.");
+    }
+    return normalizedTripType;
+  }
+
+  private String normalizeFareFamily(String fareFamily) {
+    if (fareFamily == null || fareFamily.isBlank()) {
+      return null;
+    }
+    return productCatalogService.normalizeFareFamily(fareFamily);
+  }
+}
