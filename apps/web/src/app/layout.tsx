@@ -11,9 +11,21 @@ export const metadata: Metadata = {
   description:
     "Website bán vé máy bay nội địa với tra cứu chuyến bay, quản lý đặt chỗ, làm thủ tục trực tuyến và hỗ trợ hành khách.",
   icons: {
-    icon: "/images/logo-vietnamairlines.png",
-    shortcut: "/images/logo-vietnamairlines.png",
-    apple: "/images/logo-vietnamairlines.png"
+    icon: [
+      {
+        url: "/images/logo-tab.png",
+        sizes: "1200x1200",
+        type: "image/png"
+      }
+    ],
+    shortcut: ["/images/logo-tab.png"],
+    apple: [
+      {
+        url: "/images/logo-tab.png",
+        sizes: "1200x1200",
+        type: "image/png"
+      }
+    ]
   }
 };
 

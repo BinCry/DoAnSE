@@ -344,6 +344,10 @@ export default function HomePage() {
           gap: 28px;
         }
 
+        .command-grid {
+          align-items: stretch;
+        }
+
         .quick-grid,
         .card-grid,
         .stack-list {
@@ -425,6 +429,79 @@ export default function HomePage() {
             radial-gradient(circle at 12% 22%, rgba(210, 176, 105, 0.22), transparent 22%),
             radial-gradient(circle at 84% 12%, rgba(48, 117, 186, 0.22), transparent 18%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent 60%);
+        }
+
+        .metric-card-dark,
+        .command-panel {
+          position: relative;
+          overflow: hidden;
+          border-color: rgba(255, 255, 255, 0.14);
+          background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08)),
+            radial-gradient(circle at top right, rgba(216, 176, 104, 0.18), transparent 32%),
+            radial-gradient(circle at bottom left, rgba(92, 152, 217, 0.12), transparent 30%);
+          box-shadow: 0 24px 58px rgba(3, 14, 30, 0.26);
+          backdrop-filter: blur(16px);
+        }
+
+        .metric-card-dark {
+          display: grid;
+          align-content: start;
+          gap: 12px;
+          min-height: 214px;
+        }
+
+        .metric-card-dark span {
+          display: block;
+          color: rgba(247, 243, 234, 0.74);
+          font-size: 0.82rem;
+          font-weight: 600;
+          line-height: 1.45;
+          letter-spacing: 0.01em;
+        }
+
+        .metric-card-dark strong {
+          display: block;
+          margin: 0;
+          color: rgba(255, 247, 232, 0.98);
+          font-size: clamp(1.62rem, 1.9vw, 2rem);
+          line-height: 1.02;
+          letter-spacing: -0.03em;
+        }
+
+        .metric-card-dark p {
+          margin: 0;
+          color: rgba(247, 243, 234, 0.88);
+        }
+
+        .section-dark .command-panel h3 {
+          color: rgba(255, 247, 232, 0.98);
+        }
+
+        .section-dark .command-panel p {
+          color: rgba(247, 243, 234, 0.84);
+        }
+
+        .section-dark .role-chip {
+          background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.1));
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .compact-stack {
+          gap: 0;
+        }
+
+        .support-compact-item {
+          padding: 14px 0;
+        }
+
+        .support-compact-item:first-child {
+          padding-top: 0;
+        }
+
+        .support-compact-item:last-child {
+          padding-bottom: 0;
         }
 
         .home-hero-grid {
