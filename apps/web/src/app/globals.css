@@ -736,12 +736,13 @@ img {
 
 .search-mini-metrics {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(98px, max-content));
+  gap: 18px;
+  justify-content: end;
 }
 
 .search-mini-metrics div {
-  min-width: 92px;
+  min-width: 98px;
   padding: 12px 14px;
   border-radius: 16px;
   background: rgba(18, 61, 105, 0.06);
@@ -2507,7 +2508,9 @@ th {
   }
 
   .search-mini-metrics {
-    width: 100%;
+    width: fit-content;
+    max-width: 100%;
+    justify-content: start;
   }
 
   .result-top,
@@ -2830,7 +2833,7 @@ th {
   }
 
   .search-mini-metrics {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(98px, max-content));
   }
 
   .hero-actions {
