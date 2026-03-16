@@ -6,12 +6,12 @@ import { SectionHeading } from "@/components/section-heading";
 import { StatusChip } from "@/components/status-chip";
 import {
   destinations,
-  featuredArticles,
   heroHighlights,
   promotions,
   quickServices,
   supportChannels
 } from "@/lib/mock-data";
+import { getLatestTravelArticles } from "@/lib/newsdata";
 import { formatCurrency } from "@/lib/format";
 
 const heroStats = [
@@ -90,7 +90,11 @@ const featuredDestinations = [
   }
 ];
 
-export default function HomePage() {
+export const revalidate = 604800;
+
+export default async function HomePage() {
+  const latestArticleShowcase = await getLatestTravelArticles(4);
+
   return (
     <>
       <section className="hero-section home-hero-section">
@@ -243,43 +247,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="container section-split">
-          <div>
-          <SectionHeading
-            eyebrow="Ưu đãi & nội dung"
-            title="Ưu đãi theo mùa, cẩm nang hành trình và hướng dẫn trước chuyến bay"
-            description="Khuyến mãi hỗ trợ chốt đặt vé, trong khi cẩm nang và hướng dẫn giúp hành khách chuẩn bị tốt hơn trước khi đến sân bay."
-          />
-            <div className="card-grid card-grid-3">
-              {promotions.map((promotion) => (
-                <article key={promotion.title} className="surface-card promo-card">
-                  <span className="pill">{promotion.tag}</span>
-                  <h3>{promotion.title}</h3>
-                  <p>{promotion.summary}</p>
-                  <button type="button" className="text-button">
-                    {promotion.cta}
-                  </button>
-                </article>
-              ))}
+      <section className="section home-latest-articles-section">
+        <div className="container">
+          <div className="home-latest-articles-head">
+            <div className="home-latest-articles-title">
+              <div className="home-latest-articles-icon" aria-hidden="true">
+                <span className="home-latest-articles-icon-back" />
+                <span className="home-latest-articles-icon-front" />
+              </div>
+              <h2>Các bài viết mới nhất</h2>
             </div>
+            <p>Luôn nắm bắt những kinh nghiệm du lịch mới nhất</p>
           </div>
-          <div>
-            <SectionHeading
-              eyebrow="Cẩm nang & hỗ trợ"
-              title="Thông tin đồng hành rõ ràng ở từng chặng của chuyến đi"
-              description="Từ mẹo đi sân bay, quy định đổi vé đến cẩm nang điểm đến, mọi nội dung đều được sắp theo nhu cầu tra cứu thực tế để hành khách dễ tìm và dễ dùng."
-            />
-            <div className="stack-list">
-              {featuredArticles.map((article) => (
-                <article key={article.slug} className="surface-card article-card">
-                  <span className="pill">{article.category}</span>
+
+          <div className="home-latest-articles-grid">
+            {latestArticleShowcase.map((article) => (
+              <a
+                key={article.title}
+                href={article.href}
+                className="home-latest-article-card"
+                rel={article.external ? "noreferrer" : undefined}
+                target={article.external ? "_blank" : undefined}
+              >
+                <div className="home-latest-article-media">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    loading="lazy"
+                  />
+                </div>
+                <div className="home-latest-article-copy">
                   <h3>{article.title}</h3>
-                  <p>{article.summary}</p>
+                  <span>{article.source}</span>
                   <small>{article.readTime}</small>
-                </article>
-              ))}
-            </div>
+                </div>
+              </a>
+            ))}
+          </div>
+
+          <div className="home-latest-articles-cta">
+            <Link href="/blog" className="button button-secondary home-latest-articles-button">
+              Đọc thêm các bài viết du lịch
+              <span aria-hidden="true">›</span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="container">
+          <SectionHeading
+            eyebrow="Ưu đãi theo mùa"
+            title="Những chương trình nên xem ngay trước khi chốt hành trình"
+            description="Ưu đãi được gom theo từng nhóm nhu cầu để hành khách dễ đối chiếu quyền lợi, thời hạn áp dụng và quay lại bước đặt vé nhanh hơn."
+          />
+          <div className="card-grid card-grid-3">
+            {promotions.map((promotion) => (
+              <article key={promotion.title} className="surface-card promo-card">
+                <span className="pill">{promotion.tag}</span>
+                <h3>{promotion.title}</h3>
+                <p>{promotion.summary}</p>
+                <button type="button" className="text-button">
+                  {promotion.cta}
+                </button>
+              </article>
+            ))}
           </div>
         </div>
       </section>
@@ -776,6 +808,183 @@ export default function HomePage() {
             linear-gradient(180deg, rgba(252, 248, 241, 0.92), rgba(240, 246, 251, 0.9));
         }
 
+        .home-latest-articles-section {
+          padding-top: 42px;
+          padding-bottom: 22px;
+        }
+
+        .home-latest-articles-head {
+          display: grid;
+          gap: 12px;
+          margin-bottom: 32px;
+        }
+
+        .home-latest-articles-title {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .home-latest-articles-title h2 {
+          margin: 0;
+          color: rgba(7, 29, 50, 0.97);
+          font-size: clamp(1.8rem, 2.7vw, 2.54rem);
+          line-height: 1.08;
+          letter-spacing: -0.03em;
+        }
+
+        .home-latest-articles-head p {
+          margin: 0;
+          color: rgba(14, 40, 69, 0.6);
+          font-size: 1.02rem;
+          font-weight: 600;
+          line-height: 1.7;
+        }
+
+        .home-latest-articles-icon {
+          position: relative;
+          width: 34px;
+          height: 34px;
+          flex-shrink: 0;
+        }
+
+        .home-latest-articles-icon-back,
+        .home-latest-articles-icon-front {
+          position: absolute;
+          border-radius: 10px;
+          border: 1px solid rgba(74, 132, 205, 0.22);
+          box-shadow: 0 12px 22px rgba(20, 77, 134, 0.12);
+        }
+
+        .home-latest-articles-icon-back {
+          inset: 5px 1px 1px 9px;
+          background: linear-gradient(180deg, rgba(121, 183, 248, 0.24), rgba(84, 146, 224, 0.12));
+        }
+
+        .home-latest-articles-icon-front {
+          inset: 1px 9px 5px 1px;
+          background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(239, 246, 255, 0.96)),
+            linear-gradient(135deg, rgba(116, 178, 246, 0.18), rgba(210, 177, 102, 0.08));
+        }
+
+        .home-latest-articles-icon-front::before,
+        .home-latest-articles-icon-front::after {
+          content: "";
+          position: absolute;
+          left: 7px;
+          border-radius: 4px;
+        }
+
+        .home-latest-articles-icon-front::before {
+          top: 7px;
+          width: 16px;
+          height: 5px;
+          background: linear-gradient(90deg, rgba(113, 191, 106, 0.98), rgba(191, 226, 102, 0.92));
+        }
+
+        .home-latest-articles-icon-front::after {
+          top: 15px;
+          width: 11px;
+          height: 5px;
+          background: linear-gradient(90deg, rgba(86, 151, 226, 0.92), rgba(126, 183, 246, 0.88));
+        }
+
+        .home-latest-articles-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 24px;
+        }
+
+        .home-latest-article-card {
+          display: grid;
+          align-content: start;
+          gap: 16px;
+          color: inherit;
+          text-decoration: none;
+        }
+
+        .home-latest-article-media {
+          position: relative;
+          overflow: hidden;
+          aspect-ratio: 1.44;
+          border-radius: 24px;
+          border: 1px solid rgba(18, 61, 105, 0.08);
+          background: linear-gradient(180deg, rgba(230, 239, 248, 0.62), rgba(244, 248, 252, 0.98));
+          box-shadow: 0 20px 36px rgba(18, 61, 105, 0.1);
+        }
+
+        .home-latest-article-media::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(7, 24, 41, 0) 36%, rgba(7, 24, 41, 0.12) 100%);
+          pointer-events: none;
+        }
+
+        .home-latest-article-media img {
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          transition: transform 220ms ease;
+        }
+
+        .home-latest-article-card:hover .home-latest-article-media img {
+          transform: scale(1.03);
+        }
+
+        .home-latest-article-copy {
+          display: grid;
+          gap: 6px;
+          padding: 0 12px;
+        }
+
+        .home-latest-article-copy h3 {
+          margin: 0;
+          color: rgba(7, 29, 50, 0.97);
+          font-size: clamp(1.12rem, 1.46vw, 1.28rem);
+          line-height: 1.22;
+          letter-spacing: -0.024em;
+          text-wrap: balance;
+        }
+
+        .home-latest-article-copy span,
+        .home-latest-article-copy small {
+          color: rgba(14, 40, 69, 0.58);
+          font-size: 0.94rem;
+          font-weight: 600;
+          line-height: 1.6;
+        }
+
+        .home-latest-articles-cta {
+          display: flex;
+          justify-content: center;
+          margin-top: 34px;
+        }
+
+        .home-latest-articles-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          min-height: 58px;
+          padding: 0 30px;
+          border-color: rgba(74, 132, 205, 0.12);
+          background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(239, 245, 252, 0.94)),
+            radial-gradient(circle at top left, rgba(113, 191, 106, 0.08), transparent 20%);
+          color: rgba(74, 132, 205, 0.96);
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.9),
+            0 18px 36px rgba(18, 61, 105, 0.08);
+        }
+
+        .home-latest-articles-button span {
+          font-size: 1.4rem;
+          line-height: 1;
+        }
+
         .ops-strip-card,
         .spotlight-card,
         .feature-card-rich,
@@ -967,6 +1176,10 @@ export default function HomePage() {
           .home-destination-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
+
+          .home-latest-articles-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
         }
 
         @media (max-width: 820px) {
@@ -1027,6 +1240,30 @@ export default function HomePage() {
           .home-destination-overlay {
             padding: 24px;
           }
+
+          .home-latest-articles-section {
+            padding-top: 20px;
+          }
+
+          .home-latest-articles-head {
+            margin-bottom: 24px;
+          }
+
+          .home-latest-articles-title {
+            align-items: flex-start;
+          }
+
+          .home-latest-articles-title h2 {
+            font-size: clamp(1.58rem, 5.4vw, 2.02rem);
+          }
+
+          .home-latest-articles-head p {
+            font-size: 0.96rem;
+          }
+
+          .home-latest-articles-grid {
+            gap: 18px;
+          }
         }
 
         @media (max-width: 520px) {
@@ -1074,6 +1311,27 @@ export default function HomePage() {
 
           .home-destination-overlay {
             padding: 20px;
+          }
+
+          .home-latest-articles-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .home-latest-article-card {
+            gap: 14px;
+          }
+
+          .home-latest-article-copy {
+            padding: 0 4px;
+          }
+
+          .home-latest-articles-cta {
+            margin-top: 26px;
+          }
+
+          .home-latest-articles-button {
+            width: 100%;
+            padding: 0 22px;
           }
         }
       `}</style>

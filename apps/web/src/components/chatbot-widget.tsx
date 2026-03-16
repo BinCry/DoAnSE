@@ -1,25 +1,219 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const quickPrompts = [
-  "Tra cứu bằng mã đặt chỗ",
-  "Làm thủ tục 24h - 60 phút",
-  "Mua thêm hành lý",
-  "Đổi hoặc hoàn vé"
-];
+import {
+  chatbotModeConfig,
+  chatbotModeOrder,
+  type ChatAuthor,
+  type ChatMode,
+  type ChatbotAction,
+  type ChatbotApiResponse
+} from "@/lib/chatbot-shared";
+
+interface WidgetMessage {
+  actions?: ChatbotAction[];
+  content: string;
+  id: string;
+  pending?: boolean;
+  role: ChatAuthor;
+}
+
+function createMessage(
+  role: ChatAuthor,
+  content: string,
+  actions?: ChatbotAction[],
+  pending = false
+): WidgetMessage {
+  return {
+    actions,
+    content,
+    id: `${role}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    pending,
+    role
+  };
+}
+
+function createInitialMessages(mode: ChatMode) {
+  return [createMessage("assistant", chatbotModeConfig[mode].welcome)];
+}
+
+function buildPendingLabel(mode: ChatMode) {
+  return mode === "travel" ? "AI đang gợi ý điểm đến..." : "Trợ lý đang trả lời...";
+}
+
+function buildFallbackErrorMessage(mode: ChatMode) {
+  if (mode === "travel") {
+    return "Mình vừa gặp chút trục trặc khi lấy gợi ý AI. Bạn có thể thử lại với ngân sách, số ngày hoặc điểm khởi hành rõ hơn để mình hỗ trợ tiếp.";
+  }
+
+  return "Mình vừa gặp chút trục trặc. Bạn có thể hỏi lại về check-in, hành lý, đổi vé hoặc mở trang hỗ trợ để được tiếp tục trợ giúp.";
+}
 
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeMode, setActiveMode] = useState<ChatMode>("support");
+  const [draftByMode, setDraftByMode] = useState<Record<ChatMode, string>>({
+    support: "",
+    travel: ""
+  });
+  const [errorByMode, setErrorByMode] = useState<Record<ChatMode, string>>({
+    support: "",
+    travel: ""
+  });
+  const [isPendingByMode, setIsPendingByMode] = useState<Record<ChatMode, boolean>>({
+    support: false,
+    travel: false
+  });
+  const [messagesByMode, setMessagesByMode] = useState<Record<ChatMode, WidgetMessage[]>>({
+    support: createInitialMessages("support"),
+    travel: createInitialMessages("travel")
+  });
+  const conversationRef = useRef<HTMLDivElement | null>(null);
+
+  const activeConfig = chatbotModeConfig[activeMode];
+  const activeDraft = draftByMode[activeMode];
+  const activeError = errorByMode[activeMode];
+  const activeMessages = messagesByMode[activeMode];
+  const isPending = isPendingByMode[activeMode];
+
+  useEffect(() => {
+    if (!isOpen || !conversationRef.current) {
+      return;
+    }
+
+    conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+  }, [activeMessages.length, activeMode, isOpen, isPending]);
+
+  async function submitMessage(rawContent: string) {
+    const content = rawContent.trim();
+
+    if (!content || isPending) {
+      return;
+    }
+
+    const currentMode = activeMode;
+    const userMessage = createMessage("user", content);
+    const pendingMessage = createMessage(
+      "assistant",
+      buildPendingLabel(currentMode),
+      undefined,
+      true
+    );
+    const outboundMessages = [...messagesByMode[currentMode], userMessage];
+
+    setMessagesByMode((previousState) => ({
+      ...previousState,
+      [currentMode]: [...previousState[currentMode], userMessage, pendingMessage]
+    }));
+    setDraftByMode((previousState) => ({
+      ...previousState,
+      [currentMode]: ""
+    }));
+    setErrorByMode((previousState) => ({
+      ...previousState,
+      [currentMode]: ""
+    }));
+    setIsPendingByMode((previousState) => ({
+      ...previousState,
+      [currentMode]: true
+    }));
+
+    try {
+      const response = await fetch("/api/chatbot", {
+        body: JSON.stringify({
+          messages: outboundMessages.map((message) => ({
+            content: message.content,
+            role: message.role
+          })),
+          mode: currentMode
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        },
+        method: "POST"
+      });
+
+      const data = (await response.json()) as ChatbotApiResponse;
+
+      if (!response.ok || !data.reply) {
+        throw new Error("Không nhận được phản hồi hợp lệ từ chatbot.");
+      }
+
+      setMessagesByMode((previousState) => ({
+        ...previousState,
+        [currentMode]: previousState[currentMode].map((message) =>
+          message.id === pendingMessage.id
+            ? createMessage("assistant", data.reply, data.actions)
+            : message
+        )
+      }));
+    } catch {
+      setErrorByMode((previousState) => ({
+        ...previousState,
+        [currentMode]:
+          currentMode === "travel"
+            ? "Gemini đang bận hoặc chưa phản hồi. Mình đã chuyển sang lời nhắc dự phòng nếu có thể."
+            : "Mình chưa xử lý được yêu cầu hỗ trợ này. Bạn thử hỏi lại ngắn gọn hơn nhé."
+      }));
+      setMessagesByMode((previousState) => ({
+        ...previousState,
+        [currentMode]: previousState[currentMode].map((message) =>
+          message.id === pendingMessage.id
+            ? createMessage("assistant", buildFallbackErrorMessage(currentMode))
+            : message
+        )
+      }));
+    } finally {
+      setIsPendingByMode((previousState) => ({
+        ...previousState,
+        [currentMode]: false
+      }));
+    }
+  }
+
+  function resetConversation(mode: ChatMode) {
+    setMessagesByMode((previousState) => ({
+      ...previousState,
+      [mode]: createInitialMessages(mode)
+    }));
+    setDraftByMode((previousState) => ({
+      ...previousState,
+      [mode]: ""
+    }));
+    setErrorByMode((previousState) => ({
+      ...previousState,
+      [mode]: ""
+    }));
+  }
 
   return (
     <div className="chatbot-root">
       {isOpen ? (
-        <div className="chatbot-panel">
+        <div className="chatbot-panel surface-card">
           <div className="chatbot-header">
-            <div>
-              <strong>Trợ lý Vietnam Airlines</strong>
-              <p>Hỗ trợ tra cứu đặt chỗ, làm thủ tục trực tuyến và kết nối chuyên viên hỗ trợ khi cần.</p>
+            <div className="chatbot-header-copy">
+              <div className="chatbot-title-row">
+                <strong>Trợ lý AI Vietnam Airlines</strong>
+                <span className="chatbot-mode-badge">{activeConfig.label}</span>
+              </div>
+              <p>{activeConfig.description}</p>
+              <div className="chatbot-mode-switch" role="tablist" aria-label="Chế độ chatbot">
+                {chatbotModeOrder.map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    className={`chatbot-mode-tab${
+                      mode === activeMode ? " chatbot-mode-tab-active" : ""
+                    }`}
+                    onClick={() => setActiveMode(mode)}
+                    aria-selected={mode === activeMode}
+                    disabled={isPending}
+                  >
+                    {chatbotModeConfig[mode].label}
+                  </button>
+                ))}
+              </div>
             </div>
             <button
               type="button"
@@ -31,27 +225,98 @@ export function ChatbotWidget() {
             </button>
           </div>
           <div className="chatbot-body">
-            <div className="chat-message chat-message-bot">
-              Xin chào. Tôi có thể hỗ trợ bạn tra cứu hành trình bằng mã đặt chỗ,
-              kiểm tra thời gian làm thủ tục trực tuyến, hướng dẫn mua thêm hành lý
-              hoặc kết nối tới chuyên viên hỗ trợ.
+            <div className="chatbot-mode-note">{activeConfig.emptyLabel}</div>
+            <div ref={conversationRef} className="chatbot-conversation">
+              {activeMessages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`chat-message ${
+                    message.role === "assistant"
+                      ? "chat-message-bot"
+                      : "chat-message-user"
+                  }${message.pending ? " chat-message-pending" : ""}`}
+                >
+                  {message.pending ? (
+                    <div className="chat-typing-dots" aria-hidden="true">
+                      <span />
+                      <span />
+                      <span />
+                    </div>
+                  ) : null}
+                  <p>{message.content}</p>
+                  {message.actions && message.actions.length > 0 && !message.pending ? (
+                    <div className="chat-message-actions">
+                      {message.actions.map((action) => (
+                        <a
+                          key={`${message.id}-${action.href}`}
+                          href={action.href}
+                          className="chat-message-action"
+                        >
+                          {action.label}
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
             </div>
             <div className="chat-prompt-grid">
-              {quickPrompts.map((prompt) => (
-                <button key={prompt} type="button" className="prompt-chip">
+              {activeConfig.prompts.map((prompt) => (
+                <button
+                  key={prompt}
+                  type="button"
+                  className="prompt-chip"
+                  onClick={() => submitMessage(prompt)}
+                  disabled={isPending}
+                >
                   {prompt}
                 </button>
               ))}
             </div>
-            <div className="chat-message chat-message-user">
-              Tôi muốn làm thủ tục online thì cần chuẩn bị gì?
-            </div>
-            <div className="chat-message chat-message-bot">
-              Bạn chỉ cần mã đặt chỗ và họ hành khách như trên vé. Làm thủ tục
-              trực tuyến hiện mở từ 24 giờ và đóng trước 60 phút so với giờ khởi
-              hành. Nếu có hành lý ký gửi hoặc cần hỗ trợ đặc biệt, bạn vẫn nên
-              đến quầy làm thủ tục sớm để được hỗ trợ thêm.
-            </div>
+            {activeError ? <div className="chatbot-status">{activeError}</div> : null}
+            <form
+              className="chatbot-composer"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submitMessage(activeDraft);
+              }}
+            >
+              <textarea
+                value={activeDraft}
+                onChange={(event) =>
+                  setDraftByMode((previousState) => ({
+                    ...previousState,
+                    [activeMode]: event.target.value
+                  }))
+                }
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault();
+                    void submitMessage(activeDraft);
+                  }
+                }}
+                className="chatbot-input"
+                placeholder={activeConfig.placeholder}
+                rows={3}
+              />
+              <div className="chatbot-composer-actions">
+                <button
+                  type="button"
+                  className="chatbot-clear-button"
+                  onClick={() => resetConversation(activeMode)}
+                  disabled={isPending}
+                >
+                  Làm mới đoạn chat
+                </button>
+                <button
+                  type="submit"
+                  className="button button-primary chatbot-send-button"
+                  disabled={isPending}
+                >
+                  {isPending ? "Đang trả lời..." : activeConfig.submitLabel}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       ) : null}
@@ -60,7 +325,7 @@ export function ChatbotWidget() {
         className="chatbot-button"
         onClick={() => setIsOpen((value) => !value)}
       >
-        Hỗ trợ nhanh
+        Trợ lý AI
       </button>
     </div>
   );

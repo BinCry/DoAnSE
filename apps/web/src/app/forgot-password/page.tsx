@@ -107,7 +107,6 @@ export default function ForgotPasswordPage() {
       eyebrow="Khôi phục tài khoản"
       title="Lấy lại quyền truy cập bằng luồng OTP rõ ràng, dễ thao tác và kiểm tra an toàn ngay trên web."
       description="Khi quên mật khẩu, hành khách có thể xác minh email, nhập mã OTP và đặt lại mật khẩu mới ngay trên website. Website vẫn mở cho khách vãng lai, còn tài khoản chỉ được khôi phục sau khi qua bước xác minh phù hợp."
-      badge="OTP qua email"
       stats={forgotStats}
       sideTitle="Khôi phục quyền truy cập theo từng bước"
       sideDescription="Mỗi bước được tách riêng để hành khách biết mình đang ở đâu trong quá trình khôi phục mật khẩu, đặc biệt hữu ích khi thao tác trên mobile hoặc khi cần nhận hỗ trợ từ tổng đài."

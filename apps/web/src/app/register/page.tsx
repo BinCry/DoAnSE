@@ -78,7 +78,6 @@ export default function RegisterPage() {
       eyebrow="Tạo tài khoản"
       title="Tạo tài khoản khách hàng để lưu hồ sơ, nhận ưu đãi và theo dõi hành trình thuận tiện hơn."
       description="Tài khoản Vietnam Airlines phù hợp với hành khách thường xuyên bay nội địa, cần lưu thông tin liên hệ, hồ sơ hành khách và các ưu đãi cá nhân. Bạn vẫn có thể xem website với vai trò khách nếu chưa muốn đăng ký ngay."
-      badge="Đăng ký mới"
       stats={registerStats}
       sideTitle="Tạo nền tảng cho những lần đặt vé tiếp theo"
       sideDescription="Ngay từ bước đăng ký, hệ thống sẽ gợi ý mật khẩu an toàn, giúp chuẩn bị hồ sơ khách hàng gọn gàng và hạn chế rủi ro khi cần khôi phục tài khoản."

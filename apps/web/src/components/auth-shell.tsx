@@ -30,7 +30,6 @@ interface AuthShellProps {
   eyebrow: string;
   title: string;
   description: string;
-  badge: string;
   stats: AuthStat[];
   sideTitle: string;
   sideDescription: string;
@@ -54,7 +53,6 @@ export function AuthShell({
   eyebrow,
   title,
   description,
-  badge,
   stats,
   sideTitle,
   sideDescription,
@@ -67,13 +65,7 @@ export function AuthShell({
       <div className="container auth-layout">
         <div className="auth-intro">
           <span className="section-eyebrow">{eyebrow}</span>
-          <div className="auth-heading-row">
-            <h1 className="page-title">{title}</h1>
-            <div className="auth-heading-badge">
-              <span>Khu vực truy cập</span>
-              <strong>{badge}</strong>
-            </div>
-          </div>
+          <h1 className="page-title">{title}</h1>
           <p className="page-hero-copy auth-page-copy">{description}</p>
 
           <div className="auth-stat-grid">
