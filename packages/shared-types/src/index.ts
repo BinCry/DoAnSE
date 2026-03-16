@@ -204,3 +204,136 @@ export interface AuditEntry {
   target: string;
   time: string;
 }
+
+export interface AirportOption {
+  code: string;
+  cityName: string;
+  airportName: string;
+  terminalLabel: string;
+}
+
+export interface ApiFlightSearchCriteria {
+  from: string;
+  to: string;
+  departureDate: string;
+  returnDate: string | null;
+  tripType: Exclude<TripType, "multi_city">;
+  fareFamily: FareFamily | null;
+  adultCount: number;
+  childCount: number;
+  infantCount: number;
+}
+
+export interface ApiFlightCard {
+  inventoryId: number;
+  flightId: number;
+  code: string;
+  from: string;
+  to: string;
+  originCode: string;
+  destinationCode: string;
+  departureAt: string;
+  arrivalAt: string;
+  departureTime: string;
+  arrivalTime: string;
+  duration: string;
+  status: FlightStatus;
+  fareFamily: FareFamily;
+  price: number;
+  seatsLeft: number;
+}
+
+export interface ApiFareCard {
+  fareFamily: FareFamily;
+  title: string;
+  price: number;
+  perks: string[];
+}
+
+export interface ApiFlightSearchResponse {
+  tripType: Exclude<TripType, "multi_city">;
+  from: string;
+  to: string;
+  filters: string[];
+  flights: ApiFlightCard[];
+  fares: ApiFareCard[];
+  criteria: ApiFlightSearchCriteria;
+  outboundFlights: ApiFlightCard[];
+  returnFlights: ApiFlightCard[];
+}
+
+export interface ApiBookingContactInput {
+  fullName: string;
+  email: string;
+  phone: string;
+}
+
+export interface ApiBookingPassengerInput {
+  fullName: string;
+  passengerType: PassengerType;
+  dateOfBirth: string;
+  documentType: string;
+  documentNumber: string;
+}
+
+export interface ApiBookingSegmentInput {
+  inventoryId: number;
+}
+
+export interface ApiBookingAncillaryInput {
+  code: string;
+  quantity?: number | null;
+}
+
+export interface ApiCreateBookingHoldRequest {
+  tripType: Exclude<TripType, "multi_city">;
+  contact: ApiBookingContactInput;
+  passengers: ApiBookingPassengerInput[];
+  segments: ApiBookingSegmentInput[];
+  ancillaries: ApiBookingAncillaryInput[];
+}
+
+export interface ApiBookingPriceSummary {
+  baseAmount: number;
+  ancillaryAmount: number;
+  totalAmount: number;
+  currency: "VND";
+}
+
+export interface ApiBookingSelectedSegment {
+  inventoryId: number;
+  code: string;
+  from: string;
+  to: string;
+  originCode: string;
+  destinationCode: string;
+  departureAt: string;
+  arrivalAt: string;
+  fareFamily: FareFamily;
+  fareTitle: string;
+  pricePerPassenger: number;
+  passengerCount: number;
+  subtotalAmount: number;
+}
+
+export interface ApiBookingSelectedAncillary {
+  code: string;
+  name: string;
+  description: string;
+  unitPrice: number;
+  quantity: number;
+  subtotalAmount: number;
+}
+
+export interface ApiBookingHoldResponse {
+  bookingCode: string;
+  status: Extract<BookingStatus, "held">;
+  expiresAt: string;
+  createdAt: string;
+  tripType: Exclude<TripType, "multi_city">;
+  contact: ApiBookingContactInput;
+  passengers: ApiBookingPassengerInput[];
+  selectedSegments: ApiBookingSelectedSegment[];
+  selectedAncillaries: ApiBookingSelectedAncillary[];
+  priceSummary: ApiBookingPriceSummary;
+}
