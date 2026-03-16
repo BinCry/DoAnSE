@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
 import { StatusChip } from "@/components/status-chip";
 
@@ -101,6 +102,11 @@ export default function LoginPage() {
         </article>
       ) : (
         <form className="auth-form" onSubmit={handleSubmit}>
+          <AuthGooglePlaceholder
+            buttonLabel="Tiếp tục với Google"
+            helperText="Lựa chọn đăng nhập bằng Google đang được chuẩn bị để nối vào luồng xác thực sau này. Hiện tại bạn vẫn có thể dùng email và mật khẩu như bên dưới."
+          />
+
           <div className="auth-field-grid">
             <label className="field auth-field">
               <span>Email đăng ký</span>

@@ -22,7 +22,7 @@ interface TravelReply {
 }
 
 const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3:generateContent";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
 
 const destinationProfiles = [
   {
@@ -137,7 +137,7 @@ export async function buildTravelReply(
       temperature: 0.7,
       topP: 0.9,
       thinkingConfig: {
-        thinkingBudget: 0
+        thinkingLevel: "minimal"
       }
     },
     systemInstruction: {

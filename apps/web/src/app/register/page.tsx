@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
+import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
 import { PasswordChecklist } from "@/components/password-checklist";
 import { StatusChip } from "@/components/status-chip";
@@ -115,6 +116,11 @@ export default function RegisterPage() {
         </article>
       ) : (
         <form className="auth-form" onSubmit={handleSubmit}>
+          <AuthGooglePlaceholder
+            buttonLabel="Tạo tài khoản với Google"
+            helperText="Lựa chọn đăng ký bằng Google đã có vị trí sẵn trên giao diện để tích hợp ở bước tiếp theo. Trước mắt bạn vẫn tạo tài khoản bằng email và mật khẩu."
+          />
+
           <div className="auth-field-grid auth-field-grid-double">
             <label className="field auth-field">
               <span>Họ và tên</span>
