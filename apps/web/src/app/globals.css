@@ -1308,7 +1308,8 @@ img {
   color: #fff8ef;
 }
 
-.support-media-overlay .pill {
+.support-media-overlay .pill,
+.boarding-preview-overlay .pill {
   border: 1px solid rgba(246, 211, 122, 0.44);
   background: linear-gradient(135deg, rgba(121, 83, 18, 0.34), rgba(246, 211, 122, 0.18));
   color: rgba(255, 235, 173, 0.98);
@@ -1533,6 +1534,16 @@ img {
     linear-gradient(135deg, rgba(12, 34, 61, 0.94), rgba(19, 51, 87, 0.9));
   color: #f7f3ea;
   box-shadow: var(--shadow-strong);
+}
+
+.blog-hero-panel .pill {
+  border: 1px solid rgba(246, 211, 122, 0.38);
+  background: linear-gradient(135deg, rgba(121, 83, 18, 0.34), rgba(246, 211, 122, 0.16));
+  color: rgba(255, 236, 180, 0.98);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 247, 219, 0.16),
+    0 10px 22px rgba(62, 42, 8, 0.16);
+  text-shadow: 0 2px 10px rgba(62, 42, 8, 0.24);
 }
 
 .blog-hero-panel p {
