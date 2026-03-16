@@ -108,9 +108,11 @@ img {
 .section-dark {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   background:
-    radial-gradient(circle at top right, rgba(202, 164, 95, 0.18), transparent 24%),
-    linear-gradient(135deg, rgba(12, 34, 61, 0.98), rgba(19, 51, 87, 0.96));
+    radial-gradient(circle at 12% 18%, rgba(224, 186, 114, 0.2), transparent 24%),
+    radial-gradient(circle at 84% 20%, rgba(80, 146, 213, 0.18), transparent 22%),
+    linear-gradient(140deg, rgba(8, 27, 50, 0.99), rgba(14, 43, 76, 0.98) 52%, rgba(21, 63, 106, 0.95));
   color: #f7f3ea;
 }
 
@@ -119,9 +121,9 @@ img {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 120px 120px;
+    radial-gradient(circle at 18% 72%, rgba(255, 255, 255, 0.08), transparent 24%),
+    radial-gradient(circle at 88% 34%, rgba(224, 186, 114, 0.12), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 30%, rgba(255, 255, 255, 0.02) 100%);
   pointer-events: none;
 }
 
@@ -299,13 +301,16 @@ img {
 .brand-logo {
   display: block;
   width: min(100%, 360px);
+  aspect-ratio: 1086 / 159;
+  overflow: hidden;
   line-height: 0;
 }
 
 .brand-logo img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 56%;
   display: block;
   image-rendering: auto;
   filter: none;
@@ -1722,13 +1727,16 @@ thead th {
 .footer-brand-logo {
   display: block;
   width: min(100%, 360px);
+  aspect-ratio: 1086 / 159;
+  overflow: hidden;
   line-height: 0;
 }
 
 .footer-brand-logo img {
   width: 100%;
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 56%;
   display: block;
   image-rendering: auto;
   filter: none;

@@ -16,7 +16,7 @@ export function SiteFooter() {
         <div className="footer-brand">
           <span className="footer-brand-logo">
             <Image
-              src="/images/logo-vietnamairlines.png"
+              src="/images/logo-vietnamairlines.jpg"
               alt="Logo Vietnam Airlines"
               width={1086}
               height={159}
