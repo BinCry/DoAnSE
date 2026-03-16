@@ -70,6 +70,7 @@ export function ChatbotWidget() {
     travel: createInitialMessages("travel")
   });
   const conversationRef = useRef<HTMLDivElement | null>(null);
+  const latestMessageRef = useRef<HTMLDivElement | null>(null);
 
   const activeConfig = chatbotModeConfig[activeMode];
   const activeDraft = draftByMode[activeMode];
@@ -83,6 +84,9 @@ export function ChatbotWidget() {
     }
 
     conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
+    latestMessageRef.current?.scrollIntoView({
+      block: "nearest"
+    });
   }, [activeMessages.length, activeMode, isOpen, isPending]);
 
   async function submitMessage(rawContent: string) {
@@ -227,9 +231,10 @@ export function ChatbotWidget() {
           <div className="chatbot-body">
             <div className="chatbot-mode-note">{activeConfig.emptyLabel}</div>
             <div ref={conversationRef} className="chatbot-conversation">
-              {activeMessages.map((message) => (
+              {activeMessages.map((message, index) => (
                 <div
                   key={message.id}
+                  ref={index === activeMessages.length - 1 ? latestMessageRef : null}
                   className={`chat-message ${
                     message.role === "assistant"
                       ? "chat-message-bot"
