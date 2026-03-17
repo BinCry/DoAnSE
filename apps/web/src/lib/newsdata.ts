@@ -1,3 +1,5 @@
+import { getNewsDataApiKey } from "@/lib/server-env";
+
 const NEWSDATA_ENDPOINT = "https://newsdata.io/api/1/latest";
 const NEWSDATA_REVALIDATE_SECONDS = 60 * 60 * 24 * 7;
 
@@ -91,10 +93,6 @@ const travelKeywords = [
   "tour"
 ];
 
-const normalizedTravelKeywords = travelKeywords.map((keyword) =>
-  normalizeText(keyword)
-);
-
 interface NewsDataArticle {
   category?: string[] | string | null;
   description?: string | null;
@@ -122,14 +120,74 @@ export interface TravelArticlePreview {
   external: boolean;
 }
 
-function normalizeText(value: string | null | undefined) {
+const namedHtmlEntities: Record<string, string> = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  hellip: "...",
+  laquo: "\"",
+  ldquo: "\"",
+  lsquo: "'",
+  lt: "<",
+  nbsp: " ",
+  ndash: "-",
+  quot: "\"",
+  raquo: "\"",
+  rdquo: "\"",
+  rsquo: "'"
+};
+
+function decodeNumericEntity(rawCode: string, radix: number) {
+  const codePoint = Number.parseInt(rawCode, radix);
+
+  if (!Number.isFinite(codePoint)) {
+    return "";
+  }
+
+  try {
+    return String.fromCodePoint(codePoint);
+  } catch {
+    return "";
+  }
+}
+
+function decodeHtmlEntities(value: string | null | undefined) {
   return (value ?? "")
+    .replace(/&#x([0-9a-f]+);/gi, (_, code: string) =>
+      decodeNumericEntity(code, 16)
+    )
+    .replace(/&#(\d+);/g, (_, code: string) =>
+      decodeNumericEntity(code, 10)
+    )
+    .replace(/#x([0-9a-f]+);/gi, (_, code: string) =>
+      decodeNumericEntity(code, 16)
+    )
+    .replace(/#(\d+);/g, (_, code: string) => decodeNumericEntity(code, 10))
+    .replace(/&([a-z]+);/gi, (match, name: string) => {
+      const normalizedName = name.toLowerCase();
+      return namedHtmlEntities[normalizedName] ?? match;
+    });
+}
+
+function cleanArticleText(value: string | null | undefined) {
+  return decodeHtmlEntities(value)
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeText(value: string | null | undefined) {
+  return cleanArticleText(value)
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/đ/g, "d")
     .replace(/Đ/g, "d")
     .toLocaleLowerCase("vi-VN");
 }
+
+const normalizedTravelKeywords = travelKeywords.map((keyword) =>
+  normalizeText(keyword)
+);
 
 function toTextList(value: string[] | string | null | undefined) {
   if (!value) {
@@ -146,14 +204,14 @@ function toTextList(value: string[] | string | null | undefined) {
 function hasTravelSignal(article: NewsDataArticle) {
   const searchableText = normalizeText(
     [
-    article.title,
-    article.description,
-    ...toTextList(article.keywords),
-    article.source_name,
-    ...toTextList(article.category)
-  ]
-    .join(" ")
-    .trim()
+      article.title,
+      article.description,
+      ...toTextList(article.keywords),
+      article.source_name,
+      ...toTextList(article.category)
+    ]
+      .join(" ")
+      .trim()
   );
 
   return normalizedTravelKeywords.some((keyword) =>
@@ -217,12 +275,22 @@ function mapArticleToPreview(article: NewsDataArticle): TravelArticlePreview | n
     return null;
   }
 
+  const title = cleanArticleText(article.title);
+  const source = cleanArticleText(article.source_name) || "Nguồn du lịch";
+  const summary =
+    cleanArticleText(article.description) ||
+    "Xem nhanh bài viết mới để cập nhật thêm kinh nghiệm du lịch.";
+
+  if (!title) {
+    return null;
+  }
+
   return {
-    title: article.title,
-    source: article.source_name ?? "Nguồn du lịch",
+    title,
+    source,
     readTime: formatPublishedDate(article.pubDate),
     image: article.image_url,
-    summary: article.description ?? "Xem nhanh bài viết mới để cập nhật thêm kinh nghiệm du lịch.",
+    summary,
     href: article.link,
     external: true
   };
@@ -232,7 +300,7 @@ function mergeWithFallback(
   liveArticles: TravelArticlePreview[],
   limit: number
 ) {
-  if (liveArticles.length >= limit) {
+  if (liveArticles.length > 0) {
     return liveArticles.slice(0, limit);
   }
 
@@ -259,11 +327,42 @@ function mergeWithFallback(
   return mergedArticles;
 }
 
+function filterLiveArticles(
+  results: NewsDataArticle[],
+  includeSecondarySources: boolean
+) {
+  return results
+    .filter((article) => {
+      const sourceId = article.source_id;
+
+      if (!sourceId) {
+        return false;
+      }
+
+      return includeSecondarySources || !blockedSourceIds.has(sourceId);
+    })
+    .filter(hasTravelSignal)
+    .sort((left, right) => {
+      const scoreDiff = scoreArticle(right) - scoreArticle(left);
+
+      if (scoreDiff !== 0) {
+        return scoreDiff;
+      }
+
+      const rightTime = new Date(right.pubDate ?? 0).getTime();
+      const leftTime = new Date(left.pubDate ?? 0).getTime();
+
+      return rightTime - leftTime;
+    })
+    .map(mapArticleToPreview)
+    .filter((article): article is TravelArticlePreview => article !== null);
+}
+
 export async function getTravelArticles(
   limit = 4,
   includeSecondarySources = false
 ) {
-  const apiKey = process.env.NEWSDATA_API_KEY;
+  const apiKey = getNewsDataApiKey();
 
   if (!apiKey) {
     return mergeWithFallback([], limit);
@@ -284,38 +383,15 @@ export async function getTravelArticles(
     });
 
     if (!response.ok) {
-      return [...fallbackTravelArticles];
+      return mergeWithFallback([], limit);
     }
 
     const data = (await response.json()) as NewsDataResponse;
     const results = Array.isArray(data.results) ? data.results : [];
-
-    const filteredArticles = results
-      .filter((article) => {
-        const sourceId = article.source_id;
-
-        if (!sourceId) {
-          return false;
-        }
-
-        return includeSecondarySources || !blockedSourceIds.has(sourceId);
-      })
-      .filter(hasTravelSignal)
-      .sort((left, right) => {
-        const scoreDiff = scoreArticle(right) - scoreArticle(left);
-
-        if (scoreDiff !== 0) {
-          return scoreDiff;
-        }
-
-        const rightTime = new Date(right.pubDate ?? 0).getTime();
-        const leftTime = new Date(left.pubDate ?? 0).getTime();
-
-        return rightTime - leftTime;
-      })
-      .map(mapArticleToPreview)
-      .filter((article): article is TravelArticlePreview => article !== null)
-      .slice(0, limit);
+    const filteredArticles = filterLiveArticles(
+      results,
+      includeSecondarySources
+    ).slice(0, limit);
 
     if (filteredArticles.length > 0) {
       return mergeWithFallback(filteredArticles, limit);

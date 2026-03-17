@@ -27,9 +27,10 @@ export const chatbotModeOrder: ChatMode[] = ["support", "travel"];
 export const chatbotModeConfig = {
   support: {
     description: "Giải đáp nhanh về đặt chỗ, check-in, hành lý và kênh hỗ trợ",
-    emptyLabel: "Bạn có thể hỏi về mã đặt chỗ, hành lý, đổi vé, check-in hoặc liên hệ hỗ trợ.",
+    emptyLabel:
+      "Bạn có thể hỏi về mã đặt chỗ, hành lý, đổi vé, check-in hoặc liên hệ hỗ trợ.",
     label: "Hỗ trợ khách hàng",
-    placeholder: "Ví dụ: Tôi muốn đổi vé sau khi đã thanh toán thì làm sao?",
+    placeholder: "Ví dụ: Đổi vé sau thanh toán",
     prompts: [
       "Tôi muốn làm thủ tục trực tuyến thì cần gì?",
       "Tôi cần mua thêm hành lý ký gửi",
@@ -42,9 +43,10 @@ export const chatbotModeConfig = {
   },
   travel: {
     description: "Gợi ý điểm đến, lịch trình và ý tưởng nghỉ ngơi theo nhu cầu của bạn",
-    emptyLabel: "Hãy nói điểm đi, ngân sách, số ngày hoặc kiểu trải nghiệm bạn muốn để mình gợi ý sát hơn.",
+    emptyLabel:
+      "Hãy nói điểm đi, ngân sách, số ngày hoặc kiểu trải nghiệm bạn muốn để mình gợi ý sát hơn.",
     label: "Gợi ý du lịch",
-    placeholder: "Ví dụ: Gợi ý đi biển 3 ngày 2 đêm từ TP.HCM cho gia đình",
+    placeholder: "Ví dụ: Đi biển 3N2Đ từ TP.HCM",
     prompts: [
       "Gợi ý đi biển 3 ngày 2 đêm từ TP.HCM",
       "Đi đâu ở miền Bắc vào tháng 4 cho cặp đôi?",

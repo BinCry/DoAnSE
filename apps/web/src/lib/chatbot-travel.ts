@@ -1,4 +1,5 @@
 import { destinations } from "@/lib/mock-data";
+import { getGeminiApiKey, getGeminiModel } from "@/lib/server-env";
 
 import type { ChatbotAction, ChatbotApiMessage } from "@/lib/chatbot-shared";
 
@@ -21,28 +22,32 @@ interface TravelReply {
   reply: string;
 }
 
-const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent";
+const GEMINI_TIMEOUT_MS = 15000;
+
+const defaultTravelActions: ChatbotAction[] = [
+  { href: "/blog", label: "Xem thêm bài du lịch" },
+  { href: "/search", label: "Tìm chuyến bay" }
+];
 
 const destinationProfiles = [
   {
-    city: "Da Nang",
-    note: "hop nghi bien ngan ngay, de di cuoi tuan, nhieu lua chon cho gia dinh va nhom ban",
+    city: "Đà Nẵng",
+    note: "hợp nghỉ biển ngắn ngày, dễ đi cuối tuần, nhiều lựa chọn cho gia đình và nhóm bạn",
     tags: ["bien", "gia dinh", "cuoi tuan", "an uong", "nghi duong"]
   },
   {
-    city: "Phu Quoc",
-    note: "hop nghi duong, cap doi, gia dinh co tre nho va nhu cau bien dao thu gian",
+    city: "Phú Quốc",
+    note: "hợp nghỉ dưỡng, cặp đôi, gia đình có trẻ nhỏ và nhu cầu biển đảo thư giãn",
     tags: ["bien", "nghi duong", "tre nho", "cap doi", "dao"]
   },
   {
-    city: "Ha Noi",
-    note: "hop kham pha van hoa, am thuc va cac chuyen di ket hop cong viec",
+    city: "Hà Nội",
+    note: "hợp khám phá văn hóa, ẩm thực và các chuyến đi kết hợp công việc",
     tags: ["mien bac", "van hoa", "am thuc", "cong tac"]
   },
   {
-    city: "Thanh pho Ho Chi Minh",
-    note: "hop city break, trai nghiem do thi va lam diem noi di cac chang khac",
+    city: "Thành phố Hồ Chí Minh",
+    note: "hợp city break, trải nghiệm đô thị và làm điểm nối đi các chặng khác",
     tags: ["thanh pho", "city break", "ngan ngay", "giai tri"]
   }
 ];
@@ -68,7 +73,7 @@ function extractGeminiText(data: GeminiResponse) {
 function buildGroundingContext() {
   return destinations
     .map((destination) => {
-      return `- ${destination.city} (${destination.airport}), gia tham khao tu ${destination.priceFrom.toLocaleString("vi-VN")} VND, diem nhan: ${destination.highlights.join(", ")}`;
+      return `- ${destination.city} (${destination.airport}), giá tham khảo từ ${destination.priceFrom.toLocaleString("vi-VN")} VND, điểm nhấn: ${destination.highlights.join(", ")}`;
     })
     .join("\n");
 }
@@ -97,9 +102,23 @@ function buildTravelFallbackReply(question: string): string {
     .join("\n");
 
   return (
-    "Minh dang tam thoi khong lay duoc goi y AI truc tiep, nen gui ban mot vai huong di nhanh de tham khao:\n\n" +
+    "Mình đang tạm thời không lấy được gợi ý AI trực tiếp, nên gửi bạn một vài hướng đi nhanh để tham khảo:\n\n" +
     `${suggestions}\n\n` +
-    "Ban co the hoi lai theo mau nhu: di 3 ngay 2 dem, ngan sach bao nhieu, di voi ai va muon nghi duong hay kham pha de minh goi y sat hon."
+    "Bạn có thể hỏi lại theo mẫu như: đi 3 ngày 2 đêm, ngân sách bao nhiêu, đi với ai và muốn nghỉ dưỡng hay khám phá để mình gợi ý sát hơn."
+  );
+}
+
+function buildGeminiEndpoint(model: string) {
+  return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+}
+
+function buildGeminiModelQueue() {
+  return Array.from(
+    new Set(
+      [getGeminiModel(), "gemini-2.5-flash"].filter(
+        (model): model is string => Boolean(model)
+      )
+    )
   );
 }
 
@@ -113,14 +132,11 @@ export async function buildTravelReply(
       .find((message) => message.role === "user")?.content ?? "";
 
   const fallbackReply = buildTravelFallbackReply(latestQuestion);
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = getGeminiApiKey();
 
   if (!apiKey) {
     return {
-      actions: [
-        { href: "/blog", label: "Xem them bai du lich" },
-        { href: "/search", label: "Tim chuyen bay" }
-      ],
+      actions: defaultTravelActions,
       reply: fallbackReply
     };
   }
@@ -137,7 +153,7 @@ export async function buildTravelReply(
       temperature: 0.7,
       topP: 0.9,
       thinkingConfig: {
-        thinkingLevel: "minimal"
+        thinkingBudget: 0
       }
     },
     systemInstruction: {
@@ -160,53 +176,44 @@ export async function buildTravelReply(
     }
   };
 
-  try {
-    const response = await fetch(GEMINI_ENDPOINT, {
-      body: JSON.stringify(payload),
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey
-      },
-      method: "POST"
-    });
+  for (const model of buildGeminiModelQueue()) {
+    try {
+      const response = await fetch(buildGeminiEndpoint(model), {
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey
+        },
+        method: "POST",
+        signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS)
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        console.error(
+          `[chatbot-travel] Goi ${model} that bai voi ma ${response.status}.`
+        );
+        continue;
+      }
+
+      const data = (await response.json()) as GeminiResponse;
+      const reply = extractGeminiText(data);
+
+      if (!reply) {
+        console.error(`[chatbot-travel] ${model} khong tra noi dung hop le.`);
+        continue;
+      }
+
       return {
-        actions: [
-          { href: "/blog", label: "Xem them bai du lich" },
-          { href: "/search", label: "Tim chuyen bay" }
-        ],
-        reply: fallbackReply
+        actions: defaultTravelActions,
+        reply
       };
+    } catch (error) {
+      console.error(`[chatbot-travel] Loi khi goi ${model}.`, error);
     }
-
-    const data = (await response.json()) as GeminiResponse;
-    const reply = extractGeminiText(data);
-
-    if (!reply) {
-      return {
-        actions: [
-          { href: "/blog", label: "Xem them bai du lich" },
-          { href: "/search", label: "Tim chuyen bay" }
-        ],
-        reply: fallbackReply
-      };
-    }
-
-    return {
-      actions: [
-        { href: "/blog", label: "Xem them bai du lich" },
-        { href: "/search", label: "Tim chuyen bay" }
-      ],
-      reply
-    };
-  } catch {
-    return {
-      actions: [
-        { href: "/blog", label: "Xem them bai du lich" },
-        { href: "/search", label: "Tim chuyen bay" }
-      ],
-      reply: fallbackReply
-    };
   }
+
+  return {
+    actions: defaultTravelActions,
+    reply: fallbackReply
+  };
 }
