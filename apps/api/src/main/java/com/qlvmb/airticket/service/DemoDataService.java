@@ -18,99 +18,145 @@ public class DemoDataService {
         List.of(
             new AuthSummaryResponse.RoleItem(
                 "ticket_agent",
-                "Nhân viên bán vé",
-                List.of("Tạo booking hộ", "Giữ chỗ", "Xuất lại vé")
+                "NhÃ¢n viÃªn bÃ¡n vÃ©",
+                List.of("Táº¡o booking há»™", "Giá»¯ chá»—", "Xuáº¥t láº¡i vÃ©")
             ),
             new AuthSummaryResponse.RoleItem(
                 "customer_support",
-                "Nhân viên CSKH",
-                List.of("Xử lý ticket", "Takeover chatbot", "Đổi/hoàn theo rule")
+                "NhÃ¢n viÃªn CSKH",
+                List.of("Xá»­ lÃ½ ticket", "Takeover chatbot", "Äá»•i/hoÃ n theo rule")
             ),
             new AuthSummaryResponse.RoleItem(
                 "system_admin",
-                "Admin hệ thống",
-                List.of("Phân quyền", "Audit log", "Cấu hình rule")
+                "Admin há»‡ thá»‘ng",
+                List.of("PhÃ¢n quyá»n", "Audit log", "Cáº¥u hÃ¬nh rule")
             )
         ),
         List.of(
-            "Khách vãng lai không được vào backoffice.",
-            "Kế toán không được sửa nội dung chuyến bay.",
-            "Admin không xem dữ liệu thẻ đầy đủ."
+            "KhÃ¡ch vÃ£ng lai khÃ´ng Ä‘Æ°á»£c vÃ o backoffice.",
+            "Káº¿ toÃ¡n khÃ´ng Ä‘Æ°á»£c sá»­a ná»™i dung chuyáº¿n bay.",
+            "Admin khÃ´ng xem dá»¯ liá»‡u tháº» Ä‘áº§y Ä‘á»§."
         )
     );
   }
 
   public CustomerOverviewResponse getCustomerOverview() {
     return new CustomerOverviewResponse(
-        "Nguyễn Minh Anh",
-        "Hạng Vàng",
+        "Nguyá»…n Minh Anh",
+        "Háº¡ng VÃ ng",
         12480,
         List.of(
-            "AA215 • SGN → HAN • 20/03/2026",
-            "AA330 • HAN → DAD • 23/03/2026"
+            "AA215 â€¢ SGN â†’ HAN â€¢ 20/03/2026",
+            "AA330 â€¢ HAN â†’ DAD â€¢ 23/03/2026"
         ),
         List.of(
-            "Booking A6C2P1 đã thanh toán và gửi email.",
-            "Check-in cho AA215 sẽ mở sau 12 giờ nữa."
+            "Booking A6C2P1 Ä‘Ã£ thanh toÃ¡n vÃ  gá»­i email.",
+            "Check-in cho AA215 sáº½ má»Ÿ sau 12 giá» ná»¯a."
         )
     );
   }
 
   public FlightSearchResponse searchFlights(String from, String to, String tripType) {
+    List<FlightSearchResponse.FlightCard> outboundFlights = List.of(
+        new FlightSearchResponse.FlightCard(
+            20101L,
+            201L,
+            "AA201",
+            "Thanh pho Ho Chi Minh",
+            "Ha Noi",
+            from,
+            to,
+            "2026-03-20T06:10:00+07:00",
+            "2026-03-20T08:20:00+07:00",
+            "06:10",
+            "08:20",
+            "2 gio 10 phut",
+            "on_time",
+            "pho_thong_tiet_kiem",
+            1490000L,
+            8L
+        ),
+        new FlightSearchResponse.FlightCard(
+            20102L,
+            215L,
+            "AA215",
+            "Thanh pho Ho Chi Minh",
+            "Ha Noi",
+            from,
+            to,
+            "2026-03-20T09:45:00+07:00",
+            "2026-03-20T11:55:00+07:00",
+            "09:45",
+            "11:55",
+            "2 gio 10 phut",
+            "boarding",
+            "pho_thong_linh_hoat",
+            1890000L,
+            5L
+        ),
+        new FlightSearchResponse.FlightCard(
+            20103L,
+            233L,
+            "AA233",
+            "Thanh pho Ho Chi Minh",
+            "Ha Noi",
+            from,
+            to,
+            "2026-03-20T18:20:00+07:00",
+            "2026-03-20T20:35:00+07:00",
+            "18:20",
+            "20:35",
+            "2 gio 15 phut",
+            "scheduled",
+            "thuong_gia",
+            3490000L,
+            3L
+        )
+    );
+
+    List<FlightSearchResponse.FareCard> fares = List.of(
+        new FlightSearchResponse.FareCard(
+            "pho_thong_tiet_kiem",
+            "Pho thong tiet kiem",
+            1490000L,
+            List.of("7kg hanh ly xach tay", "Doi ve co phi", "Ghe tinh phi")
+        ),
+        new FlightSearchResponse.FareCard(
+            "pho_thong_linh_hoat",
+            "Pho thong linh hoat",
+            1890000L,
+            List.of("1 kien 23kg", "Doi ve it phi hon", "Giu gia 24 gio")
+        ),
+        new FlightSearchResponse.FareCard(
+            "thuong_gia",
+            "Thuong gia",
+            3490000L,
+            List.of("2 kien 32kg", "Phong cho", "Hoan doi linh hoat")
+        )
+    );
+
+    FlightSearchResponse.SearchCriteria criteria = new FlightSearchResponse.SearchCriteria(
+        from,
+        to,
+        "2026-03-20",
+        "round_trip".equals(tripType) ? "2026-03-23" : null,
+        tripType,
+        null,
+        1,
+        0,
+        0
+    );
+
     return new FlightSearchResponse(
         tripType,
         from,
         to,
-        List.of("Giờ bay", "Gói giá", "Ngân sách", "Còn ghế"),
-        List.of(
-            new FlightSearchResponse.FlightCard(
-                "AA201",
-                "06:10",
-                "08:20",
-                "2 giờ 10 phút",
-                "on_time",
-                "pho_thong_tiet_kiem",
-                1490000,
-                8
-            ),
-            new FlightSearchResponse.FlightCard(
-                "AA215",
-                "09:45",
-                "11:55",
-                "2 giờ 10 phút",
-                "boarding",
-                "pho_thong_linh_hoat",
-                1890000,
-                5
-            ),
-            new FlightSearchResponse.FlightCard(
-                "AA233",
-                "18:20",
-                "20:35",
-                "2 giờ 15 phút",
-                "scheduled",
-                "thuong_gia",
-                3490000,
-                3
-            )
-        ),
-        List.of(
-            new FlightSearchResponse.FareCard(
-                "Phổ thông tiết kiệm",
-                1490000,
-                List.of("7kg hành lý xách tay", "Đổi vé có phí", "Ghế tính phí")
-            ),
-            new FlightSearchResponse.FareCard(
-                "Phổ thông linh hoạt",
-                1890000,
-                List.of("1 kiện 23kg", "Đổi vé ít phí hơn", "Giữ giá 24 giờ")
-            ),
-            new FlightSearchResponse.FareCard(
-                "Thương gia",
-                3490000,
-                List.of("2 kiện 32kg", "Phòng chờ", "Hoàn/đổi linh hoạt")
-            )
-        )
+        List.of("Gio bay", "Goi gia", "Ngan sach", "Con ghe"),
+        outboundFlights,
+        fares,
+        criteria,
+        outboundFlights,
+        List.of()
     );
   }
 
@@ -120,26 +166,26 @@ public class DemoDataService {
         "held",
         "2026-03-11T14:15:00+07:00",
         List.of(
-            "Chọn chuyến bay",
-            "Thông tin hành khách",
-            "Dịch vụ bổ trợ",
-            "Thanh toán & xuất vé"
+            "Chá»n chuyáº¿n bay",
+            "ThÃ´ng tin hÃ nh khÃ¡ch",
+            "Dá»‹ch vá»¥ bá»• trá»£",
+            "Thanh toÃ¡n & xuáº¥t vÃ©"
         ),
         List.of(
             new BookingOverviewResponse.AncillaryItem(
                 "SEAT_PLUS",
-                "Ghế hàng đầu",
-                "Thêm chỗ duỗi chân và ưu tiên xuống tàu.",
+                "Gháº¿ hÃ ng Ä‘áº§u",
+                "ThÃªm chá»— duá»—i chÃ¢n vÃ  Æ°u tiÃªn xuá»‘ng tÃ u.",
                 320000
             ),
             new BookingOverviewResponse.AncillaryItem(
                 "BAG_23",
-                "Hành lý 23kg",
-                "Cho phép mua trước thanh toán hoặc sau đặt chỗ.",
+                "HÃ nh lÃ½ 23kg",
+                "Cho phÃ©p mua trÆ°á»›c thanh toÃ¡n hoáº·c sau Ä‘áº·t chá»—.",
                 290000
             )
         ),
-        List.of("QR ngân hàng", "Thẻ", "Ví điện tử")
+        List.of("QR ngÃ¢n hÃ ng", "Tháº»", "VÃ­ Ä‘iá»‡n tá»­")
     );
   }
 
@@ -148,21 +194,21 @@ public class DemoDataService {
         List.of(
             new SupportOverviewResponse.TicketCard(
                 "TK-2401",
-                "Yêu cầu hoàn vé do delay hơn 4 giờ",
+                "YÃªu cáº§u hoÃ n vÃ© do delay hÆ¡n 4 giá»",
                 "escalated",
-                "Còn 25 phút"
+                "CÃ²n 25 phÃºt"
             ),
             new SupportOverviewResponse.TicketCard(
                 "TK-2402",
-                "Cập nhật họ tên sau xuất vé",
+                "Cáº­p nháº­t há» tÃªn sau xuáº¥t vÃ©",
                 "open",
-                "Còn 1 giờ 40 phút"
+                "CÃ²n 1 giá» 40 phÃºt"
             )
         ),
         List.of(
-            "Tôi có thể đổi chuyến sau khi đã thanh toán không?",
-            "Nếu callback thanh toán về trễ thì sao?",
-            "Chatbot có thể chuyển tôi sang CSKH không?"
+            "TÃ´i cÃ³ thá»ƒ Ä‘á»•i chuyáº¿n sau khi Ä‘Ã£ thanh toÃ¡n khÃ´ng?",
+            "Náº¿u callback thanh toÃ¡n vá» trá»… thÃ¬ sao?",
+            "Chatbot cÃ³ thá»ƒ chuyá»ƒn tÃ´i sang CSKH khÃ´ng?"
         ),
         List.of("1900 6868", "support@vietnam-airlines.vn", "Chatbot widget")
     );
@@ -172,9 +218,9 @@ public class DemoDataService {
     return new CmsHomepageResponse(
         List.of(
             new CmsHomepageResponse.HeroBanner(
-                "Bay sớm đến Đà Nẵng với combo ghế + hành lý",
-                "Chiến dịch mùa hè cho khách nội địa",
-                "Xem ưu đãi",
+                "Bay sá»›m Ä‘áº¿n ÄÃ  Náºµng vá»›i combo gháº¿ + hÃ nh lÃ½",
+                "Chiáº¿n dá»‹ch mÃ¹a hÃ¨ cho khÃ¡ch ná»™i Ä‘á»‹a",
+                "Xem Æ°u Ä‘Ã£i",
                 "vi"
             ),
             new CmsHomepageResponse.HeroBanner(
@@ -186,9 +232,9 @@ public class DemoDataService {
         ),
         List.of(
             new CmsHomepageResponse.ContentCard(
-                "Cẩm nang đi Nội Bài gọn trong 10 phút đọc",
-                "Cẩm nang",
-                "Mô tả luồng check-in, hành lý và lối vào nhanh cho khách công tác.",
+                "Cáº©m nang Ä‘i Ná»™i BÃ i gá»n trong 10 phÃºt Ä‘á»c",
+                "Cáº©m nang",
+                "MÃ´ táº£ luá»“ng check-in, hÃ nh lÃ½ vÃ  lá»‘i vÃ o nhanh cho khÃ¡ch cÃ´ng tÃ¡c.",
                 "vi"
             ),
             new CmsHomepageResponse.ContentCard(
@@ -200,9 +246,9 @@ public class DemoDataService {
         ),
         List.of(
             new CmsHomepageResponse.ContentCard(
-                "Tôi có thể đổi chuyến sau khi thanh toán không?",
+                "TÃ´i cÃ³ thá»ƒ Ä‘á»•i chuyáº¿n sau khi thanh toÃ¡n khÃ´ng?",
                 "FAQ",
-                "Có. Hệ thống sẽ kiểm tra gói giá và chênh lệch trước khi xác nhận.",
+                "CÃ³. Há»‡ thá»‘ng sáº½ kiá»ƒm tra gÃ³i giÃ¡ vÃ  chÃªnh lá»‡ch trÆ°á»›c khi xÃ¡c nháº­n.",
                 "vi"
             ),
             new CmsHomepageResponse.ContentCard(
@@ -219,51 +265,51 @@ public class DemoDataService {
     return new AdminDashboardResponse(
         List.of(
             new AdminDashboardResponse.MetricCard(
-                "Doanh thu hôm nay",
-                "3,48 tỷ",
-                "+12% so với hôm qua"
+                "Doanh thu hÃ´m nay",
+                "3,48 tá»·",
+                "+12% so vá»›i hÃ´m qua"
             ),
             new AdminDashboardResponse.MetricCard(
-                "Tỉ lệ chuyển đổi",
+                "Tá»‰ lá»‡ chuyá»ƒn Ä‘á»•i",
                 "4,8%",
-                "+0,6 điểm"
+                "+0,6 Ä‘iá»ƒm"
             ),
             new AdminDashboardResponse.MetricCard(
-                "Booking giữ chỗ",
+                "Booking giá»¯ chá»—",
                 "126",
-                "37 mã còn dưới 5 phút"
+                "37 mÃ£ cÃ²n dÆ°á»›i 5 phÃºt"
             )
         ),
         List.of(
             new AdminDashboardResponse.ModuleCard(
                 "sales",
-                "Nhân viên bán vé",
-                "Tạo booking hộ, giữ chỗ và xuất lại vé.",
+                "NhÃ¢n viÃªn bÃ¡n vÃ©",
+                "Táº¡o booking há»™, giá»¯ chá»— vÃ  xuáº¥t láº¡i vÃ©.",
                 List.of("ticket_agent", "system_admin")
             ),
             new AdminDashboardResponse.ModuleCard(
                 "operations",
-                "Điều hành chuyến bay",
-                "Quản lý lịch bay, tồn ghế, delay/cancel và khóa bán.",
+                "Äiá»u hÃ nh chuyáº¿n bay",
+                "Quáº£n lÃ½ lá»‹ch bay, tá»“n gháº¿, delay/cancel vÃ  khÃ³a bÃ¡n.",
                 List.of("operations_staff", "system_admin")
             ),
             new AdminDashboardResponse.ModuleCard(
                 "cms",
-                "CMS nội dung",
-                "Banner, blog, FAQ, trang tĩnh và song ngữ.",
+                "CMS ná»™i dung",
+                "Banner, blog, FAQ, trang tÄ©nh vÃ  song ngá»¯.",
                 List.of("content_editor", "system_admin")
             )
         ),
         List.of(
             new AdminDashboardResponse.AuditCard(
                 "admin.huyen",
-                "Cập nhật rule hoàn vé",
-                "FareRule: Phổ thông linh hoạt",
+                "Cáº­p nháº­t rule hoÃ n vÃ©",
+                "FareRule: Phá»• thÃ´ng linh hoáº¡t",
                 "11/03 09:12"
             ),
             new AdminDashboardResponse.AuditCard(
                 "ops.khoa",
-                "Đổi trạng thái chuyến bay",
+                "Äá»•i tráº¡ng thÃ¡i chuyáº¿n bay",
                 "AA330 -> delayed",
                 "11/03 08:41"
             )

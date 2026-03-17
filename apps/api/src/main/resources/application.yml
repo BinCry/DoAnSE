@@ -23,3 +23,10 @@ server:
 
 app:
   title: Vietnam Airlines API
+  cors:
+    allowed-origin-patterns: ${APP_CORS_ALLOWED_ORIGIN_PATTERNS:http://localhost:3000,http://127.0.0.1:3000}
+
+logging:
+  level:
+    root: info
+    com.qlvmb.airticket: info
