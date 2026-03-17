@@ -50,6 +50,8 @@ function buildFallbackErrorMessage(mode: ChatMode) {
   return "Mình vừa gặp chút trục trặc. Bạn có thể hỏi lại về check-in, hành lý, đổi vé hoặc mở trang hỗ trợ để được tiếp tục trợ giúp.";
 }
 
+const starterPromptLimit = 2;
+
 export function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeMode, setActiveMode] = useState<ChatMode>("support");
@@ -70,23 +72,44 @@ export function ChatbotWidget() {
     travel: createInitialMessages("travel")
   });
   const conversationRef = useRef<HTMLDivElement | null>(null);
-  const latestMessageRef = useRef<HTMLDivElement | null>(null);
 
   const activeConfig = chatbotModeConfig[activeMode];
   const activeDraft = draftByMode[activeMode];
   const activeError = errorByMode[activeMode];
   const activeMessages = messagesByMode[activeMode];
   const isPending = isPendingByMode[activeMode];
+  const showPromptGrid = !activeMessages.some((message) => message.role === "user");
+  const starterPrompts = activeConfig.prompts.slice(0, starterPromptLimit);
 
   useEffect(() => {
     if (!isOpen || !conversationRef.current) {
       return;
     }
 
-    conversationRef.current.scrollTop = conversationRef.current.scrollHeight;
-    latestMessageRef.current?.scrollIntoView({
-      block: "nearest"
-    });
+    const conversationElement = conversationRef.current;
+    const messageElements = Array.from(
+      conversationElement.querySelectorAll<HTMLElement>(".chat-message")
+    );
+    const latestMessage = messageElements.at(-1);
+
+    if (!latestMessage) {
+      return;
+    }
+
+    const conversationRect = conversationElement.getBoundingClientRect();
+    const latestMessageRect = latestMessage.getBoundingClientRect();
+    const latestMessageOffset =
+      latestMessageRect.top - conversationRect.top + conversationElement.scrollTop;
+
+    if (latestMessage.dataset.chatRole === "assistant") {
+      conversationElement.scrollTop = Math.max(0, latestMessageOffset - 14);
+      return;
+    }
+
+    conversationElement.scrollTop = Math.max(
+      0,
+      latestMessageOffset - conversationElement.clientHeight + latestMessageRect.height + 20
+    );
   }, [activeMessages.length, activeMode, isOpen, isPending]);
 
   async function submitMessage(rawContent: string) {
@@ -199,7 +222,6 @@ export function ChatbotWidget() {
             <div className="chatbot-header-copy">
               <div className="chatbot-title-row">
                 <strong>Trợ lý AI Vietnam Airlines</strong>
-                <span className="chatbot-mode-badge">{activeConfig.label}</span>
               </div>
               <p>{activeConfig.description}</p>
               <div className="chatbot-mode-switch" role="tablist" aria-label="Chế độ chatbot">
@@ -228,13 +250,14 @@ export function ChatbotWidget() {
               ×
             </button>
           </div>
-          <div className="chatbot-body">
-            <div className="chatbot-mode-note">{activeConfig.emptyLabel}</div>
+          <div
+            className={`chatbot-body${showPromptGrid ? " chatbot-body-has-starter" : ""}`}
+          >
             <div ref={conversationRef} className="chatbot-conversation">
-              {activeMessages.map((message, index) => (
+              {activeMessages.map((message) => (
                 <div
                   key={message.id}
-                  ref={index === activeMessages.length - 1 ? latestMessageRef : null}
+                  data-chat-role={message.role}
                   className={`chat-message ${
                     message.role === "assistant"
                       ? "chat-message-bot"
@@ -265,19 +288,24 @@ export function ChatbotWidget() {
                 </div>
               ))}
             </div>
-            <div className="chat-prompt-grid">
-              {activeConfig.prompts.map((prompt) => (
-                <button
-                  key={prompt}
-                  type="button"
-                  className="prompt-chip"
-                  onClick={() => submitMessage(prompt)}
-                  disabled={isPending}
-                >
-                  {prompt}
-                </button>
-              ))}
-            </div>
+            {showPromptGrid ? (
+              <div className="chatbot-starter-panel">
+                <div className="chatbot-section-kicker">Gợi ý nhanh</div>
+                <div className="chat-prompt-grid">
+                  {starterPrompts.map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      className="prompt-chip"
+                      onClick={() => submitMessage(prompt)}
+                      disabled={isPending}
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             {activeError ? <div className="chatbot-status">{activeError}</div> : null}
             <form
               className="chatbot-composer"
@@ -302,7 +330,7 @@ export function ChatbotWidget() {
                 }}
                 className="chatbot-input"
                 placeholder={activeConfig.placeholder}
-                rows={3}
+                rows={showPromptGrid ? 1 : 2}
               />
               <div className="chatbot-composer-actions">
                 <button

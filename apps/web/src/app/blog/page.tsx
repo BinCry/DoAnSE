@@ -45,7 +45,7 @@ export default async function BlogPage() {
         <div className="card-grid card-grid-3 travel-news-grid">
           {travelArticles.map((article) => (
             <a
-              key={article.href}
+              key={`${article.href}-${article.title}`}
               href={article.href}
               className="surface-card article-card travel-news-card"
               rel={article.external ? "noreferrer" : undefined}
