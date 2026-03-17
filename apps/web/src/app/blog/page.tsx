@@ -1,6 +1,23 @@
+import Image from "next/image";
+
 import { getTravelArticles } from "@/lib/newsdata";
 import { SectionHeading } from "@/components/section-heading";
 import { promotions } from "@/lib/mock-data";
+
+const promotionPhotos = [
+  {
+    src: "/images/summer-promo.jpg",
+    alt: "Hình minh họa chiến dịch mùa hè"
+  },
+  {
+    src: "/images/member-promo-v2.png",
+    alt: "Hình minh họa hội viên Vietnam Airlines"
+  },
+  {
+    src: "/images/business-promo.jpg",
+    alt: "Hình minh họa doanh nghiệp với dữ liệu tài chính"
+  }
+] as const;
 
 const cmsRules = [
   "Banner, cẩm nang, câu hỏi thường gặp và trang pháp lý đều có trạng thái nháp, duyệt, đăng, lưu lịch sử phiên bản.",
@@ -70,14 +87,31 @@ export default async function BlogPage() {
           title="Ưu đãi theo mùa và cẩm nang được đặt cạnh nhau để dễ theo dõi"
           description="Hành khách có thể xem nhanh chương trình đang áp dụng, đọc thêm thông tin liên quan và quay lại hành trình đặt vé mà không bị đứt mạch."
         />
-        <div className="card-grid card-grid-3">
-          {promotions.map((promotion) => (
-            <article key={promotion.title} className="surface-card promo-card promo-card-soft">
-              <span className="pill">{promotion.tag}</span>
-              <h3>{promotion.title}</h3>
-              <p>{promotion.summary}</p>
-            </article>
-          ))}
+        <div className="card-grid card-grid-3 promo-card-grid">
+          {promotions.map((promotion, index) => {
+            const photo = promotionPhotos[index % promotionPhotos.length];
+
+            return (
+              <article key={promotion.title} className="surface-card promo-card promo-card-soft blog-promo-card">
+                <div className="blog-promo-card-copy">
+                  <span className="pill">{promotion.tag}</span>
+                  <h3>{promotion.title}</h3>
+                  <p>{promotion.summary}</p>
+                </div>
+                <div className={`blog-promo-card-media blog-promo-card-media-${index}`}>
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(max-width: 640px) 116px, (max-width: 1200px) 120px, 138px"
+                    quality={100}
+                    unoptimized
+                    className="blog-promo-card-image"
+                  />
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <div className="section-gap" />
@@ -93,6 +127,68 @@ export default async function BlogPage() {
         <style>{`
           .travel-news-grid {
             gap: 22px;
+          }
+
+          .promo-card-grid {
+            gap: 22px;
+          }
+
+          .blog-promo-card {
+            display: block;
+            position: relative;
+            min-height: 314px;
+            padding: 22px 22px 14px;
+          }
+
+          .blog-promo-card::before {
+            content: none;
+          }
+
+          .blog-promo-card-copy {
+            display: grid;
+            gap: 10px;
+            max-width: calc(100% - 156px);
+            align-content: start;
+            position: relative;
+            z-index: 1;
+          }
+
+          .blog-promo-card-copy h3,
+          .blog-promo-card-copy p {
+            margin: 0;
+          }
+
+          .blog-promo-card-copy p {
+            max-width: none;
+          }
+
+          .blog-promo-card-media {
+            position: absolute;
+            right: 26px;
+            bottom: 44px;
+            overflow: hidden;
+            width: 138px;
+            height: 188px;
+            border-radius: 26px;
+          }
+
+          .blog-promo-card-media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+              linear-gradient(180deg, rgba(12, 34, 61, 0.08), rgba(12, 34, 61, 0.22)),
+              radial-gradient(circle at top right, rgba(246, 215, 131, 0.3), transparent 26%);
+          }
+
+          .blog-promo-card-image {
+            object-fit: cover;
+            object-position: center;
+          }
+
+          .blog-promo-card-media-1 .blog-promo-card-image {
+            transform: scale(1.14);
+            object-position: center 42%;
           }
 
           .travel-news-card {
@@ -140,6 +236,63 @@ export default async function BlogPage() {
 
           .travel-news-card-copy small {
             color: var(--muted);
+          }
+
+          @media (max-width: 1200px) {
+            .blog-promo-card {
+              min-height: 330px;
+            }
+
+            .blog-promo-card-copy {
+              max-width: calc(100% - 138px);
+            }
+
+            .blog-promo-card-media {
+              right: 22px;
+              bottom: 38px;
+              width: 120px;
+              height: 180px;
+            }
+          }
+
+          @media (max-width: 1024px) {
+            .blog-promo-card {
+              min-height: 304px;
+            }
+
+            .blog-promo-card-copy {
+              max-width: calc(100% - 132px);
+            }
+
+            .blog-promo-card-media {
+              bottom: 34px;
+              width: 112px;
+              height: 164px;
+            }
+          }
+
+          @media (max-width: 640px) {
+            .blog-promo-card {
+              min-height: auto;
+              padding: 20px 20px 14px;
+            }
+
+            .blog-promo-card-copy {
+              max-width: none;
+              padding-bottom: 118px;
+            }
+
+            .blog-promo-card-media {
+              right: 20px;
+              bottom: 26px;
+              width: 116px;
+              height: 136px;
+              border-radius: 24px;
+            }
+
+            .blog-promo-card-media-1 .blog-promo-card-image {
+              transform: scale(1.08);
+            }
           }
         `}</style>
       </div>
