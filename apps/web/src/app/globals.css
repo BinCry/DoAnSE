@@ -1538,6 +1538,9 @@ img {
 }
 
 .blog-hero-panel .pill {
+  display: flex;
+  width: fit-content;
+  margin-bottom: 18px;
   border: 1px solid rgba(246, 211, 122, 0.38);
   background: linear-gradient(135deg, rgba(121, 83, 18, 0.34), rgba(246, 211, 122, 0.16));
   color: rgba(255, 236, 180, 0.98);
@@ -2508,6 +2511,51 @@ th {
   width: 100%;
 }
 
+.auth-password-input-wrap {
+  position: relative;
+}
+
+.auth-password-field input {
+  padding-right: 56px;
+}
+
+.auth-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.auth-password-toggle:hover {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.auth-password-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.auth-password-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .checkbox-row {
   justify-content: flex-start;
   color: var(--muted);
@@ -3100,6 +3148,18 @@ th {
 @media (max-width: 520px) {
   .container {
     width: min(calc(100vw - 24px), var(--container));
+  }
+
+  .chatbot-panel {
+    width: calc(100vw - 24px);
+    height: min(660px, calc(100dvh - 28px));
+    max-height: calc(100dvh - 28px);
+    margin-right: 0;
+  }
+
+  .chatbot-conversation,
+  .chatbot-body-has-starter .chatbot-conversation {
+    min-height: 0;
   }
 
   .topbar-row {

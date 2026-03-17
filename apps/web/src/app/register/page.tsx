@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
+import { PasswordField } from "@/components/password-field";
 import { PasswordChecklist } from "@/components/password-checklist";
 import { StatusChip } from "@/components/status-chip";
 import { isPasswordPolicySatisfied } from "@/lib/password-policy";
@@ -158,29 +159,23 @@ export default function RegisterPage() {
               />
             </label>
 
-            <label className="field auth-field">
-              <span>Mật khẩu</span>
-              <input
-                type="password"
-                placeholder="Tạo mật khẩu an toàn"
-                autoComplete="new-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
-            </label>
+            <PasswordField
+              label="Mật khẩu"
+              placeholder="Tạo mật khẩu an toàn"
+              autoComplete="new-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
 
-            <label className="field auth-field">
-              <span>Nhập lại mật khẩu</span>
-              <input
-                type="password"
-                placeholder="Nhập lại để xác nhận"
-                autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                required
-              />
-            </label>
+            <PasswordField
+              label="Nhập lại mật khẩu"
+              placeholder="Nhập lại để xác nhận"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              required
+            />
           </div>
 
           <PasswordChecklist

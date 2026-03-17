@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
+import { PasswordField } from "@/components/password-field";
 import { StatusChip } from "@/components/status-chip";
 
 const loginStats = [
@@ -120,17 +121,14 @@ export default function LoginPage() {
               />
             </label>
 
-            <label className="field auth-field">
-              <span>Mật khẩu</span>
-              <input
-                type="password"
-                placeholder="Nhập mật khẩu của bạn"
-                autoComplete="current-password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
-            </label>
+            <PasswordField
+              label="Mật khẩu"
+              placeholder="Nhập mật khẩu của bạn"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
           </div>
 
           <div className="auth-helper-row">
