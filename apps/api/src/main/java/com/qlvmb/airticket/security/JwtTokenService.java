@@ -42,6 +42,12 @@ public class JwtTokenService {
         .map(role -> role.getCode())
         .sorted()
         .toList();
+    List<String> permissionCodes = userAccount.getRoles().stream()
+        .flatMap(role -> role.getPermissions().stream())
+        .map(permission -> permission.getCode())
+        .distinct()
+        .sorted()
+        .toList();
 
     String accessToken = Jwts.builder()
         .issuer(issuer)
@@ -52,6 +58,7 @@ public class JwtTokenService {
         .claim("email", userAccount.getEmail())
         .claim("displayName", userAccount.getDisplayName())
         .claim("roles", roleCodes)
+        .claim("permissions", permissionCodes)
         .signWith(signingKey)
         .compact();
 
@@ -73,11 +80,14 @@ public class JwtTokenService {
     requireTokenType(claims, "access");
     @SuppressWarnings("unchecked")
     List<String> roles = claims.get("roles", List.class);
+    @SuppressWarnings("unchecked")
+    List<String> permissions = claims.get("permissions", List.class);
     return new AccessTokenPayload(
         Long.parseLong(claims.getSubject()),
         claims.get("email", String.class),
         claims.get("displayName", String.class),
-        roles == null ? List.of() : List.copyOf(roles)
+        roles == null ? List.of() : List.copyOf(roles),
+        permissions == null ? List.of() : List.copyOf(permissions)
     );
   }
 
@@ -121,7 +131,8 @@ public class JwtTokenService {
       Long userId,
       String email,
       String displayName,
-      List<String> roles
+      List<String> roles,
+      List<String> permissions
   ) {
   }
 

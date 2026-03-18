@@ -1,6 +1,6 @@
 package com.qlvmb.airticket.controller;
 
-import com.qlvmb.airticket.domain.dto.AdminDashboardResponse;
+import com.qlvmb.airticket.domain.dto.CmsHomepageResponse;
 import com.qlvmb.airticket.service.DemoDataService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/admin")
-public class AdminController {
+@RequestMapping("/api/backoffice/cms")
+public class BackofficeCmsController {
 
   private final DemoDataService demoDataService;
 
-  public AdminController(DemoDataService demoDataService) {
+  public BackofficeCmsController(DemoDataService demoDataService) {
     this.demoDataService = demoDataService;
   }
 
-  @PreAuthorize("hasAuthority('backoffice.admin')")
-  @GetMapping("/dashboard")
-  public AdminDashboardResponse getDashboard() {
-    return demoDataService.getAdminDashboard();
+  @PreAuthorize("hasAnyAuthority('backoffice.cms', 'backoffice.admin')")
+  @GetMapping("/homepage")
+  public CmsHomepageResponse getHomepageContent() {
+    return demoDataService.getCmsHomepage();
   }
 }

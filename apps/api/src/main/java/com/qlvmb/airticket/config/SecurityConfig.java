@@ -32,6 +32,7 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(exceptionHandling -> exceptionHandling
             .authenticationEntryPoint((request, response, exception) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+            .accessDeniedHandler((request, response, exception) -> response.sendError(HttpServletResponse.SC_FORBIDDEN))
         )
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -39,7 +40,7 @@ public class SecurityConfig {
             .requestMatchers("/api/meta/**", "/api/airports/**", "/api/flights/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/auth/roles").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/bookings/checkout-preview", "/api/bookings/manage/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/customers/me/overview", "/api/support/overview", "/api/cms/homepage", "/api/admin/dashboard").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cms/homepage").permitAll()
             .requestMatchers(
                 HttpMethod.POST,
                 "/api/auth/register",
