@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,14 +44,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     try {
       JwtTokenService.AccessTokenPayload payload = jwtTokenService.parseAccessToken(token);
-      List<SimpleGrantedAuthority> authorities = payload.roles().stream()
-          .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase(Locale.ROOT)))
+      List<SimpleGrantedAuthority> authorities = Stream.concat(
+              payload.roles().stream().map(role -> "ROLE_" + role.toUpperCase(Locale.ROOT)),
+              payload.permissions().stream()
+          )
+          .distinct()
+          .map(SimpleGrantedAuthority::new)
           .toList();
       AuthenticatedUser authenticatedUser = new AuthenticatedUser(
           payload.userId(),
           payload.email(),
           payload.displayName(),
-          payload.roles()
+          payload.roles(),
+          payload.permissions()
       );
       UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
           authenticatedUser,

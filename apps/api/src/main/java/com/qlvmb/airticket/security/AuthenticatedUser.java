@@ -6,6 +6,7 @@ public record AuthenticatedUser(
     Long userId,
     String email,
     String displayName,
-    List<String> roles
+    List<String> roles,
+    List<String> permissions
 ) {
 }

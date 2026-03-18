@@ -141,6 +141,12 @@ public class UserAccountEntity {
     this.updatedAt = updatedAt;
   }
 
+  public void updateProfile(String displayName, String phone, OffsetDateTime updatedAt) {
+    this.displayName = displayName;
+    this.phone = phone;
+    this.updatedAt = updatedAt;
+  }
+
   public boolean isLocked() {
     return lockedAt != null;
   }
