@@ -53,6 +53,7 @@
 - Giai đoạn đầu ưu tiên khu công khai và tự phục vụ để khách vãng lai vẫn xem web, tìm chuyến bay, tra cứu đặt chỗ và làm các thao tác cơ bản.
 - Giai đoạn sau mới mở rộng sâu cho các module backoffice như bán vé hộ, chăm sóc khách hàng, điều hành, tài chính, quản trị nội dung và quản trị hệ thống.
 - Mọi thay đổi phải đi theo nhịp nhỏ: đọc hiểu -> sửa đúng phạm vi -> kiểm tra -> commit riêng từng mục tiêu.
+- Tài liệu backlog backend nhiều vai trò nằm tại `docs/architecture/lo-trinh-backend-nhieu-vai-tro.md`.
 
 ### Ma trận vai trò
 | Vai trò | Phạm vi chính | Không được phép |
