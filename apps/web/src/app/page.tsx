@@ -1025,16 +1025,26 @@ export default async function HomePage() {
 
         .home-destination-card.destination-card-5 {
           background:
-            linear-gradient(160deg, rgba(12, 34, 61, 0.2), rgba(12, 34, 61, 0.76)),
-            url("/images/airport-terminal.jpg") center/cover,
+            linear-gradient(160deg, rgba(12, 34, 61, 0.14), rgba(12, 34, 61, 0.62)),
+            url("/images/nha-trang-n.jpg") center 35%/cover,
             linear-gradient(135deg, #4f7193, #173253);
         }
 
         .home-destination-card.destination-card-6 {
           background:
-            linear-gradient(160deg, rgba(12, 34, 61, 0.18), rgba(12, 34, 61, 0.74)),
-            url("/images/danang-sunset.jpg") center/cover,
+            linear-gradient(160deg, rgba(12, 34, 61, 0.12), rgba(12, 34, 61, 0.54)),
+            url("/images/hue.jpg") center 62%/160% auto no-repeat,
             linear-gradient(135deg, #8a6947, #16395d);
+        }
+
+        .home-destination-card.destination-card-6::after {
+          background: linear-gradient(
+            180deg,
+            rgba(7, 24, 41, 0.02) 12%,
+            rgba(7, 24, 41, 0.14) 40%,
+            rgba(7, 24, 41, 0.42) 72%,
+            rgba(7, 24, 41, 0.74) 100%
+          );
         }
 
         .home-destination-card::before {
