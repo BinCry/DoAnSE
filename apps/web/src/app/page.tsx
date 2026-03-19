@@ -5,6 +5,12 @@ import { FlightSearchPanel } from "@/components/flight-search-panel";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusChip } from "@/components/status-chip";
 import {
+  HanhLyIcon,
+  LamThuTucIcon,
+  NangHangGheIcon,
+  TroLyHoTroIcon
+} from "@/components/utility-icons";
+import {
   destinations,
   heroHighlights,
   promotions,
@@ -13,6 +19,22 @@ import {
 } from "@/lib/mock-data";
 import { getLatestTravelArticles } from "@/lib/newsdata";
 import { formatCurrency } from "@/lib/format";
+
+const promotionPhotos = [
+  { src: "/images/summer-promo.jpg", alt: "Hình minh hoạ chiến dịch mùa hè" },
+  { src: "/images/member-promo-v2.png", alt: "Hình minh hoạ hội viên Vietnam Airlines" },
+  { src: "/images/business-promo.jpg", alt: "Hình minh hoạ doanh nghiệp với dữ liệu tài chính" }
+] as const;
+
+function getTienIchIcon(title: string) {
+  const normalized = title.toLowerCase();
+
+  if (normalized.includes("hành lý")) return <HanhLyIcon className="tien-ich-icon-svg" />;
+  if (normalized.includes("nâng hạng")) return <NangHangGheIcon className="tien-ich-icon-svg" />;
+  if (normalized.includes("làm thủ tục")) return <LamThuTucIcon className="tien-ich-icon-svg" />;
+
+  return <TroLyHoTroIcon className="tien-ich-icon-svg" />;
+}
 
 const heroStats = [
   { label: "Tỷ lệ lấp đầy trên tuyến trục", value: "92%", detail: "Cập nhật theo tình hình khai thác trong ngày" },
@@ -186,14 +208,12 @@ export default async function HomePage() {
               />
               <div className="quick-grid">
                 {quickServices.map((service) => (
-                  <Link key={service.title} href={service.href} className="feature-card feature-card-rich">
-                    <div className="feature-card-top">
-                      <span className="pill">Tiện ích</span>
-                      <strong>↗</strong>
+                  <Link key={service.title} href={service.href} className="feature-card feature-card-rich tien-ich-card">
+                    <span className="pill tien-ich-tag">Tiện ích</span>
+                    <div className="tien-ich-icon" aria-hidden="true">
+                      {getTienIchIcon(service.title)}
                     </div>
-                    <h3>{service.title}</h3>
-                    <p>{service.subtitle}</p>
-                    <span>Xem chi tiết</span>
+                    <h3 className="tien-ich-title">{service.title}</h3>
                   </Link>
                 ))}
               </div>
@@ -302,16 +322,33 @@ export default async function HomePage() {
             description="Ưu đãi được gom theo từng nhóm nhu cầu để hành khách dễ đối chiếu quyền lợi, thời hạn áp dụng và quay lại bước đặt vé nhanh hơn."
           />
           <div className="card-grid card-grid-3">
-            {promotions.map((promotion) => (
-              <article key={promotion.title} className="surface-card promo-card">
-                <span className="pill">{promotion.tag}</span>
-                <h3>{promotion.title}</h3>
-                <p>{promotion.summary}</p>
-                <button type="button" className="text-button">
-                  {promotion.cta}
-                </button>
-              </article>
-            ))}
+            {promotions.map((promotion, index) => {
+              const photo = promotionPhotos[index % promotionPhotos.length];
+
+              return (
+                <article key={promotion.title} className="surface-card promo-card home-promo-card">
+                  <div className="home-promo-card-copy">
+                    <span className="pill">{promotion.tag}</span>
+                    <h3>{promotion.title}</h3>
+                    <p>{promotion.summary}</p>
+                    <button type="button" className="text-button">
+                      {promotion.cta}
+                    </button>
+                  </div>
+                  <div className={`home-promo-card-media home-promo-card-media-${index}`}>
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      fill
+                      sizes="(max-width: 640px) 116px, (max-width: 1200px) 120px, 138px"
+                      quality={100}
+                      unoptimized
+                      className="home-promo-card-image"
+                    />
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -440,6 +477,64 @@ export default async function HomePage() {
           color: rgba(14, 40, 69, 0.78);
           font-size: 0.97rem;
           line-height: 1.7;
+        }
+
+        .home-promo-card {
+          display: block;
+          position: relative;
+          min-height: 314px;
+          padding: 22px 22px 14px;
+        }
+
+        .home-promo-card::before {
+          content: none;
+        }
+
+        .home-promo-card-copy {
+          display: grid;
+          gap: 10px;
+          max-width: calc(100% - 156px);
+          align-content: start;
+          position: relative;
+          z-index: 1;
+        }
+
+        .home-promo-card-copy h3,
+        .home-promo-card-copy p {
+          margin: 0;
+        }
+
+        .home-promo-card-copy p {
+          max-width: none;
+        }
+
+        .home-promo-card-media {
+          position: absolute;
+          right: 26px;
+          bottom: 44px;
+          overflow: hidden;
+          width: 138px;
+          height: 188px;
+          border-radius: 26px;
+        }
+
+        .home-promo-card-media::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(180deg, rgba(12, 34, 61, 0.08), rgba(12, 34, 61, 0.22)),
+            radial-gradient(circle at top right, rgba(246, 215, 131, 0.3), transparent 26%);
+        }
+
+        .home-promo-card-image {
+          object-fit: cover;
+          object-position: center;
+        }
+
+        .home-promo-card-media-1 .home-promo-card-image {
+          transform: scale(1.14);
+          object-position: center 42%;
         }
 
         .home-hero-section {
@@ -1190,6 +1285,17 @@ export default async function HomePage() {
           .home-latest-articles-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
           }
+
+          .home-promo-card-copy {
+            max-width: calc(100% - 138px);
+          }
+
+          .home-promo-card-media {
+            right: 22px;
+            bottom: 38px;
+            width: 120px;
+            height: 180px;
+          }
         }
 
         @media (max-width: 820px) {
@@ -1203,6 +1309,18 @@ export default async function HomePage() {
 
           .home-hero-section {
             padding: 40px 0 28px;
+          }
+
+          .home-promo-card {
+            min-height: 304px;
+          }
+
+          .home-promo-card-copy {
+            max-width: calc(100% - 132px);
+          }
+
+          .home-promo-card-media {
+            bottom: 32px;
           }
 
           .home-hero-copy {

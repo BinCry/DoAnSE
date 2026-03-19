@@ -995,6 +995,98 @@ img {
   align-content: start;
 }
 
+.tien-ich-card {
+  text-align: center;
+  grid-template-rows: auto auto;
+  align-content: center;
+  justify-items: center;
+  min-height: 192px;
+  padding: 16px 16px 14px;
+  gap: 8px;
+  border-color: rgba(18, 61, 105, 0.14);
+  box-shadow:
+    0 26px 70px rgba(18, 36, 59, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  background:
+    radial-gradient(circle at 24% 14%, rgba(202, 164, 95, 0.14), transparent 46%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(243, 247, 252, 0.92));
+}
+
+.tien-ich-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  background: rgba(18, 61, 105, 0.08);
+}
+
+.tien-ich-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(10, 40, 72, 0.42);
+  box-shadow:
+    0 36px 96px rgba(18, 36, 59, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  background: rgba(12, 34, 61, 0.96);
+}
+
+.tien-ich-card:hover .tien-ich-tag {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 248, 239, 0.92);
+}
+
+.tien-ich-card:hover .tien-ich-title {
+  color: rgba(255, 248, 239, 0.98);
+}
+
+.tien-ich-card:hover .tien-ich-icon {
+  color: rgba(255, 248, 239, 0.98);
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 14px 34px rgba(3, 14, 30, 0.26);
+}
+
+.tien-ich-card::before {
+  content: none;
+}
+
+.tien-ich-icon {
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 2px;
+  display: grid;
+  place-items: center;
+  color: rgba(7, 29, 50, 0.92);
+  border-radius: 18px;
+  border: 1px solid rgba(18, 61, 105, 0.12);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.36),
+    0 12px 26px rgba(18, 36, 59, 0.14);
+}
+
+.tien-ich-icon-svg {
+  width: 28px;
+  height: 28px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tien-ich-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.4em;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.86rem;
+  line-height: 1.16;
+}
+
 .feature-card-rich::before,
 .promo-card::before,
 .module-card::before {
@@ -1449,14 +1541,18 @@ img {
 
 .result-timeline {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: max-content minmax(180px, 1fr) max-content;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   margin: 0;
   padding: 16px 18px;
   border-radius: 20px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(236, 242, 249, 0.88));
+}
+
+.result-timeline .timeline-stop {
+  text-align: center;
 }
 
 .timeline-stop span {
@@ -1477,10 +1573,23 @@ img {
 }
 
 .timeline-line {
-  width: 110px;
+  position: relative;
+  width: 100%;
   height: 2px;
   background:
     linear-gradient(90deg, rgba(18, 61, 105, 0.1), rgba(18, 61, 105, 0.8), rgba(202, 164, 95, 0.9));
+}
+
+.timeline-line::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  width: 12px;
+  height: 12px;
+  transform: translateY(-50%);
+  background: rgba(202, 164, 95, 0.95);
+  clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
 
 .result-grid {
@@ -3065,10 +3174,19 @@ th {
 
   .timeline-line {
     width: 2px;
-    height: 60px;
+    height: 72px;
     margin-left: 10px;
     background:
       linear-gradient(180deg, rgba(18, 61, 105, 0.1), rgba(18, 61, 105, 0.8), rgba(202, 164, 95, 0.9));
+  }
+
+  .timeline-line::after {
+    left: 50%;
+    right: auto;
+    top: auto;
+    bottom: -1px;
+    transform: translateX(-50%);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
   }
 
   .chatbot-root {
