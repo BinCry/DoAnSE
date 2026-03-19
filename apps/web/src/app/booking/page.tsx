@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { SectionHeading } from "@/components/section-heading";
 import { ancillaries, bookingSteps, fareComparisons } from "@/lib/mock-data";
 import { formatCurrency } from "@/lib/format";
@@ -7,6 +9,29 @@ const bookingStepLabels = {
   current: "Đang nhập",
   upcoming: "Sắp tới"
 } as const;
+
+const bookingStepImages = {
+  "Chọn chuyến bay": {
+    src: "/images/airport-terminal.jpg",
+    alt: "Minh họa bước chọn chuyến bay"
+  },
+  "Thông tin hành khách": {
+    src: "/images/guestinformation.png",
+    alt: "Minh họa bước nhập thông tin hành khách"
+  },
+  "Dịch vụ bổ trợ": {
+    src: "/images/additional services.png",
+    alt: "Minh họa bước chọn dịch vụ bổ trợ"
+  },
+  "Thanh toán & xuất vé": {
+    src: "/images/invoice.jpg",
+    alt: "Minh họa bước thanh toán và xuất vé"
+  }
+} as const;
+
+function getBookingStepImage(title: string) {
+  return bookingStepImages[title as keyof typeof bookingStepImages];
+}
 
 export default function BookingPage() {
   return (
@@ -18,16 +43,28 @@ export default function BookingPage() {
           description="Chọn chuyến bay phù hợp, nhập thông tin hành khách, bổ sung dịch vụ cần thiết và hoàn tất thanh toán trong một luồng dễ theo dõi."
         />
         <div className="step-grid">
-          {bookingSteps.map((step) => (
-            <article
-              key={step.title}
-              className={`surface-card step-card step-${step.status}`}
-            >
-              <span className="pill">{bookingStepLabels[step.status]}</span>
-              <h3>{step.title}</h3>
-              <p>{step.description}</p>
-            </article>
-          ))}
+          {bookingSteps.map((step) => {
+            const image = getBookingStepImage(step.title);
+
+            return (
+              <article
+                key={step.title}
+                className={`surface-card step-card step-${step.status}`}
+              >
+                <div className="step-card-image">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 820px) 100vw, 360px"
+                  />
+                </div>
+                <span className="pill">{bookingStepLabels[step.status]}</span>
+                <h3>{step.title}</h3>
+                <p>{step.description}</p>
+              </article>
+            );
+          })}
         </div>
 
         <div className="section-gap" />

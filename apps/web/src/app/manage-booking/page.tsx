@@ -1,5 +1,26 @@
+import Image from "next/image";
+
 import { SectionHeading } from "@/components/section-heading";
 import { manageActions, notifications, supportFaqs } from "@/lib/mock-data";
+
+const manageActionImages = {
+  "Đổi chuyến": {
+    src: "/images/changeplane.png",
+    alt: "Minh họa tính năng đổi chuyến"
+  },
+  "Hoàn/Hủy": {
+    src: "/images/cancel.png",
+    alt: "Minh họa tính năng hoàn hoặc hủy vé"
+  },
+  "Mua thêm dịch vụ": {
+    src: "/images/moreservice.png",
+    alt: "Minh họa tính năng mua thêm dịch vụ"
+  }
+} as const;
+
+function getManageActionImage(title: string) {
+  return manageActionImages[title as keyof typeof manageActionImages];
+}
 
 export default function ManageBookingPage() {
   return (
@@ -44,13 +65,27 @@ export default function ManageBookingPage() {
 
         <div className="section-gap" />
         <div className="card-grid card-grid-3">
-          {manageActions.map((action) => (
-            <article key={action.title} className="surface-card action-card">
-              <h3>{action.title}</h3>
-              <p>{action.description}</p>
-              <strong>{action.rule}</strong>
-            </article>
-          ))}
+          {manageActions.map((action) => {
+            const image = getManageActionImage(action.title);
+
+            return (
+              <article key={action.title} className="surface-card action-card">
+                <div className="action-card-head">
+                  <div className="action-card-icon">
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      fill
+                      sizes="64px"
+                    />
+                  </div>
+                  <h3>{action.title}</h3>
+                </div>
+                <p>{action.description}</p>
+                <strong>{action.rule}</strong>
+              </article>
+            );
+          })}
         </div>
 
         <div className="section-gap" />
