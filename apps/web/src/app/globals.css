@@ -1056,22 +1056,22 @@ img {
   grid-column: span 2;
   min-height: 360px;
   background:
-    linear-gradient(160deg, rgba(12, 34, 61, 0.18), rgba(12, 34, 61, 0.74)),
-    url("/images/danang-sunset.jpg") center/cover,
+    linear-gradient(160deg, rgba(12, 34, 61, 0.14), rgba(12, 34, 61, 0.62)),
+    url("/images/cho-ben-thanh.jpg") center 40%/140% auto no-repeat,
     linear-gradient(135deg, #235d90, #16395d);
 }
 
 .destination-card-2 {
   background:
-    linear-gradient(160deg, rgba(12, 34, 61, 0.24), rgba(12, 34, 61, 0.76)),
-    url("/images/airport-terminal.jpg") center/cover,
+    linear-gradient(160deg, rgba(12, 34, 61, 0.16), rgba(12, 34, 61, 0.62)),
+    url("/images/cau-vang.jpg") right 65%/200% auto no-repeat,
     linear-gradient(135deg, #3b7d95, #1a3f5c);
 }
 
 .destination-card-3 {
   background:
-    linear-gradient(160deg, rgba(12, 34, 61, 0.24), rgba(12, 34, 61, 0.78)),
-    url("/images/vietnam-airport.jpg") center/cover,
+    linear-gradient(160deg, rgba(12, 34, 61, 0.16), rgba(12, 34, 61, 0.62)),
+    url("/images/ho-guom.jpg") center 35%/cover,
     linear-gradient(135deg, #486a8d, #173253);
 }
 
@@ -1079,7 +1079,7 @@ img {
   grid-column: span 2;
   background:
     linear-gradient(160deg, rgba(12, 34, 61, 0.18), rgba(12, 34, 61, 0.74)),
-    url("/images/danang-coast.jpg") center/cover,
+    url("/images/cau-hon.jpg") center/cover,
     linear-gradient(135deg, #8e6a42, #203a57);
 }
 
