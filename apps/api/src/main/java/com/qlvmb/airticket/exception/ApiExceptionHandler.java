@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -67,6 +68,17 @@ public class ApiExceptionHandler {
         .body(new ApiErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "Khong doc duoc noi dung yeu cau.",
+            Map.of(),
+            OffsetDateTime.now()
+        ));
+  }
+
+  @ExceptionHandler(AccessDeniedException.class)
+  public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException exception) {
+    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+        .body(new ApiErrorResponse(
+            HttpStatus.FORBIDDEN.value(),
+            "Ban khong co quyen thuc hien thao tac nay.",
             Map.of(),
             OffsetDateTime.now()
         ));

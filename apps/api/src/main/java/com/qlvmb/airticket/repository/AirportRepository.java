@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface AirportRepository extends JpaRepository<AirportEntity, Long> {
 
+  boolean existsByCodeIgnoreCase(String code);
+
   @Query("""
       select airport from AirportEntity airport
       where :keyword = ''

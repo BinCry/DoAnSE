@@ -5,6 +5,7 @@ import com.qlvmb.airticket.domain.entity.FlightEntity;
 import com.qlvmb.airticket.domain.entity.FlightFareInventoryEntity;
 import com.qlvmb.airticket.domain.mapper.FlightSearchMapper;
 import com.qlvmb.airticket.exception.BadRequestException;
+import com.qlvmb.airticket.repository.AirportRepository;
 import com.qlvmb.airticket.repository.FlightRepository;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -25,15 +26,18 @@ public class FlightSearchService {
       "Con ghe"
   );
 
+  private final AirportRepository airportRepository;
   private final FlightRepository flightRepository;
   private final ProductCatalogService productCatalogService;
   private final FlightSearchMapper flightSearchMapper;
 
   public FlightSearchService(
+      AirportRepository airportRepository,
       FlightRepository flightRepository,
       ProductCatalogService productCatalogService,
       FlightSearchMapper flightSearchMapper
   ) {
+    this.airportRepository = airportRepository;
     this.flightRepository = flightRepository;
     this.productCatalogService = productCatalogService;
     this.flightSearchMapper = flightSearchMapper;
@@ -145,6 +149,8 @@ public class FlightSearchService {
     if (departureDate == null) {
       throw new BadRequestException("Ngay di khong duoc de trong.");
     }
+    validateAirportCode(from, "di");
+    validateAirportCode(to, "den");
     if (Objects.equals(from, to)) {
       throw new BadRequestException("San bay di va den khong duoc trung nhau.");
     }
@@ -157,6 +163,9 @@ public class FlightSearchService {
     if (adultCount < 1) {
       throw new BadRequestException("Phai co it nhat 1 nguoi lon.");
     }
+    if (childCount < 0 || infantCount < 0) {
+      throw new BadRequestException("So luong hanh khach khong hop le.");
+    }
     if (adultCount + childCount + infantCount > 9) {
       throw new BadRequestException("Tong so hanh khach vuot qua gioi han 9 nguoi.");
     }
@@ -165,6 +174,12 @@ public class FlightSearchService {
     }
     if (fareFamily != null) {
       productCatalogService.requireFareMeta(fareFamily);
+    }
+  }
+
+  private void validateAirportCode(String airportCode, String directionLabel) {
+    if (!airportRepository.existsByCodeIgnoreCase(airportCode)) {
+      throw new BadRequestException("Ma san bay " + directionLabel + " khong hop le.");
     }
   }
 
