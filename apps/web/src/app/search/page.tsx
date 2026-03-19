@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { SectionHeading } from "@/components/section-heading";
 import { StatusChip } from "@/components/status-chip";
 import { hienThiHanhTrinh, hienThiTenGoiGia } from "@/lib/display";
@@ -37,6 +39,21 @@ const insights = [
   { label: "Khung ngày", value: "20/03 - 23/03", compact: true },
   { label: "Mức giá tốt nhất", value: formatCurrency(1490000), compact: false }
 ];
+
+const fareImageMap = {
+  pho_thong_tiet_kiem: {
+    src: "/images/pho-thong-tiet-kiem-vietnam-airline-3.jpg",
+    alt: "Hình minh họa cho gói phổ thông tiết kiệm"
+  },
+  pho_thong_linh_hoat: {
+    src: "/images/phothonglinhhoat-classess.jpg",
+    alt: "Hình minh họa cho gói phổ thông linh hoạt"
+  },
+  thuong_gia: {
+    src: "/images/thuonggia-classess.jpg",
+    alt: "Hình minh họa cho gói thương gia"
+  }
+} as const;
 
 export default function SearchPage() {
   return (
@@ -147,6 +164,14 @@ export default function SearchPage() {
         <div className="card-grid card-grid-3">
           {fareComparisons.map((fare) => (
             <article key={fare.title} className="surface-card fare-card">
+              <div className="fare-card-image">
+                <Image
+                  src={fareImageMap[fare.fareFamily].src}
+                  alt={fareImageMap[fare.fareFamily].alt}
+                  fill
+                  sizes="(max-width: 820px) 100vw, 360px"
+                />
+              </div>
               <span className="pill">{fare.title}</span>
               <strong className="fare-price">{formatCurrency(fare.price)}</strong>
               <ul className="list-clean">
