@@ -36,47 +36,51 @@ export interface WeatherSnapshot {
 const WEATHER_TIMEOUT_MS = 8000;
 
 const weatherKeywords = [
+  "thời tiết",
   "thoi tiet",
+  "dự báo thời tiết",
+  "du bao thoi tiet",
+  "nhiệt độ",
   "nhiet do",
+  "gió",
   "gio",
-  "do am",
-  "mua",
-  "nang",
-  "lanh",
-  "nong",
-  "bao",
-  "ret",
-  "mat me"
+  "độ ẩm",
+  "do am"
 ];
 
 const weatherLocations: WeatherLocation[] = [
   {
-    aliases: ["ha noi", "hanoi", "noi bai"],
+    aliases: ["hà nội", "ha noi", "hanoi", "nội bài", "noi bai"],
     city: "Hà Nội",
     query: "Ha Noi,VN"
   },
   {
-    aliases: ["da nang", "danang"],
+    aliases: ["đà nẵng", "da nang", "danang"],
     city: "Đà Nẵng",
     query: "Da Nang,VN"
   },
   {
     aliases: [
+      "thành phố hồ chí minh",
       "thanh pho ho chi minh",
+      "hồ chí minh",
       "ho chi minh",
       "ho chi minh city",
+      "tp hồ chí minh",
       "tp hcm",
       "tp.hcm",
       "tphcm",
+      "sài gòn",
       "sai gon",
       "saigon",
+      "tân sơn nhất",
       "tan son nhat"
     ],
     city: "Thành phố Hồ Chí Minh",
     query: "Ho Chi Minh City,VN"
   },
   {
-    aliases: ["phu quoc"],
+    aliases: ["phú quốc", "phu quoc"],
     city: "Phú Quốc",
     query: "Phu Quoc,VN"
   }
@@ -89,6 +93,13 @@ function normalizeText(value: string | null | undefined) {
     .replace(/đ/g, "d")
     .replace(/Đ/g, "d")
     .toLocaleLowerCase("vi-VN");
+}
+
+function buildSearchTexts(value: string | null | undefined) {
+  const lowered = (value ?? "").toLocaleLowerCase("vi-VN").trim();
+  const normalized = normalizeText(value);
+
+  return Array.from(new Set([lowered, normalized].filter(Boolean)));
 }
 
 function formatObservedAt(unixTimeSeconds: number | undefined) {
@@ -194,11 +205,13 @@ function extractFreeformWeatherLocation(question: string) {
 }
 
 export function detectWeatherLocation(question: string) {
-  const normalizedQuestion = normalizeText(question);
+  const searchTexts = buildSearchTexts(question);
 
   return (
     weatherLocations.find((location) =>
-      location.aliases.some((alias) => normalizedQuestion.includes(alias))
+      location.aliases.some((alias) =>
+        searchTexts.some((searchText) => searchText.includes(alias))
+      )
     ) ??
     extractFreeformWeatherLocation(question) ??
     null
@@ -206,9 +219,11 @@ export function detectWeatherLocation(question: string) {
 }
 
 export function isWeatherQuestion(question: string) {
-  const normalizedQuestion = normalizeText(question);
+  const searchTexts = buildSearchTexts(question);
 
-  return weatherKeywords.some((keyword) => normalizedQuestion.includes(keyword));
+  return weatherKeywords.some((keyword) =>
+    searchTexts.some((searchText) => searchText.includes(keyword))
+  );
 }
 
 export function formatWeatherSummary(snapshot: WeatherSnapshot) {
