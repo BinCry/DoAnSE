@@ -1,3 +1,11 @@
+import {
+  buildWeatherPromptContext,
+  detectWeatherLocation,
+  formatWeatherSummary,
+  getWeatherSnapshot,
+  isWeatherQuestion,
+  type WeatherSnapshot
+} from "@/lib/chatbot-weather";
 import { destinations } from "@/lib/mock-data";
 import { getGeminiApiKey, getGeminiModel } from "@/lib/server-env";
 
@@ -70,6 +78,15 @@ function extractGeminiText(data: GeminiResponse) {
     .trim();
 }
 
+function formatCurrentDate() {
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Ho_Chi_Minh",
+    year: "numeric"
+  }).format(new Date());
+}
+
 function buildGroundingContext() {
   return destinations
     .map((destination) => {
@@ -78,8 +95,19 @@ function buildGroundingContext() {
     .join("\n");
 }
 
-function buildTravelFallbackReply(question: string): string {
+function buildTravelFallbackReply(
+  question: string,
+  weatherSnapshot: WeatherSnapshot | null
+): string {
   const normalizedQuestion = normalizeText(question);
+  const weatherSummary = weatherSnapshot ? formatWeatherSummary(weatherSnapshot) : "";
+
+  if (weatherSnapshot && isWeatherQuestion(question)) {
+    return (
+      `${weatherSummary}\n\n` +
+      "Nếu bạn muốn, mình có thể gợi ý thêm thời điểm đi phù hợp, lịch trình ngắn hoặc điểm tham quan quanh khu vực này."
+    );
+  }
 
   const rankedDestinations = destinationProfiles
     .map((destination) => {
@@ -102,6 +130,7 @@ function buildTravelFallbackReply(question: string): string {
     .join("\n");
 
   return (
+    (weatherSummary ? `${weatherSummary}\n\n` : "") +
     "Mình đang tạm thời không lấy được gợi ý AI trực tiếp, nên gửi bạn một vài hướng đi nhanh để tham khảo:\n\n" +
     `${suggestions}\n\n` +
     "Bạn có thể hỏi lại theo mẫu như: đi 3 ngày 2 đêm, ngân sách bao nhiêu, đi với ai và muốn nghỉ dưỡng hay khám phá để mình gợi ý sát hơn."
@@ -122,6 +151,70 @@ function buildGeminiModelQueue() {
   );
 }
 
+function resolveWeatherLookupText(
+  messages: ChatbotApiMessage[],
+  latestQuestion: string
+) {
+  if (!isWeatherQuestion(latestQuestion) || detectWeatherLocation(latestQuestion)) {
+    return latestQuestion;
+  }
+
+  return (
+    messages
+      .slice()
+      .reverse()
+      .map((message) => message.content)
+      .find((content) => Boolean(detectWeatherLocation(content))) ?? latestQuestion
+  );
+}
+
+async function extractGeminiErrorMessage(response: Response) {
+  const responseText = await response.text().catch(() => "");
+
+  if (!responseText) {
+    return "";
+  }
+
+  try {
+    const payload = JSON.parse(responseText) as {
+      error?: {
+        message?: string;
+      };
+    };
+
+    return payload.error?.message?.trim() ?? "";
+  } catch {
+    return responseText.trim().slice(0, 240);
+  }
+}
+
+function buildSystemInstruction(
+  groundedDestinations: string,
+  weatherSnapshot: WeatherSnapshot | null
+) {
+  const weatherPromptContext = weatherSnapshot
+    ? `\n\nDữ liệu thời tiết hiện tại cho yêu cầu này:\n${buildWeatherPromptContext(weatherSnapshot)}`
+    : "";
+
+  return (
+    `Ban la tro ly goi y du lich bang tieng Viet cho website Vietnam Airlines.\n` +
+    `Hom nay la ${formatCurrentDate()}.\n` +
+    `Hay tra loi gon, thuc te va de doc.\n` +
+    `Voi yeu cau chi hoi thoi tiet hien tai, co the tra loi ngan hon 120 tu.\n` +
+    `Neu nguoi dung da dua du thong tin nhu diem di, thoi luong hoac nhom khach, khong hoi lai mo dau.\n` +
+    `Neu nguoi dung chi hoi thoi tiet hien tai cua mot dia diem, hay tra loi truc tiep ve thoi tiet truoc, sau do chi goi y them 1 cau ngan neu thuc su can.\n` +
+    `Voi yeu cau goi y du lich, hay goi y dung 3 phuong an phu hop nhat.\n` +
+    `Moi phuong an chi 1 dong theo mau: Ten diem den - ly do phu hop - chi phi tuong doi - luu y ngan.\n` +
+    `Neu thong tin con thieu, chi hoi them toi da 1 cau ngan o cuoi cau tra loi.\n` +
+    `Khong bia du lieu chuyen bay thoi gian thuc, khong khang dinh gia ve dang ban.\n` +
+    `Neu nguoi dung hoi ve thoi tiet hien tai, chi duoc tra loi khi duoc cap du lieu thoi tiet da xac thuc; neu khong co du lieu thi phai noi ro chua xac thuc duoc.\n` +
+    `Khong dung markdown phuc tap hoac doan qua dai.\n` +
+    `Ket thuc bang 1 cau ngan goi y buoc tiep theo nhu doc blog hoac tim chuyen bay.\n\n` +
+    `Mot so diem den va du lieu tham khao tren website:\n${groundedDestinations}` +
+    weatherPromptContext
+  );
+}
+
 export async function buildTravelReply(
   messages: ChatbotApiMessage[]
 ): Promise<TravelReply> {
@@ -131,7 +224,9 @@ export async function buildTravelReply(
       .reverse()
       .find((message) => message.role === "user")?.content ?? "";
 
-  const fallbackReply = buildTravelFallbackReply(latestQuestion);
+  const weatherLookupText = resolveWeatherLookupText(messages, latestQuestion);
+  const weatherSnapshot = await getWeatherSnapshot(weatherLookupText);
+  const fallbackReply = buildTravelFallbackReply(latestQuestion, weatherSnapshot);
   const apiKey = getGeminiApiKey();
 
   if (!apiKey) {
@@ -159,18 +254,7 @@ export async function buildTravelReply(
     systemInstruction: {
       parts: [
         {
-          text:
-            `Ban la tro ly goi y du lich bang tieng Viet cho website Vietnam Airlines.\n` +
-            `Hom nay la 16/03/2026.\n` +
-            `Hay tra loi gon trong khoang 120 den 160 tu, thuc te va de doc.\n` +
-            `Neu nguoi dung da dua du thong tin nhu diem di, thoi luong hoac nhom khach, khong hoi lai mo dau.\n` +
-            `Hay goi y dung 3 phuong an phu hop nhat.\n` +
-            `Moi phuong an chi 1 dong theo mau: Ten diem den - ly do phu hop - chi phi tuong doi - luu y ngan.\n` +
-            `Neu thong tin con thieu, chi hoi them toi da 1 cau ngan o cuoi cau tra loi.\n` +
-            `Khong bia du lieu chuyen bay thoi gian thuc, khong khang dinh gia ve dang ban, khong khang dinh thoi tiet hien tai.\n` +
-            `Khong dung markdown phuc tap hoac doan qua dai.\n` +
-            `Ket thuc bang 1 cau ngan goi y buoc tiep theo nhu doc blog hoac tim chuyen bay.\n\n` +
-            `Mot so diem den va du lieu tham khao tren website:\n${groundedDestinations}`
+          text: buildSystemInstruction(groundedDestinations, weatherSnapshot)
         }
       ]
     }
@@ -189,8 +273,9 @@ export async function buildTravelReply(
       });
 
       if (!response.ok) {
+        const errorMessage = await extractGeminiErrorMessage(response);
         console.error(
-          `[chatbot-travel] Goi ${model} that bai voi ma ${response.status}.`
+          `[chatbot-travel] Goi ${model} that bai voi ma ${response.status}${errorMessage ? `: ${errorMessage}` : "."}`
         );
         continue;
       }

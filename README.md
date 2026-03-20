@@ -44,6 +44,7 @@
 - Chạy local: tạo `apps/web/.env.local` dựa trên `apps/web/.env.example`.
 - Triển khai `Vercel`: khai báo đúng các biến tương tự trong phần `Environment Variables` của project `apps/web`.
 - Trợ lý du lịch dùng 1 trong 2 biến khóa Gemini: `GEMINI_API_KEY` hoặc `GOOGLE_GENERATIVE_AI_API_KEY`.
+- Có thể khai báo thêm `OPENWEATHER_API_KEY` để trợ lý du lịch trả lời thời tiết hiện tại theo địa điểm; nếu không khai báo thì web đang dùng khóa dự phòng trong mã phía server.
 - Bài viết du lịch dùng 1 trong 2 biến khóa NewsData: `NEWSDATA_API_KEY` hoặc `NEWSDATAIO_API_KEY`.
 - Có thể đặt thêm `GEMINI_MODEL=gemini-2.5-flash` để chốt model chạy ổn định giữa local và deploy.
 
