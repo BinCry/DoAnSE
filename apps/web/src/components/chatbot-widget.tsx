@@ -42,6 +42,28 @@ function buildPendingLabel(mode: ChatMode) {
   return mode === "travel" ? "AI đang gợi ý điểm đến..." : "Trợ lý đang trả lời...";
 }
 
+function resolveRequestMode(mode: ChatMode, content: string): ChatMode {
+  if (mode === "travel") {
+    return mode;
+  }
+
+  const lowered = content.toLocaleLowerCase("vi-VN");
+  const weatherCues = [
+    "thời tiết",
+    "thoi tiet",
+    "nhiệt độ",
+    "nhiet do",
+    "độ ẩm",
+    "do am",
+    "gió",
+    "gio"
+  ];
+
+  return weatherCues.some((weatherCue) => lowered.includes(weatherCue))
+    ? "travel"
+    : mode;
+}
+
 function buildFallbackErrorMessage(mode: ChatMode) {
   if (mode === "travel") {
     return "Mình vừa gặp chút trục trặc khi lấy gợi ý AI. Bạn có thể thử lại với ngân sách, số ngày hoặc điểm khởi hành rõ hơn để mình hỗ trợ tiếp.";
@@ -120,10 +142,11 @@ export function ChatbotWidget() {
     }
 
     const currentMode = activeMode;
+    const requestMode = resolveRequestMode(currentMode, content);
     const userMessage = createMessage("user", content);
     const pendingMessage = createMessage(
       "assistant",
-      buildPendingLabel(currentMode),
+      buildPendingLabel(requestMode),
       undefined,
       true
     );
@@ -153,7 +176,7 @@ export function ChatbotWidget() {
             content: message.content,
             role: message.role
           })),
-          mode: currentMode
+          mode: requestMode
         }),
         headers: {
           "Content-Type": "application/json"

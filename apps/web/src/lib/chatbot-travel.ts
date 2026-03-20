@@ -137,6 +137,13 @@ function buildTravelFallbackReply(
   );
 }
 
+function buildDirectWeatherReply(snapshot: WeatherSnapshot): string {
+  return (
+    `${formatWeatherSummary(snapshot)}\n\n` +
+    "Nếu bạn muốn, mình có thể gợi ý thêm thời điểm phù hợp để đi, lịch trình ngắn hoặc điểm tham quan gần khu vực này."
+  );
+}
+
 function buildGeminiEndpoint(model: string) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 }
@@ -227,6 +234,14 @@ export async function buildTravelReply(
   const weatherLookupText = resolveWeatherLookupText(messages, latestQuestion);
   const weatherSnapshot = await getWeatherSnapshot(weatherLookupText);
   const fallbackReply = buildTravelFallbackReply(latestQuestion, weatherSnapshot);
+
+  if (weatherSnapshot && isWeatherQuestion(latestQuestion)) {
+    return {
+      actions: defaultTravelActions,
+      reply: buildDirectWeatherReply(weatherSnapshot)
+    };
+  }
+
   const apiKey = getGeminiApiKey();
 
   if (!apiKey) {

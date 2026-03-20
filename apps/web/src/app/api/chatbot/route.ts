@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { isWeatherQuestion } from "@/lib/chatbot-weather";
 import { buildSupportReply } from "@/lib/chatbot-support";
 import { buildTravelReply } from "@/lib/chatbot-travel";
 import type {
@@ -48,6 +49,51 @@ function sanitizeMessages(value: unknown): ChatbotApiMessage[] {
     .slice(-12);
 }
 
+function getLatestUserMessage(messages: ChatbotApiMessage[]) {
+  return (
+    messages
+      .slice()
+      .reverse()
+      .find((message) => message.role === "user")?.content ?? ""
+  );
+}
+
+function looksLikeWeatherRequest(message: string) {
+  const lowered = message.toLocaleLowerCase("vi-VN");
+  const weatherCues = [
+    "thời tiết",
+    "thoi tiet",
+    "nhiệt độ",
+    "nhiet do",
+    "gió",
+    "gio",
+    "độ ẩm",
+    "do am"
+  ];
+
+  return weatherCues.some((weatherCue) => lowered.includes(weatherCue));
+}
+
+export function resolveEffectiveMode(
+  mode: ChatMode,
+  messages: ChatbotApiMessage[]
+): ChatMode {
+  if (mode === "travel") {
+    return mode;
+  }
+
+  const latestUserMessage = getLatestUserMessage(messages);
+
+  if (
+    isWeatherQuestion(latestUserMessage) ||
+    looksLikeWeatherRequest(latestUserMessage)
+  ) {
+    return "travel";
+  }
+
+  return mode;
+}
+
 export async function POST(request: Request) {
   const payload = ((await request.json().catch(() => null)) ??
     {}) as Partial<ChatbotApiRequest>;
@@ -61,7 +107,9 @@ export async function POST(request: Request) {
     );
   }
 
-  if (mode === "support") {
+  const effectiveMode = resolveEffectiveMode(mode, messages);
+
+  if (effectiveMode === "support") {
     const response = buildSupportReply(messages);
 
     return NextResponse.json(response satisfies ChatbotApiResponse);
