@@ -4,21 +4,17 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   guest: "Khách vãng lai",
   customer: "Khách hàng",
   member: "Hội viên",
-  ticket_agent: "Nhân viên bán vé",
   customer_support: "Nhân viên chăm sóc khách hàng",
-  operations_staff: "Nhân viên điều hành",
-  finance_staff: "Nhân viên kế toán",
-  content_editor: "Biên tập nội dung",
-  system_admin: "Quản trị viên hệ thống"
+  operations_staff: "Nhân viên vận hành"
 };
 
 export const BACKOFFICE_ACCESS = {
-  sales: ["ticket_agent", "system_admin"],
-  support: ["customer_support", "system_admin"],
-  operations: ["operations_staff", "system_admin"],
-  finance: ["finance_staff", "system_admin"],
-  cms: ["content_editor", "system_admin"],
-  admin: ["system_admin"]
+  sales: ["customer_support"],
+  support: ["customer_support"],
+  operations: ["operations_staff"],
+  finance: ["customer_support"],
+  cms: ["customer_support"],
+  admin: ["operations_staff"]
 } as const satisfies Record<string, readonly StaffRole[]>;
 
 export type BackofficeModuleKey = keyof typeof BACKOFFICE_ACCESS;

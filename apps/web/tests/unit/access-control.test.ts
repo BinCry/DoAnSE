@@ -6,21 +6,24 @@ import {
 } from "@/lib/access-control";
 
 describe("access-control", () => {
-  it("cho admin truy cập toàn bộ module nội bộ", () => {
-    expect(getAllowedBackofficeModules("system_admin")).toEqual([
+  it("cho nhan vien cham soc khach hang truy cap cac module da duoc gop", () => {
+    expect(getAllowedBackofficeModules("customer_support")).toEqual([
       "sales",
       "support",
-      "operations",
       "finance",
-      "cms",
+      "cms"
+    ]);
+  });
+
+  it("cho nhan vien van hanh truy cap dieu hanh va kiem soat", () => {
+    expect(getAllowedBackofficeModules("operations_staff")).toEqual([
+      "operations",
       "admin"
     ]);
   });
 
-  it("chan ke toan truy cap module dieu hanh", () => {
-    expect(canAccessBackofficeModule("finance_staff", "operations")).toBe(
-      false
-    );
+  it("chan nhan vien cham soc khach hang vao module dieu hanh", () => {
+    expect(canAccessBackofficeModule("customer_support", "operations")).toBe(false);
   });
 
   it("chan khach vang lai vao backoffice", () => {

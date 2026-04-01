@@ -10,9 +10,9 @@ import {
 import { ROLE_LABELS } from "@/lib/access-control";
 
 const deskHighlights = [
-  "Theo dõi đặt chỗ, thanh toán và trạng thái chuyến bay từ cùng một nguồn dữ liệu.",
-  "Tách rõ phạm vi thao tác cho bán vé, chăm sóc khách hàng, khai thác và tài chính.",
-  "Ghi nhận thay đổi nhạy cảm để hỗ trợ đối soát, hoàn tiền và xử lý sự cố."
+  "Giữ nguyên các phân hệ bán vé, hỗ trợ, tài chính, nội dung và kiểm soát nhưng chỉ còn 2 vai trò vận hành.",
+  "Nhân viên chăm sóc khách hàng nhận nhóm việc bán vé hộ, hỗ trợ sau bán, hoàn tiền và nội dung hỗ trợ.",
+  "Nhân viên vận hành phụ trách giá, lịch bay, tồn ghế, trạng thái chuyến bay và nhật ký kiểm soát."
 ];
 
 export default function BackofficePage() {
@@ -22,10 +22,10 @@ export default function BackofficePage() {
         <div className="page-hero-card page-hero-card-dark">
           <div>
             <span className="section-eyebrow">Điều hành nội bộ</span>
-            <h1 className="page-title">Trung tâm điều phối dành cho bán vé, hỗ trợ hành khách và khai thác chuyến bay.</h1>
+            <h1 className="page-title">Trung tâm điều phối backoffice với 2 vai trò nội bộ đã gộp chức năng cần thiết.</h1>
             <p className="page-hero-copy">
-              Nhân sự vận hành có thể theo dõi chỉ số trong ngày, mở từng phân hệ
-              theo nhiệm vụ và kiểm tra lại lịch sử thao tác ở cùng một nơi.
+              Backoffice vẫn giữ đủ các phân hệ nghiệp vụ cũ, nhưng toàn bộ quyền
+              thao tác được gom lại cho 2 vai trò để giảm phân mảnh và dễ kiểm soát hơn.
             </p>
           </div>
           <div className="page-hero-stat-grid">
@@ -52,8 +52,8 @@ export default function BackofficePage() {
         <div className="section-gap" />
         <SectionHeading
           eyebrow="Phân khu điều phối"
-          title="Mỗi nhóm nghiệp vụ có một phân hệ làm việc riêng"
-          description="Bán vé, chăm sóc khách hàng, khai thác, tài chính, nội dung và quản trị hệ thống được tách thành các khu vực rõ chức năng để xử lý nhanh hơn trong ca trực."
+          title="Hai vai trò nội bộ cùng làm việc trên các phân hệ chuyên môn"
+          description="Các phân hệ bán vé, chăm sóc khách hàng, điều hành, tài chính, nội dung và kiểm soát hệ thống vẫn được giữ nguyên để không mất chức năng cần thiết."
         />
         <div className="module-grid">
           {backofficeModules.map((module) => (
@@ -81,8 +81,8 @@ export default function BackofficePage() {
           <div>
             <SectionHeading
               eyebrow="Quy tắc phân quyền"
-              title="Mỗi vai trò chỉ truy cập đúng nghiệp vụ được giao"
-              description="Bảng phân quyền giúp kiểm tra nhanh phạm vi thao tác của từng nhóm trước khi xử lý hoàn tiền, đổi lịch bay hoặc cấu hình hệ thống."
+              title="Hai vai trò nội bộ nhận lại quyền từ các vai trò đã giảm"
+              description="Bảng phân quyền giúp kiểm tra nhanh nhóm việc đã được gộp cho chăm sóc khách hàng và vận hành trước khi xử lý đổi vé, hoàn tiền hay điều hành chuyến bay."
             />
             <div className="table-card">
               <div className="table-wrap">
@@ -111,7 +111,7 @@ export default function BackofficePage() {
             <SectionHeading
               eyebrow="Nhật ký kiểm soát"
               title="Theo dõi những thay đổi nhạy cảm theo thời gian gần thực"
-              description="Mọi cập nhật quan trọng như điều kiện hoàn vé, thay đổi trạng thái chuyến bay hay xác nhận hoàn tiền đều được lưu lại để kiểm tra nhanh."
+              description="Mọi cập nhật quan trọng sau khi gộp vai trò như điều kiện hoàn vé, thay đổi trạng thái chuyến bay hay xác nhận hoàn tiền đều được lưu lại để kiểm tra nhanh."
             />
             <div className="stack-list">
               {auditEntries.map((entry) => (

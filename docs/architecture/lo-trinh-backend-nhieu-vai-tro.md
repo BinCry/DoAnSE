@@ -1,61 +1,117 @@
 # Lộ trình triển khai backend nhiều vai trò
 
 ## Mục tiêu
-- Biến phần giao diện hiện có thành hệ thống web bán vé máy bay chạy được thật với backend trung tâm tại `apps/api`.
-- Hỗ trợ đầy đủ các vai trò: `guest`, `customer`, `member`, `ticket_agent`, `customer_support`, `operations_staff`, `finance_staff`, `content_editor`, `system_admin`.
-- Ưu tiên thứ tự triển khai theo hướng: chạy được luồng công khai và tự phục vụ trước, sau đó mới mở rộng sâu cho backoffice.
+- Biến phần giao diện hiện có thành hệ thống web bán vé máy bay chạy thật với backend trung tâm tại `apps/api`.
+- Chốt mô hình vai trò đích còn 5 vai trò: `guest`, `customer`, `member`, `customer_support`, `operations_staff`.
+- Gộp vai trò backoffice từ sơ đồ nghiệp vụ về 2 nhóm nội bộ nhưng vẫn giữ đủ chức năng cần thiết từ các vai trò đã giảm.
 
-## Phạm vi hiện trạng
-- Backend hiện có nền Spring Boot, JPA, Flyway, PostgreSQL, CORS.
-- Dữ liệu thật mới chỉ đủ cho danh mục sân bay, chuyến bay và tồn ghế theo hạng vé.
-- Tìm chuyến bay đã có truy vấn DB thật.
-- Phần còn lại như auth, booking overview, customer overview, support overview, CMS homepage, admin dashboard vẫn đang trả dữ liệu mẫu.
-- Chưa có JWT, refresh token, OTP email, RBAC, audit log, thanh toán, ticketing, loyalty, CMS thật.
-- Frontend vẫn chủ yếu dùng `mock-data`, nên việc nối web với backend thật phải đi cùng lộ trình API rõ ràng.
+## Bối cảnh hiện tại
+- Backend đã có nền `Spring Boot`, `JPA`, `Flyway`, `PostgreSQL`, `Spring Security`.
+- Dữ liệu thật hiện mới đủ cho sân bay, chuyến bay và tồn ghế theo hạng vé.
+- Một số trang và API vẫn còn trả dữ liệu mẫu như auth summary, tổng quan khách hàng, hỗ trợ, CMS và bảng điều phối nội bộ.
+- Frontend vẫn dùng nhiều `mock-data`, nên lộ trình backend phải ưu tiên các API tối thiểu để thay thế dần dữ liệu mẫu.
+
+## Vai trò đích
+| Vai trò | Mục tiêu chính |
+| --- | --- |
+| `guest` | Tìm chuyến bay, xem chi tiết chuyến bay, xem khuyến mãi, FAQ, tạo đặt chỗ không cần tài khoản, tra cứu đặt chỗ bằng mã xác minh |
+| `customer` | Đăng ký, đăng nhập, đặt vé, thanh toán, quản lý đặt chỗ, đổi hoặc hủy theo điều kiện, làm thủ tục trực tuyến |
+| `member` | Toàn bộ quyền của `customer` và thêm điểm thưởng, voucher, đổi điểm, ưu đãi theo hạng |
+| `customer_support` | Tra cứu booking có xác minh, bán vé hộ, xử lý hỗ trợ, khiếu nại, đổi hoặc hủy thủ công, bù dịch vụ, hoàn tiền, nội dung hỗ trợ |
+| `operations_staff` | Quản lý giá, chuyến bay, lịch bay, tồn ghế, trạng thái chuyến bay, mở hoặc đóng bán, kiểm soát cấu hình và nhật ký hệ thống |
+
+## Quy tắc gộp backoffice
+| Vai trò mới | Vai trò cũ được gộp | Phần chức năng phải giữ lại |
+| --- | --- | --- |
+| `customer_support` | `ticket_agent`, `customer_support`, `finance_staff`, `content_editor` | Bán vé hộ, tra cứu booking, hỗ trợ sau bán, đổi hoặc hủy thủ công, bù dịch vụ, hoàn tiền, cập nhật FAQ và nội dung hỗ trợ |
+| `operations_staff` | `operations_staff`, `system_admin` | Quản lý giá, lịch bay, tồn ghế, trạng thái chuyến bay, mở hoặc đóng bán, cấu hình rule và nhật ký kiểm soát |
+
+## Bản đồ nghiệp vụ theo sơ đồ
+
+### Khách vãng lai
+- Đăng ký.
+- Đăng nhập.
+- Tìm chuyến bay.
+- Xem chi tiết chuyến bay.
+- Xem khuyến mãi và FAQ.
+- Tạo đặt chỗ.
+- Tra cứu booking.
+- Xác minh OTP khi tra cứu booking.
+
+### Khách hàng và hội viên
+- Làm thủ tục trực tuyến.
+- Chọn ghế.
+- Lấy thẻ lên máy bay.
+- Quản lý đặt chỗ.
+- Xem booking.
+- Đổi chuyến.
+- Hủy đặt chỗ.
+- Tính chênh lệch và phí đổi.
+- Tính hoàn tiền và gửi yêu cầu hoàn.
+- Tích điểm.
+- Đổi điểm.
+- Áp voucher.
+
+### Vai trò `customer_support`
+- Tra cứu booking và xác minh thông tin khách.
+- Xử lý yêu cầu hỗ trợ.
+- Xử lý khiếu nại.
+- Đổi hoặc hủy thủ công cho khách.
+- Bù dịch vụ hoặc voucher.
+- Theo dõi SLA xử lý.
+- Hỗ trợ bán vé hộ, giữ chỗ, xuất lại vé.
+- Kiểm tra hoàn tiền, đối soát giao dịch trong luồng chăm sóc khách hàng.
+- Cập nhật FAQ, khuyến mãi, nội dung hỗ trợ để đồng bộ với chatbot và khu công khai.
+
+### Vai trò `operations_staff`
+- Quản lý giá.
+- Quản lý chuyến bay.
+- Quản lý lịch bay.
+- Mở hoặc đóng bán chặng bay.
+- Quản lý tồn ghế.
+- Cập nhật trạng thái chuyến bay.
+- Kiểm soát cấu hình hệ thống, mẫu thông báo và nhật ký thao tác nhạy cảm.
+
+## Phân hệ backoffice giữ nguyên
+Backoffice vẫn giữ các phân hệ hiện có để không mất chức năng, nhưng quyền truy cập chỉ còn 2 vai trò.
+
+| Phân hệ | Vai trò được cấp | Mục đích |
+| --- | --- | --- |
+| `sales` | `customer_support` | Tạo đặt chỗ hộ, giữ chỗ, thu hộ và xuất lại vé |
+| `support` | `customer_support` | Xử lý hỗ trợ, khiếu nại, takeover từ trợ lý hỗ trợ, theo dõi SLA |
+| `finance` | `customer_support` | Đối soát giao dịch, hoàn tiền, hóa đơn, sai lệch cần phản hồi khách |
+| `cms` | `customer_support` | FAQ, banner, cẩm nang, nội dung hỗ trợ song ngữ |
+| `operations` | `operations_staff` | Giá, lịch bay, tồn ghế, trạng thái chuyến bay, mở hoặc đóng bán |
+| `admin` | `operations_staff` | Cấu hình rule, nhật ký kiểm soát, phân quyền và mẫu thông báo |
 
 ## Nguyên tắc triển khai
-- Không làm tất cả module cùng lúc.
-- Mỗi đợt chỉ chốt một mục tiêu chính và một nhóm bảng dữ liệu gần nhau.
-- Ưu tiên tương thích với `packages/shared-types`, nhưng chỉ mở rộng hợp đồng API sau khi chốt nhu cầu rõ ràng.
-- Mọi luồng nhạy cảm như auth, payment, refund, phân quyền phải có test tích hợp và log kiểm soát.
+- Không mở rộng tất cả module cùng lúc.
+- Mỗi đợt chỉ chốt một nhóm bảng và một nhóm API gần nhau.
+- Toàn bộ thay đổi phân quyền phải có kiểm thử tích hợp hoặc kiểm thử đơn vị đi kèm.
+- Không đổi hợp đồng API công khai nếu chưa chốt phạm vi ở web.
 - Toàn bộ tệp Java, TypeScript, SQL, Markdown phải thống nhất UTF-8 để tránh lỗi tiếng Việt có dấu.
 
 ## Thứ tự ưu tiên tổng thể
-1. Nền tảng xác thực, phân quyền, hồ sơ tài khoản.
+1. Xác thực, phân quyền, hồ sơ tài khoản.
 2. Danh mục công khai, tìm sân bay, tìm chuyến bay, dữ liệu trang chủ.
 3. Giữ chỗ, dịch vụ bổ trợ, thanh toán sandbox, xuất vé.
-4. Tự phục vụ sau bán: tra cứu booking, đổi hoặc hoàn, check-in, flight status.
-5. Backoffice cho `ticket_agent`, `customer_support`, `operations_staff`, `finance_staff`.
-6. CMS cho `content_editor`.
-7. Loyalty và hội viên cho `member`.
-8. Quan sát hệ thống, audit, tối ưu hiệu năng, test hồi quy.
+4. Tự phục vụ sau bán cho `guest`, `customer`, `member`.
+5. Backoffice với 2 vai trò `customer_support` và `operations_staff`.
+6. Loyalty, ổn định vận hành, audit và kiểm thử hồi quy.
 
-## Ma trận vai trò đích
-| Vai trò | Chức năng chính |
-| --- | --- |
-| `guest` | Tìm chuyến, xem giá, tra cứu booking có xác minh, xem trạng thái chuyến bay, check-in đủ điều kiện, đọc nội dung công khai |
-| `customer` | Đăng ký, đăng nhập, đặt vé, thanh toán, quản lý booking, thông báo, hồ sơ hành khách |
-| `member` | Toàn bộ của `customer` và thêm điểm thưởng, voucher, hạng hội viên |
-| `ticket_agent` | Tạo booking hộ, giữ chỗ, báo giá đoàn hoặc doanh nghiệp, xuất lại vé, hỗ trợ khách công tác |
-| `customer_support` | Xử lý ticket hỗ trợ, takeover từ trợ lý hỗ trợ, bù dịch vụ, hỗ trợ đổi hoặc hoàn theo rule |
-| `operations_staff` | Cập nhật trạng thái chuyến bay, gate, tồn ghế, đóng hoặc mở bán, phát cảnh báo vận hành |
-| `finance_staff` | Đối soát giao dịch, hóa đơn, hàng chờ hoàn tiền, duyệt hoàn, khóa sổ |
-| `content_editor` | Banner, blog, FAQ, khuyến mãi, cẩm nang sân bay, nội dung song ngữ |
-| `system_admin` | Phân quyền, audit log, cấu hình rule, mẫu thông báo, khóa hoặc mở tài khoản, feature flag |
-
-## Epic 01: Xác thực, phân quyền và hồ sơ tài khoản
+## Giai đoạn 1: Xác thực, phân quyền và hồ sơ tài khoản
 
 ### Mục tiêu
 - Có nền auth thật cho khách và staff.
 - Có RBAC ở mức API và mức nghiệp vụ.
-- Có khả năng mở rộng thêm role mà không phải sửa tràn lan.
+- Dùng được danh sách role mới với 2 vai trò backoffice.
 
 ### Bảng dữ liệu cần có
 - `user_account`
-- `role`
-- `permission`
-- `role_permission`
+- `auth_role`
+- `auth_permission`
 - `user_role`
+- `role_permission`
 - `refresh_session`
 - `otp_challenge`
 - `user_profile`
@@ -64,7 +120,7 @@
 - `saved_passenger`
 - `audit_log`
 
-### API cần có
+### API tối thiểu
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
@@ -72,30 +128,21 @@
 - `POST /api/auth/forgot-password/request-otp`
 - `POST /api/auth/forgot-password/verify-otp`
 - `POST /api/auth/reset-password`
+- `GET /api/auth/roles`
 - `GET /api/me/profile`
 - `PATCH /api/me/profile`
-- `GET /api/me/passengers`
-- `POST /api/me/passengers`
-- `PATCH /api/me/passengers/{id}`
-- `DELETE /api/me/passengers/{id}`
 
 ### Kiểm thử bắt buộc
-- Đăng ký, đăng nhập, refresh token, logout.
+- Đăng ký, đăng nhập, làm mới phiên, đăng xuất.
 - OTP hết hạn, OTP sai, OTP bị dùng lại.
-- Chặn truy cập trái vai trò.
-- Khóa tài khoản, đổi mật khẩu, thu hồi phiên.
+- Chặn người không đúng role vào API nội bộ.
+- Kiểm tra mapping quyền cho `customer_support` và `operations_staff`.
 
-### Thứ tự commit gợi ý
-- `feat(api):thêm bảng tài khoản và phân quyền nền`
-- `feat(auth):thêm đăng nhập và làm mới phiên jwt`
-- `feat(auth):thêm quên mật khẩu bằng otp email`
-- `test(auth):bổ sung kiểm thử xác thực và phân quyền`
-
-## Epic 02: Danh mục công khai và tìm chuyến bay
+## Giai đoạn 2: Khu công khai và tìm chuyến bay
 
 ### Mục tiêu
-- Nối được các trang công khai với backend thật.
-- Có dữ liệu đủ ổn định cho trang chủ, tìm chuyến, blog, khuyến mãi.
+- Nối các trang công khai với dữ liệu thật.
+- Đảm bảo luồng khách vãng lai trong sơ đồ chạy được trước.
 
 ### Bảng dữ liệu cần có
 - `airport`
@@ -105,38 +152,29 @@
 - `fare_family`
 - `fare_rule`
 - `flight_fare_inventory`
-- `ancillary_catalog`
 - `promotion`
 - `faq_public`
 - `homepage_section`
 
-### API cần có
-- `GET /api/meta/health`
+### API tối thiểu
 - `GET /api/airports`
 - `GET /api/flights/search`
 - `GET /api/flights/status`
 - `GET /api/public/homepage`
 - `GET /api/public/promotions`
 - `GET /api/public/faqs`
-- `GET /api/public/blog`
 
 ### Kiểm thử bắt buộc
 - Tìm chuyến một chiều.
 - Tìm chuyến khứ hồi.
-- Lọc theo gói giá.
-- Kiểm tra lỗi ngày đi, ngày về, tổng số khách, mã sân bay.
+- Lọc theo hạng vé.
+- Kiểm tra lỗi ngày đi, ngày về, tổng số khách và mã sân bay.
 
-### Thứ tự commit gợi ý
-- `feat(api):mở rộng danh mục chuyến bay và gói giá`
-- `feat(search):hoàn thiện api tìm chuyến và lọc dữ liệu`
-- `feat(content):thêm dữ liệu công khai cho trang chủ và faq`
-- `test(search):bổ sung kiểm thử luồng tìm chuyến bay`
-
-## Epic 03: Giữ chỗ, dịch vụ bổ trợ, thanh toán và xuất vé
+## Giai đoạn 3: Giữ chỗ, thanh toán và xuất vé
 
 ### Mục tiêu
-- Đặt vé được thật từ web.
-- Chống nhân đôi giao dịch và kiểm soát được tồn ghế.
+- Hoàn thiện luồng tạo booking của `guest` và `customer`.
+- Chống lặp giao dịch và kiểm soát tồn ghế khi thanh toán.
 
 ### Bảng dữ liệu cần có
 - `booking`
@@ -153,7 +191,7 @@
 - `invoice`
 - `notification_outbox`
 
-### API cần có
+### API tối thiểu
 - `POST /api/bookings/holds`
 - `GET /api/bookings/{bookingCode}`
 - `POST /api/bookings/{bookingCode}/repricing`
@@ -163,31 +201,18 @@
 - `POST /api/bookings/{bookingCode}/issue-ticket`
 - `GET /api/bookings/{bookingCode}/invoice`
 
-### Quy tắc nghiệp vụ bắt buộc
-- Giữ chỗ có thời gian sống rõ ràng.
-- Tính giá lại trước thanh toán.
-- Callback thanh toán phải có idempotency key.
-- Không xuất vé hai lần cho cùng một booking.
-- Ghi log mọi bước quan trọng: giữ chỗ, thanh toán, xuất vé, lỗi callback.
-
 ### Kiểm thử bắt buộc
 - Giữ chỗ thành công.
 - Hết hạn giữ chỗ.
-- Thanh toán callback lặp lại.
+- Callback thanh toán lặp lại.
 - Xuất vé sau thanh toán.
 - Mua thêm hành lý hoặc ghế.
 
-### Thứ tự commit gợi ý
-- `feat(dat-ve):thêm luồng giữ chỗ và hành khách`
-- `feat(thanh-toan):thêm tạo phiên thanh toán sandbox`
-- `feat(dat-ve):thêm xuất vé và gửi thông báo`
-- `test(thanh-toan):bổ sung kiểm thử callback và chống trùng`
-
-## Epic 04: Tự phục vụ sau bán cho guest và customer
+## Giai đoạn 4: Tự phục vụ sau bán
 
 ### Mục tiêu
-- Khách không cần gọi tổng đài cho các thao tác phổ biến.
-- Hoàn chỉnh các trang `manage-booking`, `check-in`, `flight-status`, `account`.
+- Giảm tải tổng đài cho các thao tác phổ biến sau bán.
+- Bám đúng các luồng trong sơ đồ cho `guest`, `customer`, `member`.
 
 ### Bảng dữ liệu cần có
 - `booking_lookup_session`
@@ -197,8 +222,11 @@
 - `boarding_pass`
 - `flight_event`
 - `notification_log`
+- `point_ledger`
+- `voucher`
+- `voucher_redemption`
 
-### API cần có
+### API tối thiểu
 - `POST /api/bookings/lookup/request-otp`
 - `POST /api/bookings/lookup/verify-otp`
 - `GET /api/bookings/manage/{bookingCode}`
@@ -209,192 +237,104 @@
 - `POST /api/check-in/eligibility`
 - `POST /api/check-in/seat-selection`
 - `POST /api/check-in/complete`
-- `GET /api/flights/{flightCode}/status`
+- `GET /api/me/points`
+- `GET /api/me/vouchers`
+- `POST /api/bookings/{bookingCode}/apply-voucher`
 
 ### Kiểm thử bắt buộc
 - Tra cứu booking bằng OTP.
 - Đổi chuyến khi đủ điều kiện.
-- Từ chối hoàn hoặc đổi khi quá hạn.
+- Từ chối đổi hoặc hoàn khi quá hạn.
 - Mở và đóng check-in theo giờ.
-- Sinh boarding pass hợp lệ.
+- Tích điểm và đổi điểm.
 
-### Thứ tự commit gợi ý
-- `feat(tu-phuc-vu):thêm tra cứu booking có otp`
-- `feat(tu-phuc-vu):thêm đổi chuyến và hoàn vé theo rule`
-- `feat(check-in):thêm làm thủ tục trực tuyến và boarding pass`
-- `test(tu-phuc-vu):bổ sung kiểm thử tra cứu và đổi hoàn`
-
-## Epic 05: Backoffice bán vé, chăm sóc khách hàng, điều hành, tài chính
+## Giai đoạn 5: Backoffice 2 vai trò
 
 ### Mục tiêu
 - Staff dùng được hệ thống thật thay vì màn hình mô phỏng.
-- Mỗi vai trò chỉ thấy đúng module và đúng dữ liệu được phép xử lý.
+- Chỉ còn 2 vai trò nội bộ nhưng không mất chức năng cũ.
 
-### Module và API chính
-- `sales`
-  - `GET /api/backoffice/sales/bookings`
-  - `POST /api/backoffice/sales/bookings`
-  - `POST /api/backoffice/sales/bookings/{bookingCode}/issue-ticket`
-  - `POST /api/backoffice/sales/corporate-quotes`
-- `support`
-  - `GET /api/backoffice/support/tickets`
-  - `POST /api/backoffice/support/tickets`
-  - `PATCH /api/backoffice/support/tickets/{id}`
-  - `POST /api/backoffice/support/tickets/{id}/compensations`
-- `operations`
-  - `GET /api/backoffice/operations/flights`
-  - `PATCH /api/backoffice/operations/flights/{id}/status`
-  - `PATCH /api/backoffice/operations/flights/{id}/gate`
-  - `PATCH /api/backoffice/operations/inventory/{id}`
-- `finance`
-  - `GET /api/backoffice/finance/payments`
-  - `GET /api/backoffice/finance/refunds`
-  - `POST /api/backoffice/finance/refunds/{id}/approve`
-  - `POST /api/backoffice/finance/day-close`
+### Phân quyền API tối thiểu
+- `customer_support`
+  - `backoffice.sales`
+  - `backoffice.support`
+  - `backoffice.finance`
+  - `backoffice.cms`
+- `operations_staff`
+  - `backoffice.operations`
+  - `backoffice.admin`
+
+### API tối thiểu cho `customer_support`
+- `GET /api/backoffice/sales/bookings`
+- `POST /api/backoffice/sales/bookings`
+- `POST /api/backoffice/sales/bookings/{bookingCode}/issue-ticket`
+- `GET /api/backoffice/support/tickets`
+- `POST /api/backoffice/support/tickets`
+- `PATCH /api/backoffice/support/tickets/{id}`
+- `POST /api/backoffice/support/tickets/{id}/compensations`
+- `GET /api/backoffice/finance/payments`
+- `GET /api/backoffice/finance/refunds`
+- `POST /api/backoffice/finance/refunds/{id}/approve`
+- `GET /api/backoffice/cms/homepage`
+- `POST /api/backoffice/cms/content`
+- `PATCH /api/backoffice/cms/content/{id}`
+
+### API tối thiểu cho `operations_staff`
+- `GET /api/backoffice/operations/flights`
+- `PATCH /api/backoffice/operations/flights/{id}/status`
+- `PATCH /api/backoffice/operations/flights/{id}/gate`
+- `PATCH /api/backoffice/operations/inventory/{id}`
+- `PATCH /api/backoffice/operations/pricing/{id}`
+- `PATCH /api/backoffice/operations/schedule/{id}`
+- `POST /api/backoffice/operations/sales/{id}/open`
+- `POST /api/backoffice/operations/sales/{id}/close`
+- `GET /api/admin/dashboard`
 
 ### Bảng dữ liệu cần có
 - `support_ticket`
 - `support_ticket_message`
 - `support_ticket_assignment`
 - `compensation_log`
-- `flight_operation_event`
 - `refund_approval`
 - `reconciliation_batch`
 - `reconciliation_item`
-- `corporate_account`
-
-### Kiểm thử bắt buộc
-- Phân quyền từng module staff.
-- Điều hành đổi trạng thái chuyến bay.
-- Kế toán duyệt hoàn tiền.
-- CSKH takeover và chuyển trạng thái ticket.
-
-### Thứ tự commit gợi ý
-- `feat(backoffice-sales):thêm api bán vé nội bộ`
-- `feat(backoffice-support):thêm ticket hỗ trợ và takeover`
-- `feat(backoffice-operations):thêm điều hành trạng thái chuyến bay`
-- `feat(backoffice-finance):thêm đối soát và duyệt hoàn tiền`
-- `test(backoffice):bổ sung kiểm thử phân quyền staff`
-
-## Epic 06: CMS và nội dung cho content editor
-
-### Mục tiêu
-- Nội dung trang chủ, blog, FAQ, khuyến mãi không còn phụ thuộc dữ liệu cứng.
-
-### Bảng dữ liệu cần có
 - `cms_content`
 - `cms_revision`
-- `cms_publish_job`
-- `media_asset`
-- `faq_category`
-
-### API cần có
-- `GET /api/cms/homepage`
-- `GET /api/cms/faqs`
-- `GET /api/cms/blog`
-- `POST /api/backoffice/cms/content`
-- `PATCH /api/backoffice/cms/content/{id}`
-- `POST /api/backoffice/cms/content/{id}/publish`
-- `GET /api/backoffice/cms/revisions`
+- `flight_operation_event`
+- `pricing_rule`
+- `schedule_change_log`
 
 ### Kiểm thử bắt buộc
-- Soạn nháp và xuất bản.
-- Khôi phục phiên bản cũ.
-- Chặn người không phải `content_editor` hoặc `system_admin`.
+- `customer_support` truy cập được đúng 4 phân hệ đã gộp.
+- `operations_staff` chỉ truy cập được `operations` và `admin`.
+- Duyệt hoàn tiền không làm mất nhật ký chăm sóc khách hàng.
+- Cập nhật trạng thái chuyến bay đồng bộ ra khu công khai.
+- CMS nội dung hỗ trợ không cho vai trò vận hành sửa nhầm.
 
-### Thứ tự commit gợi ý
-- `feat(cms):thêm kho nội dung và phiên bản bài viết`
-- `feat(cms):thêm xuất bản banner faq và khuyến mãi`
-- `test(cms):bổ sung kiểm thử phân quyền và xuất bản`
-
-## Epic 07: Loyalty và hội viên
+## Giai đoạn 6: Loyalty và ổn định vận hành
 
 ### Mục tiêu
-- Hoàn thiện giá trị cho role `member`.
-- Kết nối được điểm thưởng, voucher, ưu đãi theo hạng.
-
-### Bảng dữ liệu cần có
-- `member_account`
-- `member_tier`
-- `point_ledger`
-- `voucher`
-- `voucher_redemption`
-- `campaign_offer`
-
-### API cần có
-- `GET /api/me/member`
-- `GET /api/me/points`
-- `GET /api/me/vouchers`
-- `POST /api/bookings/{bookingCode}/apply-voucher`
-- `GET /api/public/member-offers`
-
-### Kiểm thử bắt buộc
-- Tích điểm sau xuất vé.
-- Đổi voucher.
-- Giới hạn voucher theo điều kiện.
-
-### Thứ tự commit gợi ý
-- `feat(member):thêm tài khoản hội viên và sổ điểm`
-- `feat(member):thêm voucher và ưu đãi theo hạng`
-- `test(member):bổ sung kiểm thử tích điểm và dùng voucher`
-
-## Epic 08: Ổn định vận hành, bảo mật và quan sát hệ thống
-
-### Mục tiêu
-- Hệ thống chạy ổn định khi có nhiều vai trò và nhiều luồng nhạy cảm.
+- Hoàn thiện giá trị cho `member`.
+- Bảo đảm hệ thống chịu được các luồng nhạy cảm sau khi gộp role.
 
 ### Hạng mục bắt buộc
-- Rate limit cho login, OTP, lookup booking.
-- Masking dữ liệu nhạy cảm trong log và phản hồi.
-- Outbox hoặc hàng chờ cho email và thông báo.
-- Audit log bắt buộc cho các thao tác staff.
-- Metric và health check chi tiết.
-- Theo dõi lỗi callback, lỗi thanh toán, lỗi check-in.
+- Rate limit cho đăng nhập, OTP và tra cứu booking.
+- Audit log cho mọi thao tác staff.
+- Outbox cho email và thông báo.
+- Masking dữ liệu nhạy cảm trong log.
 - Job dọn giữ chỗ hết hạn.
-- Kiểm soát khóa dữ liệu tồn ghế bằng optimistic locking hoặc chiến lược tương đương.
+- Khóa dữ liệu tồn ghế bằng cơ chế phù hợp.
+- Kiểm thử hồi quy cho booking, payment, refund và RBAC.
 
-### Kiểm thử bắt buộc
-- Test tích hợp cho auth, booking, payment, refund.
-- Test phân quyền theo role.
-- Test hồi quy cho dữ liệu chuyến bay.
-- Test tải cơ bản cho tìm chuyến và tra cứu booking.
-
-### Thứ tự commit gợi ý
-- `feat(he-thong):thêm audit log và outbox thông báo`
-- `feat(he-thong):thêm chống lạm dụng và khóa dữ liệu tồn ghế`
-- `test(he-thong):bổ sung kiểm thử tích hợp và hồi quy`
-
-## Gợi ý chia đợt triển khai
-
-### Đợt 1
-- Epic 01
-- Epic 02
-
-### Đợt 2
-- Epic 03
-
-### Đợt 3
-- Epic 04
-
-### Đợt 4
-- Epic 05
-
-### Đợt 5
-- Epic 06
-- Epic 07
-
-### Đợt 6
-- Epic 08
-
-## Điều kiện xem là đủ để nối web thật
+## Điều kiện đủ để nối web thật
 - Có auth thật cho khách.
 - Có tìm chuyến, giữ chỗ, thanh toán sandbox, xuất vé.
-- Có tra cứu booking, đổi hoặc hoàn cơ bản, check-in, flight status.
-- Có ít nhất RBAC thật cho `ticket_agent`, `customer_support`, `operations_staff`, `finance_staff`, `content_editor`, `system_admin`.
-- Có audit log, test tích hợp và cơ chế chống nhân đôi giao dịch.
+- Có tra cứu booking, đổi hoặc hoàn cơ bản, check-in, trạng thái chuyến bay.
+- Có RBAC thật cho `customer_support` và `operations_staff`.
+- Có audit log cho thao tác staff và kiểm thử hồi quy tối thiểu.
 
-## Việc nên làm ngay sau tài liệu này
-- Chốt bộ bảng dữ liệu của Epic 01 và Epic 03 trước.
-- Chốt chuẩn mã lỗi API dùng chung cho web và backend.
-- Chốt chiến lược token, OTP và callback thanh toán.
-- Chốt danh sách API tối thiểu để bỏ `mock-data` ở các trang `/search`, `/booking`, `/manage-booking`, `/account`, `/support`, `/backoffice`.
+## Việc nên chốt ngay
+- Chốt bảng quyền cho 2 role backoffice.
+- Chốt mapping từ role cũ sang role mới trong migration.
+- Chốt danh sách API tối thiểu để bỏ `mock-data` ở `/search`, `/booking`, `/manage-booking`, `/support`, `/backoffice`.
+- Chốt quy tắc ai được sửa giá, lịch bay, hoàn tiền và nội dung hỗ trợ.

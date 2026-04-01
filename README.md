@@ -52,7 +52,9 @@
 
 ### Ưu tiên triển khai
 - Giai đoạn đầu ưu tiên khu công khai và tự phục vụ để khách vãng lai vẫn xem web, tìm chuyến bay, tra cứu đặt chỗ và làm các thao tác cơ bản.
-- Giai đoạn sau mới mở rộng sâu cho các module backoffice như bán vé hộ, chăm sóc khách hàng, điều hành, tài chính, quản trị nội dung và quản trị hệ thống.
+- Backoffice được chốt còn 2 vai trò nội bộ theo sơ đồ nghiệp vụ: `customer_support` và `operations_staff`.
+- `customer_support` nhận thêm các phần việc cần giữ từ `ticket_agent`, `finance_staff`, `content_editor` để không mất luồng bán vé hộ, hoàn tiền, nội dung hỗ trợ và chăm sóc sau bán.
+- `operations_staff` giữ điều hành chuyến bay và nhận thêm phần kiểm soát hệ thống từ `system_admin` để tập trung giá, lịch bay, trạng thái chuyến bay, tồn ghế và nhật ký kiểm soát.
 - Mọi thay đổi phải đi theo nhịp nhỏ: đọc hiểu -> sửa đúng phạm vi -> kiểm tra -> commit riêng từng mục tiêu.
 - Tài liệu backlog backend nhiều vai trò nằm tại `docs/architecture/lo-trinh-backend-nhieu-vai-tro.md`.
 
@@ -62,23 +64,26 @@
 | `guest` | Xem trang công khai, tìm chuyến bay, xem khuyến mãi, FAQ, tạo đặt chỗ không cần tài khoản, tra cứu bằng mã đặt chỗ có xác minh | Vào backoffice, xem dữ liệu tài khoản người khác |
 | `customer` | Đặt vé, thanh toán, quản lý đặt chỗ, đổi hoặc hủy theo điều kiện, làm thủ tục trực tuyến | Động vào dữ liệu và thao tác nội bộ |
 | `member` | Toàn bộ quyền của `customer` kèm điểm thưởng, voucher, ưu đãi theo hạng | Tự sửa điều kiện hội viên |
-| `ticket_agent` | Tạo đặt chỗ hộ, giữ chỗ, xuất lại vé, hỗ trợ khách doanh nghiệp | Duyệt hoàn tiền cuối, đổi cấu hình hệ thống |
-| `customer_support` | Xử lý yêu cầu hỗ trợ, tiếp nhận từ trợ lý hỗ trợ, bù dịch vụ, theo dõi SLA | Sửa lịch bay, sửa giá gốc |
-| `operations_staff` | Cập nhật trạng thái chuyến bay, tồn ghế, đóng hoặc mở bán chặng | Xem dữ liệu thanh toán nhạy cảm |
-| `finance_staff` | Đối soát, xác nhận hoàn tiền, kiểm tra hóa đơn, khóa sổ ngày | Sửa nội dung và lịch bay |
-| `content_editor` | Quản trị banner, cẩm nang, FAQ, khuyến mãi, nội dung song ngữ | Truy cập dữ liệu đặt chỗ và thanh toán |
-| `system_admin` | Phân quyền, nhật ký kiểm soát, cấu hình rule, mẫu thông báo | Xem dữ liệu thẻ thanh toán đầy đủ |
+| `customer_support` | Tra cứu booking có xác minh, bán vé hộ, xử lý yêu cầu hỗ trợ, đổi hoặc hủy thủ công, bù dịch vụ, hoàn tiền, theo dõi SLA, cập nhật nội dung hỗ trợ | Sửa giá gốc, đổi lịch bay tổng, mở hoặc đóng bán chặng |
+| `operations_staff` | Quản lý giá, lịch bay, tồn ghế, trạng thái chuyến bay, mở hoặc đóng bán chặng, kiểm soát cấu hình và nhật ký hệ thống | Thao tác thay mặt bộ phận chăm sóc khách hàng, xem dữ liệu thẻ thanh toán đầy đủ |
+
+### Gộp vai trò backoffice
+| Vai trò mới | Vai trò cũ được gộp | Chức năng cần giữ lại |
+| --- | --- | --- |
+| `customer_support` | `ticket_agent`, `customer_support`, `finance_staff`, `content_editor` | Bán vé hộ, tra cứu booking, xử lý hỗ trợ, đổi hoặc hủy thủ công, bù dịch vụ, hoàn tiền, cập nhật FAQ và nội dung hỗ trợ |
+| `operations_staff` | `operations_staff`, `system_admin` | Quản lý giá, lịch bay, tồn ghế, trạng thái chuyến bay, mở hoặc đóng bán, cấu hình quy tắc và nhật ký kiểm soát |
 
 ### Luồng chính cần hoàn thiện
 - Luồng công khai: trang chủ -> tìm chuyến bay -> xem gói giá -> chọn chuyến -> tạo giữ chỗ -> thanh toán sandbox -> nhận vé và thông báo.
 - Luồng tự phục vụ: tra cứu đặt chỗ bằng mã đặt chỗ + email hoặc số điện thoại -> xác minh OTP -> đổi chuyến, hoàn hoặc hủy, mua thêm dịch vụ, làm thủ tục trực tuyến.
 - Luồng tài khoản: đăng ký -> đăng nhập -> làm mới phiên -> quên mật khẩu qua OTP email -> đặt lại mật khẩu theo chính sách an toàn.
-- Luồng backoffice: staff vào đúng module theo vai trò -> xử lý hàng chờ nghiệp vụ -> ghi nhật ký thao tác -> đồng bộ trạng thái ra khu công khai nếu có ảnh hưởng.
+- Luồng backoffice vai trò `customer_support`: tra cứu booking -> xác minh OTP khi cần -> xử lý bán vé hộ hoặc yêu cầu hỗ trợ -> đổi hoặc hủy thủ công, hoàn tiền, bù dịch vụ -> cập nhật nội dung hỗ trợ liên quan.
+- Luồng backoffice vai trò `operations_staff`: quản lý giá -> quản lý chuyến bay và lịch bay -> mở hoặc đóng bán -> cập nhật tồn ghế, trạng thái chuyến bay -> ghi nhật ký kiểm soát và đồng bộ ra khu công khai.
 
 ### Danh sách màn hình theo mức ưu tiên
 - MVP công khai: `/`, `/search`, `/booking`, `/manage-booking`, `/check-in`, `/flight-status`, `/support`, `/blog`, `/account`, `login`, `register`, `forgot-password`, `reset-password`.
 - MVP dữ liệu và API: xác thực JWT, OTP email, danh mục sân bay và chuyến bay, giữ chỗ, thanh toán sandbox, thông báo, tra cứu booking cho guest và customer.
-- Nâng cao sau MVP: dashboard vai trò chi tiết, điều hành chuyến bay nâng cao, đối soát tài chính, CMS đầy đủ phiên bản và lịch đăng, báo cáo tổng hợp.
+- Nâng cao sau MVP: dashboard 2 vai trò nội bộ, điều hành chuyến bay nâng cao, đối soát tài chính trong luồng chăm sóc khách hàng, nội dung hỗ trợ có phiên bản và lịch đăng, báo cáo tổng hợp.
 
 ### Nhịp chia task và commit
 - Mỗi giai đoạn chỉ xử lý một mục tiêu chính và có commit riêng.

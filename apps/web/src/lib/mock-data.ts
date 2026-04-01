@@ -340,34 +340,22 @@ export const roleRules: RoleRule[] = [
     restrictedFrom: ["Tự sửa điều kiện hội viên"]
   },
   {
-    role: "ticket_agent",
-    canAccess: ["Tạo đặt chỗ hộ", "Giữ chỗ", "Xuất lại vé"],
-    restrictedFrom: ["Duyệt hoàn tiền cuối", "Cấu hình hệ thống"]
-  },
-  {
     role: "customer_support",
-    canAccess: ["Yêu cầu hỗ trợ", "Tiếp nhận từ trợ lý hỗ trợ", "Bù dịch vụ"],
-    restrictedFrom: ["Sửa lịch bay", "Sửa giá gốc"]
+    canAccess: [
+      "Tra cứu booking có xác minh",
+      "Bán vé hộ và xử lý sau bán",
+      "Hoàn tiền, bù dịch vụ và nội dung hỗ trợ"
+    ],
+    restrictedFrom: ["Sửa giá gốc", "Đổi lịch bay tổng", "Mở hoặc đóng bán chặng"]
   },
   {
     role: "operations_staff",
-    canAccess: ["Mở/đóng bán", "Chuyến bay chậm hoặc hủy", "Tồn ghế"],
-    restrictedFrom: ["Dữ liệu thanh toán nhạy cảm"]
-  },
-  {
-    role: "finance_staff",
-    canAccess: ["Đối soát", "Xác nhận hoàn tiền", "Khóa sổ ngày"],
-    restrictedFrom: ["Quản trị nội dung", "Lịch bay"]
-  },
-  {
-    role: "content_editor",
-    canAccess: ["Banner", "Cẩm nang", "Câu hỏi thường gặp", "Lịch đăng song ngữ"],
-    restrictedFrom: ["Đặt chỗ", "Thanh toán"]
-  },
-  {
-    role: "system_admin",
-    canAccess: ["Phân quyền", "Nhật ký kiểm soát", "Báo cáo tổng"],
-    restrictedFrom: ["Xem dữ liệu thẻ đầy đủ"]
+    canAccess: [
+      "Giá, lịch bay, tồn ghế và trạng thái chuyến bay",
+      "Mở hoặc đóng bán chặng",
+      "Kiểm soát cấu hình và nhật ký hệ thống"
+    ],
+    restrictedFrom: ["Thao tác hỗ trợ khách hàng thay mặt CSKH", "Xem dữ liệu thẻ đầy đủ"]
   }
 ];
 
@@ -381,51 +369,51 @@ export const backofficeMetrics: DashboardMetric[] = [
 export const backofficeModules: BackofficeModule[] = [
   {
     key: "sales",
-    title: "Nhân viên bán vé",
-    summary: "Tạo đặt chỗ hộ, giữ chỗ, thu hộ và xuất lại vé.",
+    title: "Bán vé nội bộ",
+    summary: "Tạo đặt chỗ hộ, giữ chỗ, thu hộ và xuất lại vé trong cùng hàng chờ hỗ trợ khách hàng.",
     href: "/backoffice/sales",
     highlights: ["Giữ chỗ 15 phút", "Đơn doanh nghiệp", "Thu hộ có đối soát"],
-    roles: ["ticket_agent", "system_admin"]
+    roles: ["customer_support"]
   },
   {
     key: "support",
     title: "Chăm sóc khách hàng",
-    summary: "Yêu cầu hỗ trợ theo thời hạn xử lý, tiếp nhận từ trợ lý hỗ trợ và hoàn hoặc đổi theo điều kiện.",
+    summary: "Yêu cầu hỗ trợ theo thời hạn xử lý, tiếp nhận từ trợ lý hỗ trợ và đổi hoặc hoàn theo điều kiện.",
     href: "/backoffice/support",
-    highlights: ["Hàng chờ trợ lý hỗ trợ", "Bù dịch vụ", "Lịch sử liên hệ"],
-    roles: ["customer_support", "system_admin"]
+    highlights: ["Hàng chờ trợ lý hỗ trợ", "Bù dịch vụ", "Theo dõi SLA"],
+    roles: ["customer_support"]
   },
   {
     key: "operations",
     title: "Điều hành chuyến bay",
-    summary: "Lịch bay, tồn ghế, chuyến bay chậm hoặc hủy và khóa bán chặng.",
+    summary: "Giá, lịch bay, tồn ghế, chuyến bay chậm hoặc hủy và khóa bán chặng.",
     href: "/backoffice/operations",
-    highlights: ["Tỷ lệ lấp đầy", "Khóa bán", "Thông báo chuyến bay chậm"],
-    roles: ["operations_staff", "system_admin"]
+    highlights: ["Tỷ lệ lấp đầy", "Khóa bán", "Cập nhật trạng thái chuyến bay"],
+    roles: ["operations_staff"]
   },
   {
     key: "finance",
-    title: "Kế toán/đối soát",
-    summary: "Đối soát giao dịch, hóa đơn, hoàn tiền và sai lệch.",
+    title: "Đối soát và hoàn tiền",
+    summary: "Đối soát giao dịch, hóa đơn, hoàn tiền và sai lệch trong cùng luồng phục vụ khách.",
     href: "/backoffice/finance",
     highlights: ["Khóa chống lặp giao dịch", "Hàng chờ hoàn tiền", "Khóa sổ ngày"],
-    roles: ["finance_staff", "system_admin"]
+    roles: ["customer_support"]
   },
   {
     key: "cms",
-    title: "Quản trị nội dung",
-    summary: "Banner, cẩm nang, câu hỏi thường gặp, trang tĩnh và song ngữ.",
+    title: "Nội dung hỗ trợ",
+    summary: "Banner, cẩm nang, câu hỏi thường gặp và nội dung song ngữ phục vụ khách hàng.",
     href: "/backoffice/cms",
     highlights: ["Nháp/Duyệt/Đăng", "Lịch đăng", "Tối ưu công cụ tìm kiếm theo ngôn ngữ"],
-    roles: ["content_editor", "system_admin"]
+    roles: ["customer_support"]
   },
   {
     key: "admin",
-    title: "Quản trị hệ thống",
-    summary: "Phân quyền, nhật ký kiểm soát, cấu hình điều kiện và mẫu thông báo.",
+    title: "Kiểm soát hệ thống",
+    summary: "Phân quyền, nhật ký kiểm soát, cấu hình điều kiện và mẫu thông báo vận hành.",
     href: "/backoffice/admin",
     highlights: ["Phân quyền theo vai trò", "Nhật ký kiểm soát", "Mẫu email"],
-    roles: ["system_admin"]
+    roles: ["operations_staff"]
   }
 ];
 
@@ -621,7 +609,7 @@ export const supportFaqs: FaqEntry[] = [
 
 export const auditEntries: AuditEntry[] = [
   {
-    actor: "admin.huyen",
+    actor: "ops.huyen",
     action: "Cập nhật điều kiện hoàn vé",
     target: "Gói vé: Phổ thông linh hoạt",
     time: "11/03 09:12"
@@ -633,7 +621,7 @@ export const auditEntries: AuditEntry[] = [
     time: "11/03 08:41"
   },
   {
-    actor: "finance.lan",
+    actor: "support.lan",
     action: "Xác nhận hoàn tiền",
     target: "Mã đặt chỗ N4T8R6",
     time: "11/03 08:08"
