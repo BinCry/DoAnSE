@@ -2,23 +2,15 @@ export const USER_ROLES = [
   "guest",
   "customer",
   "member",
-  "ticket_agent",
   "customer_support",
   "operations_staff",
-  "finance_staff",
-  "content_editor",
-  "system_admin"
 ] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
 
 export const STAFF_ROLES = [
-  "ticket_agent",
   "customer_support",
   "operations_staff",
-  "finance_staff",
-  "content_editor",
-  "system_admin"
 ] as const;
 
 export type StaffRole = (typeof STAFF_ROLES)[number];

@@ -17,25 +17,28 @@ public class DemoDataService {
     return new AuthSummaryResponse(
         List.of(
             new AuthSummaryResponse.RoleItem(
-                "ticket_agent",
-                "NhÃ¢n viÃªn bÃ¡n vÃ©",
-                List.of("Táº¡o booking há»™", "Giá»¯ chá»—", "Xuáº¥t láº¡i vÃ©")
-            ),
-            new AuthSummaryResponse.RoleItem(
                 "customer_support",
-                "NhÃ¢n viÃªn CSKH",
-                List.of("Xá»­ lÃ½ ticket", "Takeover chatbot", "Äá»•i/hoÃ n theo rule")
+                "Nhân viên chăm sóc khách hàng",
+                List.of(
+                    "Tra cứu booking có xác minh",
+                    "Bán vé hộ, hỗ trợ sau bán, hoàn tiền",
+                    "Quản lý nội dung hỗ trợ và bù dịch vụ"
+                )
             ),
             new AuthSummaryResponse.RoleItem(
-                "system_admin",
-                "Admin há»‡ thá»‘ng",
-                List.of("PhÃ¢n quyá»n", "Audit log", "Cáº¥u hÃ¬nh rule")
+                "operations_staff",
+                "Nhân viên vận hành",
+                List.of(
+                    "Quản lý giá, lịch bay, tồn ghế",
+                    "Mở hoặc đóng bán chặng",
+                    "Kiểm soát cấu hình và nhật ký hệ thống"
+                )
             )
         ),
         List.of(
-            "KhÃ¡ch vÃ£ng lai khÃ´ng Ä‘Æ°á»£c vÃ o backoffice.",
-            "Káº¿ toÃ¡n khÃ´ng Ä‘Æ°á»£c sá»­a ná»™i dung chuyáº¿n bay.",
-            "Admin khÃ´ng xem dá»¯ liá»‡u tháº» Ä‘áº§y Ä‘á»§."
+            "Khách vãng lai không được vào backoffice.",
+            "Nhân viên chăm sóc khách hàng không được đổi lịch bay tổng hoặc sửa giá gốc.",
+            "Nhân viên vận hành không xem dữ liệu thẻ thanh toán đầy đủ."
         )
     );
   }
@@ -265,51 +268,51 @@ public class DemoDataService {
     return new AdminDashboardResponse(
         List.of(
             new AdminDashboardResponse.MetricCard(
-                "Doanh thu hÃ´m nay",
-                "3,48 tá»·",
-                "+12% so vá»›i hÃ´m qua"
+                "Doanh thu hôm nay",
+                "3,48 tỷ",
+                "+12% so với hôm qua"
             ),
             new AdminDashboardResponse.MetricCard(
-                "Tá»‰ lá»‡ chuyá»ƒn Ä‘á»•i",
+                "Tỉ lệ chuyển đổi",
                 "4,8%",
-                "+0,6 Ä‘iá»ƒm"
+                "+0,6 điểm"
             ),
             new AdminDashboardResponse.MetricCard(
-                "Booking giá»¯ chá»—",
+                "Booking giữ chỗ",
                 "126",
-                "37 mÃ£ cÃ²n dÆ°á»›i 5 phÃºt"
+                "37 mã còn dưới 5 phút"
             )
         ),
         List.of(
             new AdminDashboardResponse.ModuleCard(
                 "sales",
-                "NhÃ¢n viÃªn bÃ¡n vÃ©",
-                "Táº¡o booking há»™, giá»¯ chá»— vÃ  xuáº¥t láº¡i vÃ©.",
-                List.of("ticket_agent", "system_admin")
+                "Bán vé nội bộ",
+                "Tạo booking hộ, giữ chỗ và xuất lại vé.",
+                List.of("customer_support")
             ),
             new AdminDashboardResponse.ModuleCard(
                 "operations",
-                "Äiá»u hÃ nh chuyáº¿n bay",
-                "Quáº£n lÃ½ lá»‹ch bay, tá»“n gháº¿, delay/cancel vÃ  khÃ³a bÃ¡n.",
-                List.of("operations_staff", "system_admin")
+                "Điều hành chuyến bay",
+                "Quản lý giá, lịch bay, tồn ghế, delay hoặc cancel và khóa bán.",
+                List.of("operations_staff")
             ),
             new AdminDashboardResponse.ModuleCard(
                 "cms",
-                "CMS ná»™i dung",
-                "Banner, blog, FAQ, trang tÄ©nh vÃ  song ngá»¯.",
-                List.of("content_editor", "system_admin")
+                "Nội dung hỗ trợ",
+                "Banner, FAQ, cẩm nang và nội dung song ngữ phục vụ khách hàng.",
+                List.of("customer_support")
             )
         ),
         List.of(
             new AdminDashboardResponse.AuditCard(
-                "admin.huyen",
-                "Cáº­p nháº­t rule hoÃ n vÃ©",
-                "FareRule: Phá»• thÃ´ng linh hoáº¡t",
+                "ops.huyen",
+                "Cập nhật rule hoàn vé",
+                "FareRule: Phổ thông linh hoạt",
                 "11/03 09:12"
             ),
             new AdminDashboardResponse.AuditCard(
                 "ops.khoa",
-                "Äá»•i tráº¡ng thÃ¡i chuyáº¿n bay",
+                "Đổi trạng thái chuyến bay",
                 "AA330 -> delayed",
                 "11/03 08:41"
             )

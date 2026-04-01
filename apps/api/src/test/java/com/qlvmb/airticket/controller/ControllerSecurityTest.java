@@ -112,25 +112,25 @@ class ControllerSecurityTest {
   }
 
   @Test
-  void getBackofficeCmsHomepage_shouldAllowContentEditorPermission() throws Exception {
+  void getBackofficeCmsHomepage_shouldAllowCustomerSupportPermission() throws Exception {
     mockMvc.perform(get("/api/backoffice/cms/homepage")
-            .header(HttpHeaders.AUTHORIZATION, bearerToken(List.of("content_editor"), List.of("backoffice.cms"))))
+            .header(HttpHeaders.AUTHORIZATION, bearerToken(List.of("customer_support"), List.of("backoffice.support", "backoffice.cms"))))
         .andExpect(status().isOk());
   }
 
   @Test
-  void getAdminDashboard_shouldRejectContentEditorPermission() throws Exception {
+  void getAdminDashboard_shouldRejectCustomerSupportPermission() throws Exception {
     mockMvc.perform(get("/api/admin/dashboard")
-            .header(HttpHeaders.AUTHORIZATION, bearerToken(List.of("content_editor"), List.of("backoffice.cms"))))
+            .header(HttpHeaders.AUTHORIZATION, bearerToken(List.of("customer_support"), List.of("backoffice.support", "backoffice.cms"))))
         .andExpect(status().isForbidden());
   }
 
   @Test
-  void getAdminDashboard_shouldAllowSystemAdminPermission() throws Exception {
+  void getAdminDashboard_shouldAllowOperationsPermission() throws Exception {
     mockMvc.perform(get("/api/admin/dashboard")
             .header(
                 HttpHeaders.AUTHORIZATION,
-                bearerToken(List.of("system_admin"), List.of("backoffice.admin", "backoffice.cms"))
+                bearerToken(List.of("operations_staff"), List.of("backoffice.operations", "backoffice.admin"))
             ))
         .andExpect(status().isOk());
   }
