@@ -28,6 +28,17 @@ export function canAccessBackofficeModule(
   return allowedRoles.includes(role as StaffRole);
 }
 
+export function canAccessBackofficeModuleByRoles(
+  roles: string[],
+  moduleKey: BackofficeModuleKey
+): boolean {
+  if (!Array.isArray(roles) || roles.length === 0) {
+    return false;
+  }
+
+  return roles.some((role) => canAccessBackofficeModule(role as UserRole, moduleKey));
+}
+
 export function getAllowedBackofficeModules(
   role: UserRole
 ): BackofficeModuleKey[] {

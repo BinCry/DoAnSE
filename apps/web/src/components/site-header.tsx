@@ -10,6 +10,7 @@ import {
   loadActiveAuthSession,
   type AuthSession
 } from "@/lib/auth-session";
+import { ROLE_LABELS } from "@/lib/access-control";
 import { mainNavigation, utilityLinks } from "@/lib/mock-data";
 
 export function SiteHeader() {
@@ -37,12 +38,18 @@ export function SiteHeader() {
   }, [pathname]);
 
   const accountDisplayName = authSession?.user.displayName ?? null;
+  const primaryRole = authSession?.user.roles[0] ?? null;
+  const primaryRoleLabel =
+    primaryRole && primaryRole in ROLE_LABELS
+      ? ROLE_LABELS[primaryRole as keyof typeof ROLE_LABELS]
+      : null;
 
   return (
     <header className="site-header">
       <div className="topbar">
         <div className="container topbar-row">
           <div className="topbar-badges">
+            {primaryRoleLabel ? <span className="pill">{primaryRoleLabel}</span> : null}
             <span className="pill">Tiếng Việt</span>
             <span className="pill">
               Đặt vé nội địa, quản lý hành trình và làm thủ tục trực tuyến thuận tiện

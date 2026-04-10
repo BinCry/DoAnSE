@@ -1,5 +1,6 @@
 export const AUTH_SESSION_STORAGE_KEY = "qlvmb.auth.session";
 export const AUTH_SESSION_UPDATED_EVENT = "qlvmb:auth-session-updated";
+export const AUTH_ACCESS_TOKEN_COOKIE = "qlvmb.access_token";
 
 export interface AuthSessionUser {
   id: number;
@@ -136,11 +137,32 @@ export function notifyAuthSessionUpdated(): void {
   window.dispatchEvent(new Event(AUTH_SESSION_UPDATED_EVENT));
 }
 
+function setAccessTokenCookie(authSession: AuthSession): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  const expiresAt = Date.parse(authSession.accessTokenExpiresAt);
+  const secondsUntilExpiry = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+  const safeToken = encodeURIComponent(authSession.accessToken);
+  document.cookie = `${AUTH_ACCESS_TOKEN_COOKIE}=${safeToken}; Path=/; Max-Age=${secondsUntilExpiry}; SameSite=Lax`;
+}
+
+function clearAccessTokenCookie(): void {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  document.cookie = `${AUTH_ACCESS_TOKEN_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
+
 export function persistAuthSession(
   authSession: AuthSession,
   shouldRemember = true,
   stores: AuthSessionStores = resolveAuthSessionStores()
 ): void {
+  setAccessTokenCookie(authSession);
+
   if (shouldRemember) {
     saveAuthSessionToStorage(stores.localStorage, authSession);
     clearAuthSessionFromStorage(stores.sessionStorage);
@@ -167,6 +189,7 @@ export function clearStoredAuthSession(
 ): void {
   clearAuthSessionFromStorage(stores.localStorage);
   clearAuthSessionFromStorage(stores.sessionStorage);
+  clearAccessTokenCookie();
   notifyAuthSessionUpdated();
 }
 
@@ -197,5 +220,6 @@ export function loadActiveAuthSession(
     return null;
   }
 
+  setAccessTokenCookie(authSession);
   return authSession;
 }

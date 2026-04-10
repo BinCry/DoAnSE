@@ -6,10 +6,12 @@ import com.qlvmb.airticket.domain.dto.UpdateMyProfileRequest;
 import com.qlvmb.airticket.domain.dto.UpsertMyPassengerRequest;
 import com.qlvmb.airticket.exception.UnauthorizedException;
 import com.qlvmb.airticket.security.AuthenticatedUser;
+import com.qlvmb.airticket.security.PermissionCode;
 import com.qlvmb.airticket.service.AuthService;
 import com.qlvmb.airticket.service.MyAccountService;
 import jakarta.validation.Valid;
 import java.util.List;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/me")
+@PreAuthorize("hasAuthority('" + PermissionCode.CUSTOMER_SELF_SERVICE + "')")
 public class MeController {
 
   private final AuthService authService;

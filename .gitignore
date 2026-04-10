@@ -17,6 +17,7 @@ coverage/
 # Java
 **/target/
 **/.mvn/
+**/.m2/
 
 # IDE
 .vscode/

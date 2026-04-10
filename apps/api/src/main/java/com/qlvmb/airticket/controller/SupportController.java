@@ -1,6 +1,7 @@
 package com.qlvmb.airticket.controller;
 
 import com.qlvmb.airticket.domain.dto.SupportOverviewResponse;
+import com.qlvmb.airticket.security.PermissionCode;
 import com.qlvmb.airticket.service.DemoDataService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class SupportController {
     this.demoDataService = demoDataService;
   }
 
-  @PreAuthorize("hasAnyAuthority('backoffice.support', 'backoffice.admin')")
+  @PreAuthorize("hasAnyAuthority('" + PermissionCode.BACKOFFICE_SUPPORT + "', '" + PermissionCode.BACKOFFICE_ADMIN + "')")
   @GetMapping("/overview")
   public SupportOverviewResponse getSupportOverview() {
     return demoDataService.getSupportOverview();

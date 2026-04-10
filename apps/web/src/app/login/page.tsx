@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
@@ -47,7 +48,9 @@ const trustPoints = [
   "Nhận ưu đãi hội viên, voucher cá nhân hóa và nhắc việc trước ngày khởi hành."
 ];
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [shouldRemember, setShouldRemember] = useState(true);
@@ -56,6 +59,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isReadyToContinue = authSession !== null;
+  const isFormValid = email.trim().length > 0 && password.trim().length > 0;
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,6 +79,9 @@ export default function LoginPage() {
 
       persistAuthSession(nextAuthSession, shouldRemember);
       setAuthSession(nextAuthSession);
+
+      const redirectTo = searchParams.get("redirectTo")?.trim();
+      router.push(redirectTo || "/account");
     } catch (error) {
       setSubmissionError(
         resolveAuthErrorMessage(error, "Không thể đăng nhập trong lúc này.")
@@ -203,7 +210,7 @@ export default function LoginPage() {
             <button
               type="submit"
               className="button button-primary"
-              disabled={isSubmitting}
+              disabled={!isFormValid || isSubmitting}
             >
               {isSubmitting ? "Đang đăng nhập..." : "Tiếp tục đăng nhập"}
             </button>
@@ -214,5 +221,13 @@ export default function LoginPage() {
         </form>
       )}
     </AuthShell>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginPageContent />
+    </Suspense>
   );
 }

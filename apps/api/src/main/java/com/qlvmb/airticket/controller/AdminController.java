@@ -1,6 +1,7 @@
 package com.qlvmb.airticket.controller;
 
 import com.qlvmb.airticket.domain.dto.AdminDashboardResponse;
+import com.qlvmb.airticket.security.PermissionCode;
 import com.qlvmb.airticket.service.DemoDataService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class AdminController {
     this.demoDataService = demoDataService;
   }
 
-  @PreAuthorize("hasAuthority('backoffice.admin')")
+  @PreAuthorize("hasAuthority('" + PermissionCode.BACKOFFICE_ADMIN + "')")
   @GetMapping("/dashboard")
   public AdminDashboardResponse getDashboard() {
     return demoDataService.getAdminDashboard();
