@@ -1,8 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { startTransition, useMemo, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 
-import { TRIP_TYPES, type TripType } from "@qlvmb/shared-types";
+import { TRIP_TYPES, type FareFamily, type TripType } from "@qlvmb/shared-types";
+
+import { taoDuongDanTimChuyenBay } from "@/lib/flight-search-api";
 
 const tripLabels: Record<TripType, string> = {
   one_way: "Một chiều",
@@ -11,17 +14,67 @@ const tripLabels: Record<TripType, string> = {
 };
 
 export function FlightSearchPanel() {
+  const router = useRouter();
   const [tripType, setTripType] = useState<TripType>("round_trip");
+  const [from, setFrom] = useState("SGN");
+  const [to, setTo] = useState("HAN");
+  const [departureDate, setDepartureDate] = useState("2026-03-20");
+  const [returnDate, setReturnDate] = useState("2026-03-23");
+  const [fareFamily, setFareFamily] = useState<FareFamily>("pho_thong_linh_hoat");
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const [infantCount, setInfantCount] = useState(0);
+  const [dangChuyenTrang, setDangChuyenTrang] = useState(false);
 
   const passengerSummary = useMemo(() => {
     return `${adultCount} người lớn, ${childCount} trẻ em, ${infantCount} em bé`;
   }, [adultCount, childCount, infantCount]);
 
+  function dieuChinhSoLuong(
+    giaTri: number,
+    giaTriMacDinh: number,
+    soToiThieu: number,
+    soToiDa: number
+  ) {
+    if (!Number.isFinite(giaTri)) {
+      return giaTriMacDinh;
+    }
+
+    return Math.min(Math.max(giaTri, soToiThieu), soToiDa);
+  }
+
+  function xuLyDoiChieu() {
+    setFrom(to);
+    setTo(from);
+  }
+
+  function xuLyTimChuyenBay(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (tripType === "multi_city") {
+      return;
+    }
+
+    const duongDan = taoDuongDanTimChuyenBay({
+      from: from.trim().toUpperCase(),
+      to: to.trim().toUpperCase(),
+      departureDate,
+      returnDate: tripType === "round_trip" ? returnDate : null,
+      tripType,
+      fareFamily,
+      adultCount,
+      childCount,
+      infantCount
+    });
+
+    setDangChuyenTrang(true);
+    startTransition(() => {
+      router.push(duongDan);
+    });
+  }
+
   return (
-    <section className="search-panel">
+    <form className="search-panel" onSubmit={xuLyTimChuyenBay}>
       <div className="search-panel-head">
         <div>
           <span className="panel-kicker">Tìm chuyến bay</span>
@@ -51,40 +104,61 @@ export function FlightSearchPanel() {
         ))}
       </div>
       <div className="search-note">
-        Bạn đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hỗ trợ
-        tối đa 3 chặng và 9 hành khách trong cùng một lượt đặt chỗ.
+        Bạn đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hiện hỗ trợ tìm vé thật
+        cho một chiều và khứ hồi, còn nhiều chặng mới dừng ở mức giao diện.
       </div>
       <div className="route-pair">
         <label className="field route-field">
           <span>Điểm đi</span>
-          <input defaultValue="Thành phố Hồ Chí Minh" />
-          <small>Nhà ga nội địa · Cảng hàng không Tân Sơn Nhất</small>
+          <input
+            value={from}
+            onChange={(event) => setFrom(event.target.value.toUpperCase())}
+            placeholder="VD: SGN"
+          />
+          <small>Nhập mã sân bay nội địa như SGN, HAN, DAD, PQC.</small>
         </label>
-        <button type="button" className="swap-button" aria-label="Đảo chiều">
+        <button
+          type="button"
+          className="swap-button"
+          aria-label="Đảo chiều"
+          onClick={xuLyDoiChieu}
+        >
           ⇄
         </button>
         <label className="field route-field">
           <span>Điểm đến</span>
-          <input defaultValue="Hà Nội" />
-          <small>Nhà ga nội địa · Cảng hàng không Nội Bài</small>
+          <input
+            value={to}
+            onChange={(event) => setTo(event.target.value.toUpperCase())}
+            placeholder="VD: HAN"
+          />
+          <small>Hệ thống hiện tại đang lấy kết quả theo mã sân bay từ backend.</small>
         </label>
       </div>
       <div className="field-grid">
         <label className="field">
           <span>Ngày đi</span>
-          <input type="date" defaultValue="2026-03-20" />
+          <input
+            type="date"
+            value={departureDate}
+            onChange={(event) => setDepartureDate(event.target.value)}
+          />
         </label>
         <label className="field">
           <span>Ngày về</span>
           <input
             type="date"
-            defaultValue={tripType === "one_way" ? "" : "2026-03-23"}
+            value={tripType === "one_way" ? "" : returnDate}
             disabled={tripType === "one_way"}
+            onChange={(event) => setReturnDate(event.target.value)}
           />
         </label>
         <label className="field">
           <span>Hạng vé</span>
-          <select defaultValue="pho_thong_linh_hoat">
+          <select
+            value={fareFamily}
+            onChange={(event) => setFareFamily(event.target.value as FareFamily)}
+          >
             <option value="pho_thong_tiet_kiem">Phổ thông tiết kiệm</option>
             <option value="pho_thong_linh_hoat">Phổ thông linh hoạt</option>
             <option value="thuong_gia">Thương gia</option>
@@ -100,7 +174,9 @@ export function FlightSearchPanel() {
                 min={1}
                 max={9}
                 value={adultCount}
-                onChange={(event) => setAdultCount(Number(event.target.value))}
+                onChange={(event) =>
+                  setAdultCount(dieuChinhSoLuong(Number(event.target.value), 1, 1, 9))
+                }
               />
             </label>
             <label>
@@ -110,7 +186,9 @@ export function FlightSearchPanel() {
                 min={0}
                 max={8}
                 value={childCount}
-                onChange={(event) => setChildCount(Number(event.target.value))}
+                onChange={(event) =>
+                  setChildCount(dieuChinhSoLuong(Number(event.target.value), 0, 0, 8))
+                }
               />
             </label>
             <label>
@@ -120,7 +198,9 @@ export function FlightSearchPanel() {
                 min={0}
                 max={8}
                 value={infantCount}
-                onChange={(event) => setInfantCount(Number(event.target.value))}
+                onChange={(event) =>
+                  setInfantCount(dieuChinhSoLuong(Number(event.target.value), 0, 0, 8))
+                }
               />
             </label>
           </div>
@@ -130,8 +210,8 @@ export function FlightSearchPanel() {
         <div className="multi-city-card">
           <strong>Lộ trình gợi ý</strong>
           <p>
-            Chặng 1: Thành phố Hồ Chí Minh đến Hà Nội · Chặng 2: Hà Nội đến Đà
-            Nẵng · Chặng 3: Đà Nẵng về Thành phố Hồ Chí Minh
+            Chặng 1: Thành phố Hồ Chí Minh đến Hà Nội · Chặng 2: Hà Nội đến Đà Nẵng · Chặng
+            3: Đà Nẵng về Thành phố Hồ Chí Minh
           </p>
         </div>
       ) : null}
@@ -143,12 +223,24 @@ export function FlightSearchPanel() {
       <div className="search-footer">
         <div>
           <strong>{passengerSummary}</strong>
-          <p>Giữ chỗ trong 15 phút sau khi bạn chọn được chuyến bay phù hợp.</p>
+          <p>
+            {tripType === "multi_city"
+              ? "Chế độ nhiều chặng hiện mới dừng ở mức gợi ý giao diện."
+              : "Giữ chỗ trong 15 phút sau khi bạn chọn được chuyến bay phù hợp."}
+          </p>
         </div>
-        <button type="button" className="button button-primary">
-          Tìm chuyến bay
+        <button
+          type="submit"
+          className="button button-primary"
+          disabled={tripType === "multi_city" || dangChuyenTrang}
+        >
+          {tripType === "multi_city"
+            ? "Sẽ hỗ trợ sau"
+            : dangChuyenTrang
+              ? "Đang mở kết quả"
+              : "Tìm chuyến bay"}
         </button>
       </div>
-    </section>
+    </form>
   );
 }

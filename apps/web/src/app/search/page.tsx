@@ -1,9 +1,15 @@
 import Image from "next/image";
 
+import type { ApiFlightCard, ApiFlightSearchCriteria, ApiFlightSearchResponse } from "@qlvmb/shared-types";
+
 import { SectionHeading } from "@/components/section-heading";
 import { StatusChip } from "@/components/status-chip";
 import { hienThiHanhTrinh, hienThiTenGoiGia } from "@/lib/display";
-import { fareComparisons, flightResults } from "@/lib/mock-data";
+import {
+  FlightSearchApiError,
+  chuanHoaTieuChiTimChuyenBay,
+  fetchFlightSearch
+} from "@/lib/flight-search-api";
 import { formatCurrency } from "@/lib/format";
 
 const toneMap = {
@@ -26,19 +32,7 @@ const labelMap = {
   cancelled: "Hủy"
 } as const;
 
-const filterBlocks = [
-  "Khoảng giờ bay sáng, trưa, tối",
-  "Giới hạn ngân sách theo tuyến",
-  "Loại gói giá và hành lý đi kèm",
-  "Chuyến gần hết chỗ",
-  "Mở làm thủ tục sớm"
-];
-
-const insights = [
-  { label: "Tuyến đang xem", value: "Thành phố Hồ Chí Minh - Hà Nội", compact: true },
-  { label: "Khung ngày", value: "20/03 - 23/03", compact: true },
-  { label: "Mức giá tốt nhất", value: formatCurrency(1490000), compact: false }
-];
+const filterBlocks = ["Giờ bay", "Gói giá", "Ngân sách", "Còn ghế"];
 
 const fareImageMap = {
   pho_thong_tiet_kiem: {
@@ -55,7 +49,136 @@ const fareImageMap = {
   }
 } as const;
 
-export default function SearchPage() {
+interface SearchPageProps {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
+
+function hienThiKhungNgay(criteria: ApiFlightSearchCriteria): string {
+  if (criteria.tripType === "one_way" || !criteria.returnDate) {
+    return criteria.departureDate;
+  }
+
+  return `${criteria.departureDate} - ${criteria.returnDate}`;
+}
+
+function taoTheKetQua(tieuDe: string, flights: ApiFlightCard[]) {
+  return (
+    <div className="stack-list">
+      <div className="surface-card result-card">
+        <div className="result-top">
+          <div>
+            <span className="section-eyebrow">{tieuDe}</span>
+            <h3>{flights.length} chuyến bay phù hợp</h3>
+            <p>Danh sách được lấy trực tiếp từ tồn ghế và lịch bay hiện có của backend.</p>
+          </div>
+        </div>
+      </div>
+
+      {flights.length > 0 ? (
+        flights.map((flight) => (
+          <article key={`${tieuDe}-${flight.inventoryId}`} className="surface-card result-card">
+            <div className="result-top">
+              <div>
+                <span className="section-eyebrow">Chuyến bay {flight.code}</span>
+                <h3>{hienThiHanhTrinh(flight.from, flight.to)}</h3>
+                <p>{flight.duration}</p>
+              </div>
+              <StatusChip
+                tone={toneMap[flight.status]}
+                label={labelMap[flight.status]}
+              />
+            </div>
+
+            <div className="result-timeline">
+              <div className="timeline-stop">
+                <span>Khởi hành</span>
+                <strong>{flight.departureTime}</strong>
+              </div>
+              <div className="timeline-line" />
+              <div className="timeline-stop">
+                <span>Hạ cánh</span>
+                <strong>{flight.arrivalTime}</strong>
+              </div>
+            </div>
+
+            <div className="result-grid result-grid-rich">
+              <div>
+                <span>Gói giá</span>
+                <strong>{hienThiTenGoiGia(flight.fareFamily)}</strong>
+              </div>
+              <div>
+                <span>Còn lại</span>
+                <strong>{flight.seatsLeft} ghế</strong>
+              </div>
+              <div>
+                <span>Giá từ</span>
+                <strong>{formatCurrency(flight.price)}</strong>
+              </div>
+            </div>
+
+            <div className="result-actions">
+              <div className="assurance-row">
+                <span className="assurance-chip">Giữ chỗ 15 phút</span>
+                <span className="assurance-chip">Hiển thị điều kiện đổi hoặc hoàn</span>
+              </div>
+              <button type="button" className="button button-primary">
+                Chọn chuyến này
+              </button>
+            </div>
+          </article>
+        ))
+      ) : (
+        <article className="surface-card result-card">
+          <div className="result-top">
+            <div>
+              <span className="section-eyebrow">{tieuDe}</span>
+              <h3>Chưa có chuyến bay phù hợp</h3>
+              <p>Hãy thử đổi ngày bay, tuyến hoặc gói giá để xem thêm kết quả.</p>
+            </div>
+          </div>
+        </article>
+      )}
+    </div>
+  );
+}
+
+export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const criteria = chuanHoaTieuChiTimChuyenBay(resolvedSearchParams);
+
+  let searchData: ApiFlightSearchResponse | null = null;
+  let searchError: string | null = null;
+
+  try {
+    searchData = await fetchFlightSearch(criteria);
+  } catch (error) {
+    searchError = error instanceof FlightSearchApiError
+      ? error.message
+      : "Không tải được dữ liệu tìm chuyến bay lúc này.";
+  }
+
+  const outboundFlights = searchData?.outboundFlights ?? [];
+  const returnFlights = searchData?.returnFlights ?? [];
+  const allFlights = searchData?.flights ?? [];
+  const fares = searchData?.fares ?? [];
+  const insights = [
+    {
+      label: "Tuyến đang xem",
+      value: hienThiHanhTrinh(criteria.from, criteria.to),
+      compact: true
+    },
+    {
+      label: "Khung ngày",
+      value: hienThiKhungNgay(criteria),
+      compact: true
+    },
+    {
+      label: "Mức giá tốt nhất",
+      value: allFlights.length > 0 ? formatCurrency(Math.min(...allFlights.map((flight) => flight.price))) : "Chưa có",
+      compact: false
+    }
+  ];
+
   return (
     <section className="section">
       <div className="container">
@@ -64,8 +187,8 @@ export default function SearchPage() {
             <span className="section-eyebrow">Tìm chuyến bay</span>
             <h1 className="page-title">Chọn chuyến bay phù hợp theo giờ khởi hành, gói giá và ngân sách.</h1>
             <p className="page-hero-copy">
-              So sánh nhanh giờ bay, thời lượng, số ghế còn lại và điều kiện gói giá
-              để chốt hành trình phù hợp ngay từ bước tìm kiếm.
+              So sánh nhanh giờ bay, thời lượng, số ghế còn lại và điều kiện gói giá để chốt
+              hành trình phù hợp ngay từ bước tìm kiếm.
             </p>
           </div>
           <div className="page-hero-stat-grid">
@@ -85,103 +208,67 @@ export default function SearchPage() {
           <aside className="surface-card sticky-card filter-card">
             <h3>Bộ lọc đề xuất</h3>
             <div className="filter-chip-list">
-              {filterBlocks.map((item) => (
+              {(searchData?.filters ?? filterBlocks).map((item) => (
                 <span key={item} className="assurance-chip">
                   {item}
                 </span>
               ))}
             </div>
             <div className="filter-note">
-              Bộ lọc ưu tiên các tiêu chí hành khách thường dùng để rút ngắn thời
-              gian tìm chuyến bay trên những tuyến đông khách.
+              Bộ lọc ưu tiên các tiêu chí hành khách thường dùng để rút ngắn thời gian tìm
+              chuyến bay trên những tuyến đông khách.
             </div>
           </aside>
 
           <div className="stack-list">
-            {flightResults.map((flight) => (
-              <article key={flight.code} className="surface-card result-card">
+            {searchError ? (
+              <article className="surface-card result-card">
                 <div className="result-top">
                   <div>
-                    <span className="section-eyebrow">Chuyến bay {flight.code}</span>
-                    <h3>
-                      {hienThiHanhTrinh(flight.from, flight.to)}
-                    </h3>
-                    <p>{flight.duration}</p>
+                    <span className="section-eyebrow">Không thể tải kết quả</span>
+                    <h3>Cần điều chỉnh lại tiêu chí tìm kiếm</h3>
+                    <p>{searchError}</p>
                   </div>
-                  <StatusChip
-                    tone={toneMap[flight.status]}
-                    label={labelMap[flight.status]}
-                  />
-                </div>
-
-                <div className="result-timeline">
-                  <div className="timeline-stop">
-                    <span>Khởi hành</span>
-                    <strong>{flight.departureTime}</strong>
-                  </div>
-                  <div className="timeline-line" />
-                  <div className="timeline-stop">
-                    <span>Hạ cánh</span>
-                    <strong>{flight.arrivalTime}</strong>
-                  </div>
-                </div>
-
-                <div className="result-grid result-grid-rich">
-                  <div>
-                    <span>Gói giá</span>
-                    <strong>{hienThiTenGoiGia(flight.fareFamily)}</strong>
-                  </div>
-                  <div>
-                    <span>Còn lại</span>
-                    <strong>{flight.seatsLeft} ghế</strong>
-                  </div>
-                  <div>
-                    <span>Giá từ</span>
-                    <strong>{formatCurrency(flight.price)}</strong>
-                  </div>
-                </div>
-
-                <div className="result-actions">
-                  <div className="assurance-row">
-                    <span className="assurance-chip">Giữ chỗ 15 phút</span>
-                    <span className="assurance-chip">Hiển thị điều kiện đổi hoặc hoàn</span>
-                  </div>
-                  <button type="button" className="button button-primary">
-                    Chọn chuyến này
-                  </button>
                 </div>
               </article>
-            ))}
+            ) : null}
+
+            {taoTheKetQua("Chặng đi", outboundFlights)}
+            {criteria.tripType === "round_trip" ? taoTheKetQua("Chặng về", returnFlights) : null}
           </div>
         </div>
 
-        <div className="section-gap" />
-        <SectionHeading
-          eyebrow="So sánh gói giá"
-          title="So sánh gói giá để chọn đúng nhu cầu của từng hành trình"
-          description="Mỗi gói vé làm rõ quyền lợi về hành lý, đổi hoặc hoàn và lựa chọn chỗ ngồi để hành khách đưa ra quyết định ngay tại bước tìm chuyến."
-        />
-        <div className="card-grid card-grid-3">
-          {fareComparisons.map((fare) => (
-            <article key={fare.title} className="surface-card fare-card">
-              <div className="fare-card-image">
-                <Image
-                  src={fareImageMap[fare.fareFamily].src}
-                  alt={fareImageMap[fare.fareFamily].alt}
-                  fill
-                  sizes="(max-width: 820px) 100vw, 360px"
-                />
-              </div>
-              <span className="pill">{fare.title}</span>
-              <strong className="fare-price">{formatCurrency(fare.price)}</strong>
-              <ul className="list-clean">
-                {fare.perks.map((perk) => (
-                  <li key={perk}>{perk}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
+        {fares.length > 0 ? (
+          <>
+            <div className="section-gap" />
+            <SectionHeading
+              eyebrow="So sánh gói giá"
+              title="So sánh gói giá để chọn đúng nhu cầu của từng hành trình"
+              description="Mỗi gói vé làm rõ quyền lợi về hành lý, đổi hoặc hoàn và lựa chọn chỗ ngồi để hành khách đưa ra quyết định ngay tại bước tìm chuyến."
+            />
+            <div className="card-grid card-grid-3">
+              {fares.map((fare) => (
+                <article key={fare.title} className="surface-card fare-card">
+                  <div className="fare-card-image">
+                    <Image
+                      src={fareImageMap[fare.fareFamily].src}
+                      alt={fareImageMap[fare.fareFamily].alt}
+                      fill
+                      sizes="(max-width: 820px) 100vw, 360px"
+                    />
+                  </div>
+                  <span className="pill">{fare.title}</span>
+                  <strong className="fare-price">{formatCurrency(fare.price)}</strong>
+                  <ul className="list-clean">
+                    {fare.perks.map((perk) => (
+                      <li key={perk}>{perk}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </>
+        ) : null}
       </div>
     </section>
   );
