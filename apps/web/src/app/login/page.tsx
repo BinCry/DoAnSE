@@ -7,6 +7,8 @@ import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
 import { PasswordField } from "@/components/password-field";
 import { StatusChip } from "@/components/status-chip";
+import { loginWithPassword, resolveAuthErrorMessage } from "@/lib/auth-api";
+import { persistAuthSession, type AuthSession } from "@/lib/auth-session";
 
 const loginStats = [
   {
@@ -49,16 +51,37 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [shouldRemember, setShouldRemember] = useState(true);
-  const [isReadyToContinue, setIsReadyToContinue] = useState(false);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  const isReadyToContinue = authSession !== null;
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
+    if (!email.trim() || !password.trim() || isSubmitting) {
       return;
     }
 
-    setIsReadyToContinue(true);
+    setSubmissionError(null);
+    setIsSubmitting(true);
+
+    try {
+      const nextAuthSession = await loginWithPassword({
+        email: email.trim(),
+        password
+      });
+
+      persistAuthSession(nextAuthSession, shouldRemember);
+      setAuthSession(nextAuthSession);
+    } catch (error) {
+      setSubmissionError(
+        resolveAuthErrorMessage(error, "Không thể đăng nhập trong lúc này.")
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -79,18 +102,26 @@ export default function LoginPage() {
           <h2>Tiếp tục vào khu vực tài khoản</h2>
         </div>
         <StatusChip
-          tone={isReadyToContinue ? "success" : "neutral"}
-          label={isReadyToContinue ? "Sẵn sàng tiếp tục" : "Chờ xác thực"}
+          tone={isReadyToContinue ? "success" : isSubmitting ? "info" : "neutral"}
+          label={
+            isReadyToContinue
+              ? "Đã lưu phiên"
+              : isSubmitting
+                ? "Đang xác thực"
+                : "Chờ xác thực"
+          }
         />
       </div>
 
-      {isReadyToContinue ? (
+      {isReadyToContinue && authSession ? (
         <article className="auth-success-card">
-          <StatusChip tone="success" label="Đã kiểm tra đủ thông tin" />
-          <h3>Phiên làm việc đã sẵn sàng để tiếp tục</h3>
+          <StatusChip tone="success" label="Đăng nhập thành công" />
+          <h3>Xin chào {authSession.user.displayName}, phiên làm việc đã sẵn sàng</h3>
           <p>
-            Bạn có thể chuyển sang khu vực tài khoản để theo dõi hành trình, điểm
-            thưởng và các cập nhật liên quan tới đặt chỗ của mình.
+            Hệ thống đã lưu phiên{" "}
+            {shouldRemember ? "trên thiết bị này" : "trong phiên duyệt hiện tại"} để
+            bạn tiếp tục theo dõi hành trình, điểm thưởng và các cập nhật liên quan tới
+            đặt chỗ của mình.
           </p>
           <div className="auth-action-row">
             <Link href="/account" className="button button-primary">
@@ -131,6 +162,16 @@ export default function LoginPage() {
             />
           </div>
 
+          {submissionError ? (
+            <div className="auth-note-card">
+              <div className="auth-note-head">
+                <h3>Không thể đăng nhập</h3>
+                <StatusChip tone="danger" label="Cần kiểm tra lại" />
+              </div>
+              <p>{submissionError}</p>
+            </div>
+          ) : null}
+
           <div className="auth-helper-row">
             <label className="checkbox-row">
               <input
@@ -152,15 +193,19 @@ export default function LoginPage() {
               <span className="pill">Khách vẫn xem web bình thường</span>
             </div>
             <p>
-              Bạn vẫn có thể tìm chuyến bay, xem tình trạng chuyến bay, quản lý đặt
-              chỗ và đọc cẩm nang hành trình mà không cần đăng nhập. Tài khoản giúp
-              rút ngắn thao tác khi cần lưu hồ sơ, voucher và lịch sử giao dịch.
+              Bạn vẫn có thể tìm chuyến bay, xem tình trạng chuyến bay, quản lý đặt chỗ
+              và đọc cẩm nang hành trình mà không cần đăng nhập. Tài khoản giúp rút ngắn
+              thao tác khi cần lưu hồ sơ, voucher và lịch sử giao dịch.
             </p>
           </div>
 
           <div className="auth-action-row">
-            <button type="submit" className="button button-primary">
-              Tiếp tục đăng nhập
+            <button
+              type="submit"
+              className="button button-primary"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Đang đăng nhập..." : "Tiếp tục đăng nhập"}
             </button>
             <Link href="/register" className="button button-secondary">
               Tạo tài khoản mới

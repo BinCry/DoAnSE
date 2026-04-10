@@ -5,15 +5,38 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import {
+  AUTH_SESSION_UPDATED_EVENT,
+  loadActiveAuthSession,
+  type AuthSession
+} from "@/lib/auth-session";
 import { mainNavigation, utilityLinks } from "@/lib/mock-data";
 
 export function SiteHeader() {
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
 
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    function syncAuthSession() {
+      setAuthSession(loadActiveAuthSession());
+    }
+
+    syncAuthSession();
+    window.addEventListener("storage", syncAuthSession);
+    window.addEventListener(AUTH_SESSION_UPDATED_EVENT, syncAuthSession);
+
+    return () => {
+      window.removeEventListener("storage", syncAuthSession);
+      window.removeEventListener(AUTH_SESSION_UPDATED_EVENT, syncAuthSession);
+    };
+  }, [pathname]);
+
+  const accountDisplayName = authSession?.user.displayName ?? null;
 
   return (
     <header className="site-header">
@@ -54,18 +77,29 @@ export function SiteHeader() {
               <span>Trung tâm hỗ trợ</span>
               <strong>1900 6868</strong>
             </div>
-            <Link
-              href="/login"
-              className="button button-secondary nav-action-button"
-            >
-              Đăng nhập
-            </Link>
-            <Link
-              href="/register"
-              className="button button-secondary nav-action-button"
-            >
-              Tạo tài khoản
-            </Link>
+            {accountDisplayName ? (
+              <Link
+                href="/account"
+                className="button button-secondary nav-action-button"
+              >
+                {accountDisplayName}
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="button button-secondary nav-action-button"
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  href="/register"
+                  className="button button-secondary nav-action-button"
+                >
+                  Tạo tài khoản
+                </Link>
+              </>
+            )}
             <Link
               href="/search"
               className="button button-primary nav-action-button"
@@ -113,12 +147,20 @@ export function SiteHeader() {
                 <span>Trung tâm hỗ trợ</span>
                 <strong>1900 6868</strong>
               </div>
-              <Link href="/login" className="button button-secondary">
-                Đăng nhập
-              </Link>
-              <Link href="/register" className="button button-secondary">
-                Tạo tài khoản
-              </Link>
+              {accountDisplayName ? (
+                <Link href="/account" className="button button-secondary">
+                  {accountDisplayName}
+                </Link>
+              ) : (
+                <>
+                  <Link href="/login" className="button button-secondary">
+                    Đăng nhập
+                  </Link>
+                  <Link href="/register" className="button button-secondary">
+                    Tạo tài khoản
+                  </Link>
+                </>
+              )}
               <Link href="/search" className="button button-primary">
                 Đặt vé
               </Link>

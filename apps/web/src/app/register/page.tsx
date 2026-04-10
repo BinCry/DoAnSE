@@ -8,6 +8,8 @@ import { AuthShell } from "@/components/auth-shell";
 import { PasswordField } from "@/components/password-field";
 import { PasswordChecklist } from "@/components/password-checklist";
 import { StatusChip } from "@/components/status-chip";
+import { registerAccount, resolveAuthErrorMessage } from "@/lib/auth-api";
+import { persistAuthSession, type AuthSession } from "@/lib/auth-session";
 import { isPasswordPolicySatisfied } from "@/lib/password-policy";
 
 const registerStats = [
@@ -53,25 +55,49 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPrepared, setIsPrepared] = useState(false);
+  const [authSession, setAuthSession] = useState<AuthSession | null>(null);
+  const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const blockedFragments = [fullName, email, phone];
+  const normalizedPhone = phone.trim();
   const isPasswordValid = isPasswordPolicySatisfied(password, blockedFragments);
+  const isPhoneValid = /^[0-9+]{9,15}$/.test(normalizedPhone);
   const isFormValid =
     fullName.trim().length >= 2 &&
     email.trim().length > 0 &&
-    phone.trim().length >= 10 &&
+    isPhoneValid &&
     isPasswordValid &&
     confirmPassword === password;
+  const isPrepared = authSession !== null;
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!isFormValid) {
+    if (!isFormValid || isSubmitting) {
       return;
     }
 
-    setIsPrepared(true);
+    setSubmissionError(null);
+    setIsSubmitting(true);
+
+    try {
+      const nextAuthSession = await registerAccount({
+        displayName: fullName.trim(),
+        email: email.trim(),
+        phone: normalizedPhone,
+        password
+      });
+
+      persistAuthSession(nextAuthSession);
+      setAuthSession(nextAuthSession);
+    } catch (error) {
+      setSubmissionError(
+        resolveAuthErrorMessage(error, "Không thể tạo tài khoản trong lúc này.")
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -92,26 +118,42 @@ export default function RegisterPage() {
           <h2>Chuẩn bị tài khoản khách hàng mới</h2>
         </div>
         <StatusChip
-          tone={isFormValid ? "success" : "warning"}
-          label={isFormValid ? "Mật khẩu đạt chuẩn" : "Cần bổ sung thông tin"}
+          tone={
+            isPrepared
+              ? "success"
+              : isSubmitting
+                ? "info"
+                : isFormValid
+                  ? "success"
+                  : "warning"
+          }
+          label={
+            isPrepared
+              ? "Đã tạo phiên"
+              : isSubmitting
+                ? "Đang tạo tài khoản"
+                : isFormValid
+                  ? "Mật khẩu đạt chuẩn"
+                  : "Cần bổ sung thông tin"
+          }
         />
       </div>
 
-      {isPrepared ? (
+      {isPrepared && authSession ? (
         <article className="auth-success-card">
-          <StatusChip tone="success" label="Hồ sơ đã sẵn sàng" />
-          <h3>Tài khoản khách hàng đã được chuẩn bị</h3>
+          <StatusChip tone="success" label="Tạo tài khoản thành công" />
+          <h3>Xin chào {authSession.user.displayName}, tài khoản đã sẵn sàng</h3>
           <p>
-            Hãy lưu lại email đăng ký để dùng cho bước xác minh, nhận thông báo hành
-            trình và khôi phục mật khẩu khi cần. Bạn có thể quay lại màn hình đăng
-            nhập để tiếp tục vào khu vực tài khoản.
+            Phiên đăng nhập đã được lưu trên thiết bị này. Bạn có thể vào ngay khu vực
+            tài khoản để quản lý hồ sơ hành khách, theo dõi hành trình và tiếp tục các
+            bước sau khi mua vé.
           </p>
           <div className="auth-action-row">
-            <Link href="/login" className="button button-primary">
-              Chuyển sang đăng nhập
+            <Link href="/account" className="button button-primary">
+              Vào trang tài khoản
             </Link>
-            <Link href="/support" className="button button-secondary">
-              Xem hỗ trợ tài khoản
+            <Link href="/manage-booking" className="button button-secondary">
+              Quản lý đặt chỗ
             </Link>
           </div>
         </article>
@@ -184,15 +226,25 @@ export default function RegisterPage() {
             confirmPassword={confirmPassword}
           />
 
+          {submissionError ? (
+            <div className="auth-note-card">
+              <div className="auth-note-head">
+                <h3>Không thể tạo tài khoản</h3>
+                <StatusChip tone="danger" label="Cần kiểm tra lại" />
+              </div>
+              <p>{submissionError}</p>
+            </div>
+          ) : null}
+
           <div className="auth-note-card">
             <div className="auth-note-head">
               <h3>Sau khi có tài khoản</h3>
               <span className="pill">Khách vẫn có thể duyệt web</span>
             </div>
             <p>
-              Tài khoản giúp lưu hồ sơ hành khách, nhận nhắc việc trước giờ bay và
-              theo dõi thông báo sau bán. Nếu chưa muốn đăng ký ngay, bạn vẫn có thể
-              tiếp tục tìm vé hoặc tra cứu đặt chỗ với vai trò khách.
+              Tài khoản giúp lưu hồ sơ hành khách, nhận nhắc việc trước giờ bay và theo
+              dõi thông báo sau bán. Nếu chưa muốn đăng ký ngay, bạn vẫn có thể tiếp tục
+              tìm vé hoặc tra cứu đặt chỗ với vai trò khách.
             </p>
           </div>
 
@@ -200,9 +252,9 @@ export default function RegisterPage() {
             <button
               type="submit"
               className="button button-primary"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isSubmitting}
             >
-              Tạo tài khoản
+              {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
             </button>
             <Link href="/login" className="button button-secondary">
               Tôi đã có tài khoản
