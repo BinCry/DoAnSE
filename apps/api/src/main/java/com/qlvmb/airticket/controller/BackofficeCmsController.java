@@ -1,6 +1,7 @@
 package com.qlvmb.airticket.controller;
 
 import com.qlvmb.airticket.domain.dto.CmsHomepageResponse;
+import com.qlvmb.airticket.security.PermissionCode;
 import com.qlvmb.airticket.service.DemoDataService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class BackofficeCmsController {
     this.demoDataService = demoDataService;
   }
 
-  @PreAuthorize("hasAnyAuthority('backoffice.cms', 'backoffice.admin')")
+  @PreAuthorize("hasAnyAuthority('" + PermissionCode.BACKOFFICE_CMS + "', '" + PermissionCode.BACKOFFICE_ADMIN + "')")
   @GetMapping("/homepage")
   public CmsHomepageResponse getHomepageContent() {
     return demoDataService.getCmsHomepage();

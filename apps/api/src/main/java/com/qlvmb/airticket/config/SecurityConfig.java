@@ -39,7 +39,6 @@ public class SecurityConfig {
             .requestMatchers("/error").permitAll()
             .requestMatchers("/api/meta/**", "/api/airports/**", "/api/flights/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/auth/roles").permitAll()
-            .requestMatchers(HttpMethod.GET, "/api/bookings/checkout-preview", "/api/bookings/manage/**").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/cms/homepage").permitAll()
             .requestMatchers(
                 HttpMethod.POST,

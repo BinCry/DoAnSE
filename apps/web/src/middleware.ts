@@ -1,0 +1,108 @@
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
+import { parseJwtPayload, readJwtExpirationSeconds, readJwtStringArray } from "@/lib/jwt";
+
+const ACCESS_TOKEN_COOKIE = "qlvmb.access_token";
+
+function buildLoginRedirect(request: NextRequest): NextResponse {
+  const loginUrl = new URL("/login", request.url);
+  const currentPath = `${request.nextUrl.pathname}${request.nextUrl.search}`;
+  loginUrl.searchParams.set("redirectTo", currentPath);
+  return NextResponse.redirect(loginUrl);
+}
+
+function sanitizeRedirectTarget(value: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed.startsWith("/") || trimmed.startsWith("//")) {
+    return null;
+  }
+
+  if (trimmed.startsWith("/login") || trimmed.startsWith("/register")) {
+    return null;
+  }
+
+  return trimmed;
+}
+
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const isAuthPage = pathname === "/login" || pathname === "/register";
+  const token = request.cookies.get(ACCESS_TOKEN_COOKIE)?.value ?? "";
+
+  if (isAuthPage && !token) {
+    return NextResponse.next();
+  }
+
+  if (!token) {
+    return buildLoginRedirect(request);
+  }
+
+  let decodedToken = "";
+  try {
+    decodedToken = decodeURIComponent(token);
+  } catch {
+    decodedToken = token;
+  }
+
+  const payload = parseJwtPayload(decodedToken);
+  if (!payload || payload["type"] !== "access") {
+    if (isAuthPage) {
+      return NextResponse.next();
+    }
+    return buildLoginRedirect(request);
+  }
+
+  const exp = readJwtExpirationSeconds(payload);
+  if (exp !== null) {
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    if (exp <= nowSeconds) {
+      if (isAuthPage) {
+        return NextResponse.next();
+      }
+      return buildLoginRedirect(request);
+    }
+  }
+
+  if (isAuthPage) {
+    const redirectTo = sanitizeRedirectTarget(request.nextUrl.searchParams.get("redirectTo"));
+    return NextResponse.redirect(new URL(redirectTo ?? "/account", request.url));
+  }
+
+  if (!pathname.startsWith("/backoffice")) {
+    return NextResponse.next();
+  }
+
+  const permissions = readJwtStringArray(payload, "permissions");
+  const hasAnyBackofficePermission = permissions.some((permission) =>
+    permission.startsWith("backoffice.")
+  );
+
+  if (!hasAnyBackofficePermission) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  const moduleKey = pathname.split("/")[2]?.trim() ?? "";
+  if (!moduleKey) {
+    return NextResponse.next();
+  }
+
+  if (permissions.includes("backoffice.admin")) {
+    return NextResponse.next();
+  }
+
+  const requiredPermission = `backoffice.${moduleKey}`;
+  if (permissions.includes(requiredPermission)) {
+    return NextResponse.next();
+  }
+
+  return NextResponse.redirect(new URL("/backoffice", request.url));
+}
+
+export const config = {
+  matcher: ["/account/:path*", "/backoffice/:path*", "/login", "/register"]
+};

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BackofficeAccessChip } from "@/components/backoffice-access-chip";
 import { SectionHeading } from "@/components/section-heading";
 import {
   auditEntries,
@@ -7,7 +8,7 @@ import {
   backofficeModules,
   roleRules
 } from "@/lib/mock-data";
-import { ROLE_LABELS } from "@/lib/access-control";
+import { ROLE_LABELS, type BackofficeModuleKey } from "@/lib/access-control";
 
 const deskHighlights = [
   "Giữ nguyên các phân hệ bán vé, hỗ trợ, tài chính, nội dung và kiểm soát nhưng chỉ còn 2 vai trò vận hành.",
@@ -59,6 +60,7 @@ export default function BackofficePage() {
           {backofficeModules.map((module) => (
             <Link key={module.key} href={module.href} className="surface-card module-card">
               <div className="module-card-head">
+                <BackofficeAccessChip moduleKey={module.key as BackofficeModuleKey} />
                 <span className="pill">Phân khu nội bộ</span>
                 <strong>↗</strong>
               </div>
