@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 import { AuthGooglePlaceholder } from "@/components/auth-google-placeholder";
 import { AuthShell } from "@/components/auth-shell";
@@ -48,7 +48,7 @@ const trustPoints = [
   "Nhận ưu đãi hội viên, voucher cá nhân hóa và nhắc việc trước ngày khởi hành."
 ];
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -221,5 +221,13 @@ export default function LoginPage() {
         </form>
       )}
     </AuthShell>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginPageContent />
+    </Suspense>
   );
 }
