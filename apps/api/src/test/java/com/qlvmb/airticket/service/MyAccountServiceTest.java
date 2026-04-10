@@ -2,6 +2,8 @@ package com.qlvmb.airticket.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -103,6 +105,83 @@ class MyAccountServiceTest {
     assertThat(response.documentNumber()).isEqualTo("AB123456");
     assertThat(response.isPrimary()).isTrue();
     verify(savedPassengerRepository).save(any(SavedPassengerEntity.class));
+  }
+
+  @Test
+  void updateMyPassenger_shouldKeepPrimaryFlagWhenEditingCurrentPrimaryPassenger() {
+    UserAccountEntity userAccount = createUserAccount();
+    SavedPassengerEntity currentPrimaryPassenger = SavedPassengerEntity.create(
+        userAccount,
+        "Nguyen Van A",
+        "adult",
+        LocalDate.of(1991, 5, 20),
+        "CCCD",
+        "012345678901",
+        true,
+        OffsetDateTime.now(ZoneOffset.UTC).minusDays(2)
+    );
+    setField(currentPrimaryPassenger, "id", 301L);
+    AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+        userAccount.getId(),
+        userAccount.getEmail(),
+        userAccount.getDisplayName(),
+        List.of("customer"),
+        List.of("customer.self_service")
+    );
+    when(userAccountRepository.findOneWithRolesById(userAccount.getId())).thenReturn(Optional.of(userAccount));
+    when(savedPassengerRepository.findByIdAndUserAccountId(301L, userAccount.getId()))
+        .thenReturn(Optional.of(currentPrimaryPassenger));
+    when(savedPassengerRepository.findAllByUserAccountIdOrderByPrimaryDescCreatedAtDesc(userAccount.getId()))
+        .thenReturn(List.of(currentPrimaryPassenger));
+
+    MyPassengerResponse response = myAccountService.updateMyPassenger(
+        authenticatedUser,
+        301L,
+        new UpsertMyPassengerRequest(
+            "  Nguyen Van A Moi  ",
+            "adult",
+            LocalDate.of(1991, 5, 20),
+            "passport",
+            " b1234567 ",
+            true
+        )
+    );
+
+    assertThat(response.fullName()).isEqualTo("Nguyen Van A Moi");
+    assertThat(response.documentType()).isEqualTo("PASSPORT");
+    assertThat(response.documentNumber()).isEqualTo("B1234567");
+    assertThat(response.isPrimary()).isTrue();
+    verify(savedPassengerRepository, never()).save(any(SavedPassengerEntity.class));
+  }
+
+  @Test
+  void deleteMyPassenger_shouldDeleteOwnedPassenger() {
+    UserAccountEntity userAccount = createUserAccount();
+    SavedPassengerEntity savedPassenger = SavedPassengerEntity.create(
+        userAccount,
+        "Nguyen Van A",
+        "adult",
+        LocalDate.of(1991, 5, 20),
+        "CCCD",
+        "012345678901",
+        false,
+        OffsetDateTime.now(ZoneOffset.UTC).minusDays(2)
+    );
+    setField(savedPassenger, "id", 401L);
+    AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+        userAccount.getId(),
+        userAccount.getEmail(),
+        userAccount.getDisplayName(),
+        List.of("customer"),
+        List.of("customer.self_service")
+    );
+    when(userAccountRepository.findOneWithRolesById(userAccount.getId())).thenReturn(Optional.of(userAccount));
+    when(savedPassengerRepository.findByIdAndUserAccountId(401L, userAccount.getId()))
+        .thenReturn(Optional.of(savedPassenger));
+
+    myAccountService.deleteMyPassenger(authenticatedUser, 401L);
+
+    verify(savedPassengerRepository).delete(eq(savedPassenger));
   }
 
   private UserAccountEntity createUserAccount() {
