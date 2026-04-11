@@ -64,14 +64,18 @@ function chuanHoaLoaiHanhTrinh(giaTri: RawSearchParam): ApiFlightSearchCriteria[
   return layGiaTriDauTien(giaTri) === "one_way" ? "one_way" : "round_trip";
 }
 
+export function laGoiGiaHopLe(giaTri: string): giaTri is FareFamily {
+  return FARE_FAMILIES.includes(giaTri as FareFamily);
+}
+
 function chuanHoaGoiGia(giaTri: RawSearchParam): FareFamily | null {
   const goiGia = layGiaTriDauTien(giaTri);
 
-  if (!goiGia || !FARE_FAMILIES.includes(goiGia as FareFamily)) {
+  if (!goiGia || !laGoiGiaHopLe(goiGia)) {
     return null;
   }
 
-  return goiGia as FareFamily;
+  return goiGia;
 }
 
 function laMangChuyenBayHopLe(giaTri: unknown): giaTri is ApiFlightCard[] {

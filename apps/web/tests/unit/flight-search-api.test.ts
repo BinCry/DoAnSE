@@ -4,6 +4,7 @@ import {
   FlightSearchApiError,
   chuanHoaTieuChiTimChuyenBay,
   fetchFlightSearch,
+  laGoiGiaHopLe,
   taoDuongDanTimChuyenBay
 } from "@/lib/flight-search-api";
 
@@ -57,6 +58,11 @@ describe("flight-search-api", () => {
     ).toBe(
       "/search?from=SGN&to=HAN&departureDate=2026-03-20&tripType=round_trip&adultCount=1&childCount=0&infantCount=0&returnDate=2026-03-23&fareFamily=pho_thong_linh_hoat"
     );
+  });
+
+  it("xac thuc goi gia hop le", () => {
+    expect(laGoiGiaHopLe("thuong_gia")).toBe(true);
+    expect(laGoiGiaHopLe("goi_khong_ton_tai")).toBe(false);
   });
 
   it("goi backend tim chuyen bay voi query hop le", async () => {
