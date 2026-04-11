@@ -61,6 +61,14 @@ function hienThiKhungNgay(criteria: ApiFlightSearchCriteria): string {
   return `${criteria.departureDate} - ${criteria.returnDate}`;
 }
 
+function hienThiTrangThaiLocGoiGia(criteria: ApiFlightSearchCriteria): string {
+  if (!criteria.fareFamily) {
+    return "Tất cả hạng vé";
+  }
+
+  return hienThiTenGoiGia(criteria.fareFamily);
+}
+
 function taoTheKetQua(tieuDe: string, flights: ApiFlightCard[]) {
   return (
     <div className="stack-list">
@@ -217,6 +225,9 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
             <div className="filter-note">
               Bộ lọc ưu tiên các tiêu chí hành khách thường dùng để rút ngắn thời gian tìm
               chuyến bay trên những tuyến đông khách.
+            </div>
+            <div className="filter-note">
+              Đang áp dụng hạng vé: <strong>{hienThiTrangThaiLocGoiGia(criteria)}</strong>
             </div>
           </aside>
 

@@ -1,11 +1,12 @@
 "use client";
 
-import { startTransition, useMemo, useState, type FormEvent } from "react";
+import { startTransition, useEffect, useMemo, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
-import { TRIP_TYPES, type FareFamily, type TripType } from "@qlvmb/shared-types";
+import { TRIP_TYPES, type AirportOption, type FareFamily, type TripType } from "@qlvmb/shared-types";
 
-import { taoDuongDanTimChuyenBay } from "@/lib/flight-search-api";
+import { fetchAirportOptions } from "@/lib/airport-api";
+import { laGoiGiaHopLe, taoDuongDanTimChuyenBay } from "@/lib/flight-search-api";
 
 const tripLabels: Record<TripType, string> = {
   one_way: "Một chiều",
@@ -25,10 +26,81 @@ export function FlightSearchPanel() {
   const [childCount, setChildCount] = useState(0);
   const [infantCount, setInfantCount] = useState(0);
   const [dangChuyenTrang, setDangChuyenTrang] = useState(false);
+  const [goiYSanBayDi, setGoiYSanBayDi] = useState<AirportOption[]>([]);
+  const [goiYSanBayDen, setGoiYSanBayDen] = useState<AirportOption[]>([]);
+  const [dangTaiSanBayDi, setDangTaiSanBayDi] = useState(false);
+  const [dangTaiSanBayDen, setDangTaiSanBayDen] = useState(false);
+  const [loiGoiGia, setLoiGoiGia] = useState("");
 
   const passengerSummary = useMemo(() => {
     return `${adultCount} người lớn, ${childCount} trẻ em, ${infantCount} em bé`;
   }, [adultCount, childCount, infantCount]);
+
+  useEffect(() => {
+    const tuKhoa = from.trim();
+
+    if (!tuKhoa) {
+      setGoiYSanBayDi([]);
+      setDangTaiSanBayDi(false);
+      return;
+    }
+
+    const boDieuKhien = new AbortController();
+    const boDem = setTimeout(async () => {
+      setDangTaiSanBayDi(true);
+
+      try {
+        const danhSach = await fetchAirportOptions(tuKhoa, boDieuKhien.signal);
+        setGoiYSanBayDi(danhSach);
+      } catch {
+        if (!boDieuKhien.signal.aborted) {
+          setGoiYSanBayDi([]);
+        }
+      } finally {
+        if (!boDieuKhien.signal.aborted) {
+          setDangTaiSanBayDi(false);
+        }
+      }
+    }, 250);
+
+    return () => {
+      clearTimeout(boDem);
+      boDieuKhien.abort();
+    };
+  }, [from]);
+
+  useEffect(() => {
+    const tuKhoa = to.trim();
+
+    if (!tuKhoa) {
+      setGoiYSanBayDen([]);
+      setDangTaiSanBayDen(false);
+      return;
+    }
+
+    const boDieuKhien = new AbortController();
+    const boDem = setTimeout(async () => {
+      setDangTaiSanBayDen(true);
+
+      try {
+        const danhSach = await fetchAirportOptions(tuKhoa, boDieuKhien.signal);
+        setGoiYSanBayDen(danhSach);
+      } catch {
+        if (!boDieuKhien.signal.aborted) {
+          setGoiYSanBayDen([]);
+        }
+      } finally {
+        if (!boDieuKhien.signal.aborted) {
+          setDangTaiSanBayDen(false);
+        }
+      }
+    }, 250);
+
+    return () => {
+      clearTimeout(boDem);
+      boDieuKhien.abort();
+    };
+  }, [to]);
 
   function dieuChinhSoLuong(
     giaTri: number,
@@ -55,13 +127,22 @@ export function FlightSearchPanel() {
       return;
     }
 
+    const goiGiaDuocChon = String(fareFamily);
+
+    if (!laGoiGiaHopLe(goiGiaDuocChon)) {
+      setLoiGoiGia("Hạng vé không hợp lệ. Vui lòng chọn lại.");
+      return;
+    }
+
+    setLoiGoiGia("");
+
     const duongDan = taoDuongDanTimChuyenBay({
       from: from.trim().toUpperCase(),
       to: to.trim().toUpperCase(),
       departureDate,
       returnDate: tripType === "round_trip" ? returnDate : null,
       tripType,
-      fareFamily,
+      fareFamily: goiGiaDuocChon,
       adultCount,
       childCount,
       infantCount
@@ -82,7 +163,7 @@ export function FlightSearchPanel() {
         </div>
         <div className="search-mini-metrics">
           <div>
-            <strong>15'</strong>
+            <strong>15&apos;</strong>
             <span>Giữ chỗ</span>
           </div>
           <div>
@@ -104,18 +185,30 @@ export function FlightSearchPanel() {
         ))}
       </div>
       <div className="search-note">
-        Bạn đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hiện hỗ trợ tìm vé thật
-        cho một chiều và khứ hồi, còn nhiều chặng mới dừng ở mức giao diện.
+        Bạn đang chọn <strong>{tripLabels[tripType]}</strong>. Hệ thống hiện hỗ trợ tìm vé thật cho một chiều và
+        khứ hồi, còn nhiều chặng mới dừng ở mức giao diện.
       </div>
       <div className="route-pair">
         <label className="field route-field">
           <span>Điểm đi</span>
           <input
             value={from}
-            onChange={(event) => setFrom(event.target.value.toUpperCase())}
-            placeholder="VD: SGN"
+            onChange={(event) => setFrom(event.target.value)}
+            placeholder="VD: SGN hoặc Hà Nội"
+            list="goi-y-san-bay-di"
           />
-          <small>Nhập mã sân bay nội địa như SGN, HAN, DAD, PQC.</small>
+          <datalist id="goi-y-san-bay-di">
+            {goiYSanBayDi.map((sanBay) => (
+              <option key={sanBay.code} value={sanBay.code}>
+                {`${sanBay.cityName} (${sanBay.code}) - ${sanBay.airportName}`}
+              </option>
+            ))}
+          </datalist>
+          <small>
+            {dangTaiSanBayDi
+              ? "Đang tải gợi ý sân bay..."
+              : "Nhập mã hoặc tên thành phố để nhận gợi ý sân bay."}
+          </small>
         </label>
         <button
           type="button"
@@ -129,10 +222,22 @@ export function FlightSearchPanel() {
           <span>Điểm đến</span>
           <input
             value={to}
-            onChange={(event) => setTo(event.target.value.toUpperCase())}
-            placeholder="VD: HAN"
+            onChange={(event) => setTo(event.target.value)}
+            placeholder="VD: HAN hoặc Đà Nẵng"
+            list="goi-y-san-bay-den"
           />
-          <small>Hệ thống hiện tại đang lấy kết quả theo mã sân bay từ backend.</small>
+          <datalist id="goi-y-san-bay-den">
+            {goiYSanBayDen.map((sanBay) => (
+              <option key={sanBay.code} value={sanBay.code}>
+                {`${sanBay.cityName} (${sanBay.code}) - ${sanBay.airportName}`}
+              </option>
+            ))}
+          </datalist>
+          <small>
+            {dangTaiSanBayDen
+              ? "Đang tải gợi ý sân bay..."
+              : "Gợi ý được lấy trực tiếp từ API sân bay backend."}
+          </small>
         </label>
       </div>
       <div className="field-grid">
@@ -157,12 +262,16 @@ export function FlightSearchPanel() {
           <span>Hạng vé</span>
           <select
             value={fareFamily}
-            onChange={(event) => setFareFamily(event.target.value as FareFamily)}
+            onChange={(event) => {
+              setFareFamily(event.target.value as FareFamily);
+              setLoiGoiGia("");
+            }}
           >
             <option value="pho_thong_tiet_kiem">Phổ thông tiết kiệm</option>
             <option value="pho_thong_linh_hoat">Phổ thông linh hoạt</option>
             <option value="thuong_gia">Thương gia</option>
           </select>
+          {loiGoiGia ? <small>{loiGoiGia}</small> : null}
         </label>
         <div className="field field-inline">
           <span>Hành khách</span>
@@ -210,8 +319,8 @@ export function FlightSearchPanel() {
         <div className="multi-city-card">
           <strong>Lộ trình gợi ý</strong>
           <p>
-            Chặng 1: Thành phố Hồ Chí Minh đến Hà Nội · Chặng 2: Hà Nội đến Đà Nẵng · Chặng
-            3: Đà Nẵng về Thành phố Hồ Chí Minh
+            Chặng 1: Thành phố Hồ Chí Minh đến Hà Nội · Chặng 2: Hà Nội đến Đà Nẵng · Chặng 3: Đà Nẵng về Thành phố
+            Hồ Chí Minh
           </p>
         </div>
       ) : null}
